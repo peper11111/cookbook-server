@@ -38,9 +38,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .successHandler((request, response, authentication) -> response.setStatus(HttpStatus.OK.value()))
                 .failureHandler((request, response, exception) -> response.sendError(HttpStatus.FORBIDDEN.value()))
                 .and()
-             .logout()
+            .logout()
                 .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpStatus.OK.value()))
                 .and()
+            .cors().and()
             .csrf().disable();
     }
 }
