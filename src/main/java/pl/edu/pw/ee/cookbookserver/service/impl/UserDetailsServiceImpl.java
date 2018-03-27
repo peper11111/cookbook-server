@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 
+import java.util.Optional;
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -20,10 +22,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
+        Optional<User> optionalUser = userRepository.findByUsernameOrEmail(username, username);
+        if (!optionalUser.isPresent()) {
             throw new UsernameNotFoundException(username);
         }
-        return user;
+        return optionalUser.get();
     }
 }
