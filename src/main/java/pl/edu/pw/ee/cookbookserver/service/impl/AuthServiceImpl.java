@@ -72,7 +72,7 @@ public class AuthServiceImpl implements AuthService {
         Token token = createAccessToken(user);
         mailService.sendAccountActivationMessage(user.getEmail(), user.getUsername(), token.getUuid());
 
-        messageDto.setMessage("user-registered");
+        messageDto.setMessage("account-activation-email-sent");
         return ResponseEntity.ok().body(messageDto);
     }
 
@@ -107,27 +107,59 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity reset() {
-//        if (userDto.getUsername() == null || userDto.getUsername().length() == 0) {
-//            return ResponseEntity.badRequest().body("error.missing-username");
-//        }
-//
-//        Optional<User> optionalUser = userRepository.findByUsernameOrEmail(userDto.getUsername(), userDto.getUsername());
-//        if (!optionalUser.isPresent()) {
-//            return ResponseEntity.badRequest().body("error.user-not-found");
-//        }
-//
-//        User user = optionalUser.get();
-//        String accessToken = createAccessToken(user);
-//        mailService.sendPasswordResetMessage(user.getEmail(), user.getUsername(), accessToken);
-//
-//        return ResponseEntity.ok().body("info.password-reset");
-        return null;
+    public ResponseEntity reset(AuthDto authDto) {
+        MessageDto messageDto = new MessageDto();
+        if (authDto.getUsername() == null || authDto.getUsername().length() == 0) {
+            messageDto.setMessage("missing-username");
+            return ResponseEntity.badRequest().body(messageDto);
+        }
+
+        Optional<User> optionalUser = userRepository.findByUsernameOrEmail(authDto.getUsername(), authDto.getUsername());
+        if (!optionalUser.isPresent()) {
+            messageDto.setMessage("user-not-found");
+            return ResponseEntity.badRequest().body(messageDto);
+        }
+
+        User user = optionalUser.get();
+        Token token = createAccessToken(user);
+        mailService.sendPasswordResetMessage(user.getEmail(), user.getUsername(), token.getUuid());
+
+        messageDto.setMessage("password-reset-email-sent");
+        return ResponseEntity.ok().body(messageDto);
     }
 
     @Override
-    public ResponseEntity confirm() {
-        return null;
+    public ResponseEntity confirm(AuthDto authDto) {
+        MessageDto messageDto = new MessageDto();
+        if (authDto.getToken() == null || authDto.getToken().length() == 0) {
+            messageDto.setMessage("missing-token");
+            return ResponseEntity.badRequest().body(messageDto);
+        }
+        if (authDto.getPassword() == null || authDto.getPassword().length() == 0) {
+            messageDto.setMessage("missing-password");
+            return ResponseEntity.badRequest().body(messageDto);
+        }
+
+        Optional<Token> optionalToken;
+        optionalToken = tokenRepository.findByUuid(authDto.getToken());
+        if (!optionalToken.isPresent()) {
+            messageDto.setMessage("token-not-found");
+            return ResponseEntity.badRequest().body(messageDto);
+        }
+
+        Token token = optionalToken.get();
+        if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
+            messageDto.setMessage("token-expired");
+            return ResponseEntity.badRequest().body(messageDto);
+        }
+
+        User user = token.getUser();
+        user.setPassword(new BCryptPasswordEncoder().encode(authDto.getPassword()));
+        userRepository.save(user);
+        tokenRepository.delete(token);
+
+        messageDto.setMessage("password-reset");
+        return ResponseEntity.ok().body(messageDto);
     }
 
     private Token createAccessToken(User user) {

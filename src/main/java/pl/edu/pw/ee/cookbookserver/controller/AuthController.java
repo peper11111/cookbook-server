@@ -29,12 +29,12 @@ public class AuthController {
     }
 
     @PostMapping("/reset")
-    public ResponseEntity reset() {
-        return authService.reset();
+    public ResponseEntity reset(@RequestBody AuthDto authDto) {
+        return authService.reset(authDto);
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity confirm() {
-        return authService.confirm();
+    public ResponseEntity confirm(@RequestBody AuthDto authDto) {
+        return authService.confirm(authDto);
     }
 }

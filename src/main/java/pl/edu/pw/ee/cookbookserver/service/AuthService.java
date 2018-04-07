@@ -6,6 +6,6 @@ import pl.edu.pw.ee.cookbookserver.dto.AuthDto;
 public interface AuthService {
     ResponseEntity register(AuthDto authDto);
     ResponseEntity verify(AuthDto authDto);
-    ResponseEntity reset();
-    ResponseEntity confirm();
+    ResponseEntity reset(AuthDto authDto);
+    ResponseEntity confirm(AuthDto authDto);
 }
