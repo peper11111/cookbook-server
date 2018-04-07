@@ -16,6 +16,6 @@ public class Token {
     private Long id;
     @ManyToOne
     private User user;
-    private UUID uuid;
+    private String uuid;
     private LocalDateTime expirationTime;
 }
