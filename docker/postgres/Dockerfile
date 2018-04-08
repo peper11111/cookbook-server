@@ -1,0 +1,5 @@
+FROM postgres
+
+ENV POSTGRES_USER=cookbook
+ENV POSTGRES_PASSWORD=cookbook
+ENV POSTGRES_DB=cookbook
