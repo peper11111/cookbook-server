@@ -35,27 +35,27 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity register(AuthDto authDto) {
         MessageDto messageDto = new MessageDto();
         if (authDto.getEmail() == null || authDto.getEmail().length() == 0) {
-            messageDto.setMessage("missing-email");
+            messageDto.setMessage("error.missing-email");
             return ResponseEntity.badRequest().body(messageDto);
         }
         if (authDto.getUsername() == null || authDto.getUsername().length() == 0) {
-            messageDto.setMessage("missing-username");
+            messageDto.setMessage("error.missing-username");
             return ResponseEntity.badRequest().body(messageDto);
         }
         if (authDto.getPassword() == null || authDto.getPassword().length() == 0) {
-            messageDto.setMessage("missing-password");
+            messageDto.setMessage("error.missing-password");
             return ResponseEntity.badRequest().body(messageDto);
         }
 
         Optional<User> optionalUser;
         optionalUser = userRepository.findByEmail(authDto.getEmail());
         if (optionalUser.isPresent()) {
-            messageDto.setMessage("email-occupied");
+            messageDto.setMessage("error.email-occupied");
             return ResponseEntity.badRequest().body(messageDto);
         }
         optionalUser = userRepository.findByUsername(authDto.getUsername());
         if (optionalUser.isPresent()) {
-            messageDto.setMessage("username-occupied");
+            messageDto.setMessage("error.username-occupied");
             return ResponseEntity.badRequest().body(messageDto);
         }
 
@@ -72,7 +72,7 @@ public class AuthServiceImpl implements AuthService {
         Token token = createAccessToken(user);
         mailService.sendAccountActivationMessage(user.getEmail(), user.getUsername(), token.getUuid());
 
-        messageDto.setMessage("account-activation-email-sent");
+        messageDto.setMessage("info.account-activation-email-sent");
         return ResponseEntity.ok().body(messageDto);
     }
 
@@ -80,20 +80,20 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity verify(AuthDto authDto) {
         MessageDto messageDto = new MessageDto();
         if (authDto.getToken() == null || authDto.getToken().length() == 0) {
-            messageDto.setMessage("missing-token");
+            messageDto.setMessage("error.missing-token");
             return ResponseEntity.badRequest().body(messageDto);
         }
 
         Optional<Token> optionalToken;
         optionalToken = tokenRepository.findByUuid(authDto.getToken());
         if (!optionalToken.isPresent()) {
-            messageDto.setMessage("token-not-found");
+            messageDto.setMessage("error.token-not-found");
             return ResponseEntity.badRequest().body(messageDto);
         }
 
         Token token = optionalToken.get();
         if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
-            messageDto.setMessage("token-expired");
+            messageDto.setMessage("error.token-expired");
             return ResponseEntity.badRequest().body(messageDto);
         }
 
@@ -102,7 +102,7 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
         tokenRepository.delete(token);
 
-        messageDto.setMessage("user-verified");
+        messageDto.setMessage("info.user-verified");
         return ResponseEntity.ok().body(messageDto);
     }
 
@@ -110,13 +110,13 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity reset(AuthDto authDto) {
         MessageDto messageDto = new MessageDto();
         if (authDto.getUsername() == null || authDto.getUsername().length() == 0) {
-            messageDto.setMessage("missing-username");
+            messageDto.setMessage("error.missing-username");
             return ResponseEntity.badRequest().body(messageDto);
         }
 
         Optional<User> optionalUser = userRepository.findByUsernameOrEmail(authDto.getUsername(), authDto.getUsername());
         if (!optionalUser.isPresent()) {
-            messageDto.setMessage("user-not-found");
+            messageDto.setMessage("error.user-not-found");
             return ResponseEntity.badRequest().body(messageDto);
         }
 
@@ -124,7 +124,7 @@ public class AuthServiceImpl implements AuthService {
         Token token = createAccessToken(user);
         mailService.sendPasswordResetMessage(user.getEmail(), user.getUsername(), token.getUuid());
 
-        messageDto.setMessage("password-reset-email-sent");
+        messageDto.setMessage("info.password-reset-email-sent");
         return ResponseEntity.ok().body(messageDto);
     }
 
@@ -132,24 +132,24 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity confirm(AuthDto authDto) {
         MessageDto messageDto = new MessageDto();
         if (authDto.getToken() == null || authDto.getToken().length() == 0) {
-            messageDto.setMessage("missing-token");
+            messageDto.setMessage("error.missing-token");
             return ResponseEntity.badRequest().body(messageDto);
         }
         if (authDto.getPassword() == null || authDto.getPassword().length() == 0) {
-            messageDto.setMessage("missing-password");
+            messageDto.setMessage("error.missing-password");
             return ResponseEntity.badRequest().body(messageDto);
         }
 
         Optional<Token> optionalToken;
         optionalToken = tokenRepository.findByUuid(authDto.getToken());
         if (!optionalToken.isPresent()) {
-            messageDto.setMessage("token-not-found");
+            messageDto.setMessage("error.token-not-found");
             return ResponseEntity.badRequest().body(messageDto);
         }
 
         Token token = optionalToken.get();
         if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
-            messageDto.setMessage("token-expired");
+            messageDto.setMessage("error.token-expired");
             return ResponseEntity.badRequest().body(messageDto);
         }
 
@@ -158,7 +158,7 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
         tokenRepository.delete(token);
 
-        messageDto.setMessage("password-reset");
+        messageDto.setMessage("info.password-reset");
         return ResponseEntity.ok().body(messageDto);
     }
 
