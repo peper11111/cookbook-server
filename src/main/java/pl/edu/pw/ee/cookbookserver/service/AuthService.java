@@ -8,4 +8,5 @@ public interface AuthService {
     ResponseEntity verify(AuthDto authDto);
     ResponseEntity reset(AuthDto authDto);
     ResponseEntity confirm(AuthDto authDto);
+    ResponseEntity readCurrentUser();
 }

@@ -2,6 +2,7 @@ package pl.edu.pw.ee.cookbookserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +37,10 @@ public class AuthController {
     @PostMapping("/confirm")
     public ResponseEntity confirm(@RequestBody AuthDto authDto) {
         return authService.confirm(authDto);
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity readCurrentUser() {
+        return authService.readCurrentUser();
     }
 }

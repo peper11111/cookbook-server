@@ -2,6 +2,7 @@ package pl.edu.pw.ee.cookbookserver.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.ee.cookbookserver.dto.MessageDto;
@@ -169,5 +170,19 @@ public class AuthServiceImpl implements AuthService {
         token.setExpirationTime(LocalDateTime.now().plusHours(1));
         tokenRepository.save(token);
         return token;
+    }
+
+    @Override
+    public ResponseEntity readCurrentUser() {
+        AuthDto authDto = new AuthDto();
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User) {
+            User user = (User) principal;
+            authDto.setUsername(user.getUsername());
+            authDto.setEmail(user.getEmail());
+        }
+
+        return ResponseEntity.ok().body(authDto);
     }
 }
