@@ -8,9 +8,9 @@
 ./gradlew assemble
 
 # build docker images
-docker build -f docker/postgres/Dockerfile -t cookbook-postgres .
-docker build -f docker/postfix/Dockerfile -t cookbook-postfix .
-docker build -f docker/server/Dockerfile -t cookbook-server .
+docker build -f docker/cookbook-postgres/Dockerfile -t cookbook-postgres .
+docker build -f docker/cookbook-postfix/Dockerfile -t cookbook-postfix .
+docker build -f docker/cookbook-server/Dockerfile -t cookbook-server .
 
 # create docker containers
 docker create --name cookbook-postgres -p 5432:5432 -it cookbook-postgres
