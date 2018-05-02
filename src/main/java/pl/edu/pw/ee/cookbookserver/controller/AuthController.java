@@ -2,14 +2,12 @@ package pl.edu.pw.ee.cookbookserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.edu.pw.ee.cookbookserver.dto.AuthDto;
 import pl.edu.pw.ee.cookbookserver.service.AuthService;
 
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
 
     private AuthService authService;
@@ -17,6 +15,11 @@ public class AuthController {
     @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity check() {
+        return authService.check();
     }
 
     @PostMapping("/register")
@@ -37,10 +40,5 @@ public class AuthController {
     @PostMapping("/confirm")
     public ResponseEntity confirm(@RequestBody AuthDto authDto) {
         return authService.confirm(authDto);
-    }
-
-    @GetMapping("/current")
-    public ResponseEntity readCurrentUser() {
-        return authService.readCurrentUser();
     }
 }
