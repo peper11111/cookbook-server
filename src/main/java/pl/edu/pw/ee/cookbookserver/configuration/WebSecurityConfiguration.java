@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.PrintWriter;
+
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -37,12 +39,27 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
             .formLogin()
                 .loginProcessingUrl("/auth/login")
-                .successHandler((request, response, authentication) -> response.setStatus(HttpStatus.OK.value()))
-                .failureHandler((request, response, exception) -> response.sendError(HttpStatus.FORBIDDEN.value()))
+                .successHandler((request, response, authentication) -> {
+                    response.setStatus(HttpStatus.OK.value());
+                    PrintWriter printWriter = response.getWriter();
+                    printWriter.write("info.login-successful");
+                    printWriter.flush();
+                })
+                .failureHandler((request, response, exception) -> {
+                    response.setStatus(HttpStatus.FORBIDDEN.value());
+                    PrintWriter printWriter = response.getWriter();
+                    printWriter.write("error." + exception.getMessage().toLowerCase().replace(" ", "-"));
+                    printWriter.flush();
+                })
                 .and()
             .logout()
                 .logoutUrl("/auth/logout")
-                .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpStatus.OK.value()))
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    response.setStatus(HttpStatus.OK.value());
+                    PrintWriter printWriter = response.getWriter();
+                    printWriter.write("info.logout-successful");
+                    printWriter.flush();
+                })
                 .and()
             .cors().and()
             .csrf().disable();
