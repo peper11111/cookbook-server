@@ -24,7 +24,7 @@ public class UploadServiceImpl implements UploadService {
     @Override
     public ResponseEntity read(String filename) {
         try {
-            FileInputStream fis = new FileInputStream(new File(uploadFolder, filename + ".jpg"));
+            FileInputStream fis = new FileInputStream(new File(uploadFolder, filename));
             return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(StreamUtils.copyToByteArray(fis));
         } catch (Exception e) {
             e.printStackTrace();
