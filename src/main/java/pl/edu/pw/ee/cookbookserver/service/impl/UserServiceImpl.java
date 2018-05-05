@@ -36,4 +36,22 @@ public class UserServiceImpl implements UserService {
 
         return ResponseEntity.ok().body(userDto);
     }
+
+    @Override
+    public ResponseEntity update(Long id, UserDto userDto) {
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if (!optionalUser.isPresent()) {
+            return ResponseEntity.badRequest().body("error.user-not-found");
+        }
+
+        User user = optionalUser.get();
+        System.out.println(userDto);
+        if (userDto.getAvatar() != null) {
+            user.setAvatar(userDto.getAvatar());
+        }
+        userRepository.save(user);
+
+        return ResponseEntity.ok().body("info.user-update-successful");
+    }
 }

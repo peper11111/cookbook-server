@@ -34,8 +34,8 @@ public class UploadServiceImpl implements UploadService {
                 newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null);
                 bufferedImage = newBufferedImage;
             }
-            String filename = UUID.randomUUID().toString() + ".jpg";
-            ImageIO.write(bufferedImage, "jpg", new File(uploadFolder, filename));
+            String filename = UUID.randomUUID().toString();
+            ImageIO.write(bufferedImage, "jpg", new File(uploadFolder, filename + ".jpg"));
             return ResponseEntity.ok().body(filename);
         } catch (Exception e) {
             e.printStackTrace();
