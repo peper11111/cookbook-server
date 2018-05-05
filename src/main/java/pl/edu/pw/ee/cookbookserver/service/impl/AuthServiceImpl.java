@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.ee.cookbookserver.dto.AuthDto;
-import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Token;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
@@ -41,15 +40,7 @@ public class AuthServiceImpl implements AuthService {
         if (authentication instanceof AnonymousAuthenticationToken || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-
-        User user = (User) authentication.getPrincipal();
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setUsername(user.getUsername());
-        userDto.setEmail(user.getEmail());
-        userDto.setAvatar(user.getAvatar());
-
-        return ResponseEntity.ok().body(userDto);
+        return ResponseEntity.ok().body(((User) authentication.getPrincipal()).getId());
     }
 
     @Override
@@ -78,6 +69,7 @@ public class AuthServiceImpl implements AuthService {
         user.setUsername(authDto.getUsername());
         user.setPassword(new BCryptPasswordEncoder().encode(authDto.getPassword()));
         user.setEmail(authDto.getEmail());
+        user.setAvatar("blank-profile");
         user.setAccountNonExpired(true);
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);

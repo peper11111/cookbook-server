@@ -47,7 +47,7 @@ public class UploadServiceImpl implements UploadService {
     public ResponseEntity read(String filename) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            BufferedImage bufferedImage = ImageIO.read(new File(uploadFolder, filename));
+            BufferedImage bufferedImage = ImageIO.read(new File(uploadFolder, filename + ".jpg"));
             ImageIO.write(bufferedImage, "jpg", out);
             return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(out.toByteArray());
         } catch (Exception e) {
