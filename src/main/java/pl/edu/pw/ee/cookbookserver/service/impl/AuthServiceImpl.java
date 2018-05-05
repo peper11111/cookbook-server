@@ -35,12 +35,19 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity check() {
+    public ResponseEntity current() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+        User user = (User) authentication.getPrincipal();
+        AuthDto authDto = new AuthDto();
+        authDto.setId(user.getId());
+        authDto.setUsername(user.getUsername());
+        authDto.setEmail(user.getEmail());
+
+        return ResponseEntity.ok().body(authDto);
     }
 
     @Override

@@ -24,4 +24,3 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> authorities;
 }
-

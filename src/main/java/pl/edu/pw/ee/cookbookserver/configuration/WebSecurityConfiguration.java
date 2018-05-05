@@ -39,12 +39,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
             .formLogin()
                 .loginProcessingUrl("/auth/login")
-                .successHandler((request, response, authentication) -> {
-                    response.setStatus(HttpStatus.OK.value());
-                    PrintWriter printWriter = response.getWriter();
-                    printWriter.write("info.login-successful");
-                    printWriter.flush();
-                })
+                .successHandler((request, response, authentication) -> response.setStatus(HttpStatus.NO_CONTENT.value()))
                 .failureHandler((request, response, exception) -> {
                     response.setStatus(HttpStatus.FORBIDDEN.value());
                     PrintWriter printWriter = response.getWriter();
@@ -54,12 +49,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
             .logout()
                 .logoutUrl("/auth/logout")
-                .logoutSuccessHandler((request, response, authentication) -> {
-                    response.setStatus(HttpStatus.OK.value());
-                    PrintWriter printWriter = response.getWriter();
-                    printWriter.write("info.logout-successful");
-                    printWriter.flush();
-                })
+                .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpStatus.NO_CONTENT.value()))
                 .and()
             .cors().and()
             .csrf().disable();
