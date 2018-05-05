@@ -9,6 +9,9 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowCredentials(true);
+        registry
+            .addMapping("/**")
+            .allowedMethods("*")
+            .allowCredentials(true);
     }
 }
