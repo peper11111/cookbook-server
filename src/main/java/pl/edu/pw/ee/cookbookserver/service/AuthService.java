@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import pl.edu.pw.ee.cookbookserver.dto.AuthDto;
 
 public interface AuthService {
+
     ResponseEntity current();
     ResponseEntity register(AuthDto authDto);
     ResponseEntity verify(AuthDto authDto);

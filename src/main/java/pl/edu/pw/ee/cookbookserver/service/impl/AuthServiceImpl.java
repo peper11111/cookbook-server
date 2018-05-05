@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.ee.cookbookserver.dto.AuthDto;
+import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Token;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
@@ -42,12 +43,13 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = (User) authentication.getPrincipal();
-        AuthDto authDto = new AuthDto();
-        authDto.setId(user.getId());
-        authDto.setUsername(user.getUsername());
-        authDto.setEmail(user.getEmail());
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+        userDto.setAvatar(user.getAvatar());
 
-        return ResponseEntity.ok().body(authDto);
+        return ResponseEntity.ok().body(userDto);
     }
 
     @Override
