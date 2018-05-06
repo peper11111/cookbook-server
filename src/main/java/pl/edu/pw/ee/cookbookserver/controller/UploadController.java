@@ -26,9 +26,4 @@ public class UploadController {
     public ResponseEntity read(@PathVariable String filename) {
         return uploadService.read(filename);
     }
-
-    @DeleteMapping("/{filename}")
-    public ResponseEntity delete(@PathVariable String filename) {
-        return uploadService.delete(filename);
-    }
 }
