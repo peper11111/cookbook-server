@@ -69,7 +69,6 @@ public class AuthServiceImpl implements AuthService {
         user.setUsername(authDto.getUsername());
         user.setPassword(new BCryptPasswordEncoder().encode(authDto.getPassword()));
         user.setEmail(authDto.getEmail());
-        user.setAvatar("blank-profile");
         user.setAccountNonExpired(true);
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);

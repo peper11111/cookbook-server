@@ -7,4 +7,5 @@ public interface UploadService {
 
     ResponseEntity create(MultipartFile file);
     ResponseEntity read(String filename);
+    ResponseEntity delete(String filename);
 }

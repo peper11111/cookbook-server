@@ -55,4 +55,16 @@ public class UploadServiceImpl implements UploadService {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @Override
+    public ResponseEntity delete(String filename) {
+        File file = new File(uploadFolder, filename + ".jpg");
+        if (!file.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+        if (!file.delete()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
 }
