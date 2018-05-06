@@ -8,7 +8,7 @@ public class UserDto {
     private Long id;
     private String username;
     private String avatar;
-    private Long posts;
+    private Long recipes;
     private Long followers;
     private Long following;
 }
