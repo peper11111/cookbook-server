@@ -17,6 +17,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/current")
+    public ResponseEntity current() {
+        return userService.current();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity read(@PathVariable Long id) {
         return userService.read(id);

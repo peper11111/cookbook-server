@@ -1,7 +1,11 @@
 package pl.edu.pw.ee.cookbookserver.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.User;
@@ -21,6 +25,15 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UploadService uploadService, UserRepository userRepository) {
         this.uploadService = uploadService;
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public ResponseEntity current() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok().body(authentication.getPrincipal());
     }
 
     @Override

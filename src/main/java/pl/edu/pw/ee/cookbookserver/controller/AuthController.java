@@ -17,11 +17,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @GetMapping("/current")
-    public ResponseEntity current() {
-        return authService.current();
-    }
-
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody AuthDto authDto) {
         return authService.register(authDto);

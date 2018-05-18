@@ -35,15 +35,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity current() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof AnonymousAuthenticationToken || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        return ResponseEntity.ok().body(((User) authentication.getPrincipal()).getId());
-    }
-
-    @Override
     public ResponseEntity register(AuthDto authDto) {
         if (authDto.getEmail() == null || authDto.getEmail().length() == 0) {
             return ResponseEntity.badRequest().body("error.missing-email");
