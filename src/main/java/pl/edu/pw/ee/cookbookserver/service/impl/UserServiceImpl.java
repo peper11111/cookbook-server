@@ -33,7 +33,11 @@ public class UserServiceImpl implements UserService {
         if (authentication instanceof AnonymousAuthenticationToken || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.ok().body(authentication.getPrincipal());
+        User user = (User) authentication.getPrincipal();
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setUsername(user.getUsername());
+        return ResponseEntity.ok().body(userDto);
     }
 
     @Override
