@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity current() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         User user = (User) authentication.getPrincipal();
         UserDto userDto = new UserDto();
