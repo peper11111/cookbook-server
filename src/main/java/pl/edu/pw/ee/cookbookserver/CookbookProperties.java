@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
 @ConfigurationProperties(prefix = "cookbook")
-public class CookbookServerProperties {
+public class CookbookProperties {
 
     private String uploadFolder;
 }

@@ -5,10 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties(CookbookServerProperties.class)
-public class CookbookServerApplication {
+@EnableConfigurationProperties(CookbookProperties.class)
+public class CookbookApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CookbookServerApplication.class, args);
+        SpringApplication.run(CookbookApplication.class, args);
     }
 }

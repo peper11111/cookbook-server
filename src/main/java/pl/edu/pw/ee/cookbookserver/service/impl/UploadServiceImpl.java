@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pl.edu.pw.ee.cookbookserver.CookbookServerProperties;
+import pl.edu.pw.ee.cookbookserver.CookbookProperties;
 import pl.edu.pw.ee.cookbookserver.service.UploadService;
 
 import javax.imageio.ImageIO;
@@ -20,8 +20,8 @@ public class UploadServiceImpl implements UploadService {
     private String uploadFolder;
 
     @Autowired
-    public UploadServiceImpl (CookbookServerProperties cookbookServerProperties) {
-        this.uploadFolder = cookbookServerProperties.getUploadFolder();
+    public UploadServiceImpl (CookbookProperties cookbookProperties) {
+        this.uploadFolder = cookbookProperties.getUploadFolder();
     }
 
     @Override
