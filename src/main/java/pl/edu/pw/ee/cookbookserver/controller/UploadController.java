@@ -1,10 +1,13 @@
 package pl.edu.pw.ee.cookbookserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.edu.pw.ee.cookbookserver.service.UploadService;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/uploads")
@@ -18,12 +21,22 @@ public class UploadController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestParam MultipartFile file) {
+    public ResponseEntity create(@RequestParam MultipartFile file) throws IOException {
         return uploadService.create(file);
     }
 
-    @GetMapping("/{filename}")
-    public ResponseEntity read(@PathVariable String filename) {
-        return uploadService.read(filename);
+    @GetMapping("/{id}")
+    public ResponseEntity read(@PathVariable Long id) throws IOException {
+        return uploadService.read(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        return uploadService.delete(id);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity exception() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }

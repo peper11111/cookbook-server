@@ -8,9 +8,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
+import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
-import pl.edu.pw.ee.cookbookserver.service.UploadService;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 
 import java.util.Optional;
@@ -18,12 +19,12 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UploadService uploadService;
+    private UploadRepository uploadRepository;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UploadService uploadService, UserRepository userRepository) {
-        this.uploadService = uploadService;
+    public UserServiceImpl(UploadRepository uploadRepository, UserRepository userRepository) {
+        this.uploadRepository = uploadRepository;
         this.userRepository = userRepository;
     }
 
@@ -52,7 +53,7 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
-        userDto.setAvatar(user.getAvatar());
+        userDto.setAvatarId(user.getAvatar().getId());
 
         return ResponseEntity.ok().body(userDto);
     }
@@ -60,21 +61,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity update(Long id, UserDto userDto) {
         Optional<User> optionalUser = userRepository.findById(id);
-
         if (!optionalUser.isPresent()) {
-            return ResponseEntity.badRequest().body("error.user-not-found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         User user = optionalUser.get();
-        System.out.println(userDto);
-        if (userDto.getAvatar() != null) {
-            if (user.getAvatar() != null) {
-                uploadService.delete(user.getAvatar());
+        if (userDto.getAvatarId() != null) {
+            Optional<Upload> optionalUpload = uploadRepository.findById(userDto.getAvatarId());
+            if (optionalUpload.isPresent()) {
+                user.setAvatar(optionalUpload.get());
             }
-            user.setAvatar(userDto.getAvatar());
         }
         userRepository.save(user);
 
-        return ResponseEntity.ok().body("info.user-update-successful");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
