@@ -30,32 +30,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity current() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof AnonymousAuthenticationToken || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        User user = (User) authentication.getPrincipal();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
-        return ResponseEntity.ok().body(userDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
     @Override
     public ResponseEntity read(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
-
         if (!optionalUser.isPresent()) {
-            return ResponseEntity.badRequest().body("error.user-not-found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         User user = optionalUser.get();
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
-        userDto.setAvatarId(user.getAvatar().getId());
+        if (user.getAvatar() != null) {
+            userDto.setAvatarId(user.getAvatar().getId());
+        }
+        if (user.getBanner() != null) {
+            userDto.setBannerId(user.getBanner().getId());
+        }
 
-        return ResponseEntity.ok().body(userDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
     @Override
@@ -70,6 +70,12 @@ public class UserServiceImpl implements UserService {
             Optional<Upload> optionalUpload = uploadRepository.findById(userDto.getAvatarId());
             if (optionalUpload.isPresent()) {
                 user.setAvatar(optionalUpload.get());
+            }
+        }
+        if (userDto.getBannerId() != null) {
+            Optional<Upload> optionalUpload = uploadRepository.findById(userDto.getBannerId());
+            if (optionalUpload.isPresent()) {
+                user.setBanner(optionalUpload.get());
             }
         }
         userRepository.save(user);

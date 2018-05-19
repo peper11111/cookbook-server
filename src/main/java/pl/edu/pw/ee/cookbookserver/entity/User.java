@@ -19,6 +19,8 @@ public class User implements UserDetails {
     private String email;
     @OneToOne
     private Upload avatar;
+    @OneToOne
+    private Upload banner;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
