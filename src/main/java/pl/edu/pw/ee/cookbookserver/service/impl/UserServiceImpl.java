@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.dto.DetailsDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Details;
+import pl.edu.pw.ee.cookbookserver.entity.Role;
 import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.DetailsRepository;
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
+        userDto.setAuthorities(user.getAuthorities().stream().map(Role::getAuthority).toArray(String[]::new));
         return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
