@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.entity.User;
@@ -15,6 +16,7 @@ import pl.edu.pw.ee.cookbookserver.service.UserService;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private UploadRepository uploadRepository;

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.dto.AuthDto;
 import pl.edu.pw.ee.cookbookserver.entity.Token;
 import pl.edu.pw.ee.cookbookserver.entity.User;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class AuthServiceImpl implements AuthService {
 
     private MailService mailService;
