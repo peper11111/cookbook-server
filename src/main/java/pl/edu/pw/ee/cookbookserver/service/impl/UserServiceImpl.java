@@ -6,9 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.edu.pw.ee.cookbookserver.dto.DetailsDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
+import pl.edu.pw.ee.cookbookserver.entity.Details;
 import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.repository.DetailsRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
@@ -19,11 +22,13 @@ import java.util.Optional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    private DetailsRepository detailsRepository;
     private UploadRepository uploadRepository;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UploadRepository uploadRepository, UserRepository userRepository) {
+    public UserServiceImpl(DetailsRepository detailsRepository, UploadRepository uploadRepository, UserRepository userRepository) {
+        this.detailsRepository = detailsRepository;
         this.uploadRepository = uploadRepository;
         this.userRepository = userRepository;
     }
@@ -44,38 +49,44 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        User user = optionalUser.get();
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setUsername(user.getUsername());
-        if (user.getAvatar() != null) {
-            userDto.setAvatarId(user.getAvatar().getId());
+        Details details = optionalUser.get().getDetails();
+        DetailsDto detailsDto = new DetailsDto();
+        detailsDto.setName(details.getName());
+        detailsDto.setDescription(details.getDescription());
+        if (details.getAvatar() != null) {
+            detailsDto.setAvatarId(details.getAvatar().getId());
         }
-        if (user.getBanner() != null) {
-            userDto.setBannerId(user.getBanner().getId());
+        if (details.getBanner() != null) {
+            detailsDto.setBannerId(details.getBanner().getId());
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(userDto);
+        return ResponseEntity.status(HttpStatus.OK).body(detailsDto);
     }
 
     @Override
-    public ResponseEntity update(Long id, UserDto userDto) {
+    public ResponseEntity update(Long id, DetailsDto detailsDto) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (!optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        User user = optionalUser.get();
-        if (userDto.getAvatarId() != null) {
-            Optional<Upload> optionalUpload = uploadRepository.findById(userDto.getAvatarId());
-            user.setAvatar(optionalUpload.orElse(null));
-        }
+        Details details = optionalUser.get().getDetails();
 
-        if (userDto.getBannerId() != null) {
-            Optional<Upload> optionalUpload = uploadRepository.findById(userDto.getBannerId());
-            user.setBanner(optionalUpload.orElse(null));
+        if (detailsDto.getName() != null) {
+            details.setName(details.getName());
         }
-        userRepository.save(user);
+        if (detailsDto.getDescription() != null) {
+            details.setDescription(detailsDto.getDescription());
+        }
+        if (detailsDto.getAvatarId() != null) {
+            Optional<Upload> optionalUpload = uploadRepository.findById(detailsDto.getAvatarId());
+            details.setAvatar(optionalUpload.orElse(null));
+        }
+        if (detailsDto.getBannerId() != null) {
+            Optional<Upload> optionalUpload = uploadRepository.findById(detailsDto.getBannerId());
+            details.setBanner(optionalUpload.orElse(null));
+        }
+        detailsRepository.save(details);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
