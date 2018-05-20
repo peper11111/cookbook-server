@@ -14,7 +14,7 @@ public class Upload {
     @GeneratedValue
     private Long id;
     private String filename;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
     private LocalDateTime creationTime;
 }

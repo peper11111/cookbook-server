@@ -14,7 +14,7 @@ public class Token {
     @Id
     @GeneratedValue
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
     private String uuid;
     private LocalDateTime expirationTime;

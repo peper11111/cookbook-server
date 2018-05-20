@@ -17,14 +17,14 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private String email;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Upload avatar;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Upload banner;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private Collection<Role> authorities;
 }

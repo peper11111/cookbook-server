@@ -3,8 +3,6 @@ package pl.edu.pw.ee.cookbookserver.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
@@ -68,15 +66,12 @@ public class UserServiceImpl implements UserService {
         User user = optionalUser.get();
         if (userDto.getAvatarId() != null) {
             Optional<Upload> optionalUpload = uploadRepository.findById(userDto.getAvatarId());
-            if (optionalUpload.isPresent()) {
-                user.setAvatar(optionalUpload.get());
-            }
+            user.setAvatar(optionalUpload.orElse(null));
         }
+
         if (userDto.getBannerId() != null) {
             Optional<Upload> optionalUpload = uploadRepository.findById(userDto.getBannerId());
-            if (optionalUpload.isPresent()) {
-                user.setBanner(optionalUpload.get());
-            }
+            user.setBanner(optionalUpload.orElse(null));
         }
         userRepository.save(user);
 
