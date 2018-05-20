@@ -25,6 +25,6 @@ public class User implements UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     private Collection<Role> authorities;
 }

@@ -5,12 +5,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private UserRepository userRepository;
@@ -26,6 +28,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (!optionalUser.isPresent()) {
             throw new UsernameNotFoundException(username);
         }
-        return optionalUser.get();
+        User user = optionalUser.get();
+        user.getAuthorities().size();
+        return user;
     }
 }

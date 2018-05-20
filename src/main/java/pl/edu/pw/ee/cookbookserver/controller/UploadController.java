@@ -34,9 +34,4 @@ public class UploadController {
     public ResponseEntity delete(@PathVariable Long id) {
         return uploadService.delete(id);
     }
-
-    @ExceptionHandler
-    public ResponseEntity exception() {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
 }
