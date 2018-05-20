@@ -10,7 +10,6 @@ import pl.edu.pw.ee.cookbookserver.dto.DetailsDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Details;
 import pl.edu.pw.ee.cookbookserver.entity.Role;
-import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.DetailsRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
@@ -73,21 +72,14 @@ public class UserServiceImpl implements UserService {
         }
 
         Details details = optionalUser.get().getDetails();
-
-        if (detailsDto.getName() != null) {
-            details.setName(details.getName());
-        }
-        if (detailsDto.getDescription() != null) {
-            details.setDescription(detailsDto.getDescription());
-        }
-        if (detailsDto.getAvatarId() != null) {
-            Optional<Upload> optionalUpload = uploadRepository.findById(detailsDto.getAvatarId());
-            details.setAvatar(optionalUpload.orElse(null));
-        }
-        if (detailsDto.getBannerId() != null) {
-            Optional<Upload> optionalUpload = uploadRepository.findById(detailsDto.getBannerId());
-            details.setBanner(optionalUpload.orElse(null));
-        }
+        details.setName(detailsDto.getName());
+        details.setDescription(detailsDto.getDescription());
+        details.setAvatar(detailsDto.getAvatarId() != null
+                ? uploadRepository.findById(detailsDto.getAvatarId()).orElse(null)
+                : null);
+        details.setBanner(detailsDto.getBannerId() != null
+                ? uploadRepository.findById(detailsDto.getBannerId()).orElse(null)
+                : null);
         detailsRepository.save(details);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
