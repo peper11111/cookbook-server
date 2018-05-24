@@ -1,6 +1,6 @@
 INSERT INTO cb_role (id, authority) SELECT nextval('hibernate_sequence'), 'ROLE_ADMIN';
 
-INSERT INTO cb_details (id, name) SELECT nextval('hibernate_sequence'), 'peper11111';
+INSERT INTO cb_details (id, description, name) SELECT nextval('hibernate_sequence'), 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.', 'peper11111';
 
 INSERT INTO cb_user (id, account_non_expired, account_non_locked, credentials_non_expired, email, enabled, password, username, details_id) SELECT nextval('hibernate_sequence'), TRUE, TRUE, TRUE, 'peper.pleban@gmail.com', TRUE, '$2a$04$k4tTT3p4C.Np6o/hr9NOOuVR692/uR93J3CVX93ipPgnGnBOzjt1e', 'peper11111', cb_details.id FROM cb_details WHERE cb_details.name = 'peper11111';
 
