@@ -23,12 +23,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}/details")
-    public ResponseEntity read(@PathVariable Long id) {
-        return userService.read(id);
+    public ResponseEntity readDetails(@PathVariable Long id) {
+        return userService.readDetails(id);
     }
 
     @PutMapping("/{id}/details")
     public ResponseEntity update(@PathVariable Long id, @RequestBody DetailsDto detailsDto) {
-        return userService.update(id, detailsDto);
+        return userService.updateDetails(id, detailsDto);
     }
 }
