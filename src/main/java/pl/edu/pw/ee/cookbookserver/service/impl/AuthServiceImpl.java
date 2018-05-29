@@ -7,10 +7,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.dto.AuthDto;
-import pl.edu.pw.ee.cookbookserver.entity.Details;
 import pl.edu.pw.ee.cookbookserver.entity.Token;
 import pl.edu.pw.ee.cookbookserver.entity.User;
-import pl.edu.pw.ee.cookbookserver.repository.DetailsRepository;
 import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.AuthService;
@@ -25,14 +23,12 @@ import java.util.UUID;
 public class AuthServiceImpl implements AuthService {
 
     private MailService mailService;
-    private DetailsRepository detailsRepository;
     private TokenRepository tokenRepository;
     private UserRepository userRepository;
 
     @Autowired
-    public AuthServiceImpl(MailService mailService, DetailsRepository detailsRepository, TokenRepository tokenRepository, UserRepository userRepository) {
+    public AuthServiceImpl(MailService mailService, TokenRepository tokenRepository, UserRepository userRepository) {
         this.mailService = mailService;
-        this.detailsRepository = detailsRepository;
         this.tokenRepository = tokenRepository;
         this.userRepository = userRepository;
     }
@@ -93,7 +89,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = token.getUser();
-        user.setDetails(this.createUserDetails(user));
         user.setEnabled(true);
         userRepository.save(user);
         tokenRepository.delete(token);
@@ -154,12 +149,5 @@ public class AuthServiceImpl implements AuthService {
         token.setExpirationTime(LocalDateTime.now().plusHours(1));
         tokenRepository.save(token);
         return token;
-    }
-
-    private Details createUserDetails(User user) {
-        Details details = new Details();
-        details.setName(user.getUsername());
-        detailsRepository.save(details);
-        return details;
     }
 }

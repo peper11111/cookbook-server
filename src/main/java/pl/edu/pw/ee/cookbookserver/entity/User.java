@@ -23,6 +23,9 @@ public class User implements UserDetails {
     private boolean enabled;
     @ManyToMany(fetch = FetchType.LAZY)
     private Collection<Role> authorities;
+    private String description;
     @OneToOne(fetch = FetchType.LAZY)
-    private Details details;
+    private Upload avatar;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Upload banner;
 }

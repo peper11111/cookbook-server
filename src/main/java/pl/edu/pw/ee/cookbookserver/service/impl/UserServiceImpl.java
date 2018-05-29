@@ -6,12 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.edu.pw.ee.cookbookserver.dto.DetailsDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
-import pl.edu.pw.ee.cookbookserver.entity.Details;
+import pl.edu.pw.ee.cookbookserver.dto.BasicDto;
 import pl.edu.pw.ee.cookbookserver.entity.Role;
 import pl.edu.pw.ee.cookbookserver.entity.User;
-import pl.edu.pw.ee.cookbookserver.repository.DetailsRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
@@ -22,65 +20,61 @@ import java.util.Optional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    private DetailsRepository detailsRepository;
     private UploadRepository uploadRepository;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(DetailsRepository detailsRepository, UploadRepository uploadRepository, UserRepository userRepository) {
-        this.detailsRepository = detailsRepository;
+    public UserServiceImpl(UploadRepository uploadRepository, UserRepository userRepository) {
         this.uploadRepository = uploadRepository;
         this.userRepository = userRepository;
     }
 
     @Override
     public ResponseEntity current() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        BasicDto basicDto = new BasicDto();
+        basicDto.setId(currentUser.getId());
+        basicDto.setAuthorities(currentUser.getAuthorities().stream().map(Role::getAuthority).toArray(String[]::new));
+        return ResponseEntity.status(HttpStatus.OK).body(basicDto);
+    }
+
+    @Override
+    public ResponseEntity read(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (!optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        User user = optionalUser.get();
         UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
-        userDto.setAuthorities(user.getAuthorities().stream().map(Role::getAuthority).toArray(String[]::new));
+        userDto.setDescription(user.getDescription());
+        if (user.getAvatar() != null) {
+            userDto.setAvatarId(user.getAvatar().getId());
+        }
+        if (user.getBanner() != null) {
+            userDto.setBannerId(user.getBanner().getId());
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
     @Override
-    public ResponseEntity readDetails(Long id) {
+    public ResponseEntity update(Long id, UserDto userDto) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (!optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Details details = optionalUser.get().getDetails();
-        DetailsDto detailsDto = new DetailsDto();
-        detailsDto.setName(details.getName());
-        detailsDto.setDescription(details.getDescription());
-        if (details.getAvatar() != null) {
-            detailsDto.setAvatarId(details.getAvatar().getId());
-        }
-        if (details.getBanner() != null) {
-            detailsDto.setBannerId(details.getBanner().getId());
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(detailsDto);
-    }
-
-    @Override
-    public ResponseEntity updateDetails(Long id, DetailsDto detailsDto) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (!optionalUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        Details details = optionalUser.get().getDetails();
-        details.setName(detailsDto.getName());
-        details.setDescription(detailsDto.getDescription());
-        details.setAvatar(detailsDto.getAvatarId() != null
-                ? uploadRepository.findById(detailsDto.getAvatarId()).orElse(null)
+        User user = optionalUser.get();
+        user.setDescription(userDto.getDescription());
+        user.setAvatar(userDto.getAvatarId() != null
+                ? uploadRepository.findById(userDto.getAvatarId()).orElse(null)
                 : null);
-        details.setBanner(detailsDto.getBannerId() != null
-                ? uploadRepository.findById(detailsDto.getBannerId()).orElse(null)
+        user.setBanner(userDto.getBannerId() != null
+                ? uploadRepository.findById(userDto.getBannerId()).orElse(null)
                 : null);
-        detailsRepository.save(details);
+        userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
