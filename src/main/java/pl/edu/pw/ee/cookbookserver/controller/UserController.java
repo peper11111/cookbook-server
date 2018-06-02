@@ -3,8 +3,9 @@ package pl.edu.pw.ee.cookbookserver.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -27,8 +28,8 @@ public class UserController {
         return userService.read(id);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody UserDto userDto) {
-        return userService.update(id, userDto);
+    @PatchMapping("/{id}")
+    public ResponseEntity modify(@PathVariable Long id, @RequestBody Map userMap) {
+        return userService.modify(id, userMap);
     }
 }

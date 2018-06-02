@@ -13,6 +13,7 @@ import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.service.UploadService;
+import pl.edu.pw.ee.cookbookserver.service.UserService;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -28,22 +29,24 @@ public class UploadServiceImpl implements UploadService {
 
     private String uploadFolder;
     private UploadRepository uploadRepository;
+    private UserService userService;
 
     @Autowired
-    public UploadServiceImpl (CookbookProperties cookbookProperties, UploadRepository uploadRepository) {
+    public UploadServiceImpl(CookbookProperties cookbookProperties, UploadRepository uploadRepository, UserService userService) {
         this.uploadFolder = cookbookProperties.getUploadFolder();
         this.uploadRepository = uploadRepository;
+        this.userService = userService;
     }
 
     @Override
     public ResponseEntity create(MultipartFile file) throws IOException {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = userService.getCurrentUser();
         Upload upload = new Upload();
         upload.setFilename(this.writeImage(file.getBytes()));
         upload.setOwner(currentUser);
         upload.setCreationTime(LocalDateTime.now());
         uploadRepository.save(upload);
-        return ResponseEntity.status(HttpStatus.OK).body(upload.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(upload.getId());
     }
 
     @Override
@@ -65,7 +68,7 @@ public class UploadServiceImpl implements UploadService {
         }
 
         Upload upload = optionalUpload.get();
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = userService.getCurrentUser();
         if (!upload.getOwner().getId().equals(currentUser.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

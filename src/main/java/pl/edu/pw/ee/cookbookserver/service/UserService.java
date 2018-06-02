@@ -1,11 +1,13 @@
 package pl.edu.pw.ee.cookbookserver.service;
 
 import org.springframework.http.ResponseEntity;
-import pl.edu.pw.ee.cookbookserver.dto.UserDto;
+import pl.edu.pw.ee.cookbookserver.entity.User;
+
+import java.util.Map;
 
 public interface UserService {
 
+    User getCurrentUser();
     ResponseEntity current();
     ResponseEntity read(Long id);
-    ResponseEntity update(Long id, UserDto userDto);
-}
+    ResponseEntity modify(Long id, Map userMap);}
