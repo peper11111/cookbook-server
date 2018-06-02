@@ -10,6 +10,7 @@ public class UserDto {
     private Long avatarId;
     private Long bannerId;
     private Long recipes;
+    private Long followed;
     private Long followers;
-    private Long following;
+    private Boolean following;
 }

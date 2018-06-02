@@ -10,4 +10,6 @@ public interface UserService {
     User getCurrentUser();
     ResponseEntity current();
     ResponseEntity read(Long id);
-    ResponseEntity modify(Long id, Map userMap);}
+    ResponseEntity modify(Long id, Map userMap);
+    ResponseEntity follow(Long id);
+}

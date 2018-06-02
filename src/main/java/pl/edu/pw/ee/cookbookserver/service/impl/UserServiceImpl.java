@@ -57,6 +57,10 @@ public class UserServiceImpl implements UserService {
         if (user.getBanner() != null) {
             userDto.setBannerId(user.getBanner().getId());
         }
+        User currentUser = getCurrentUser();
+        userDto.setFollowing(user.getFollowers().contains(currentUser));
+        userDto.setFollowed((long) user.getFollowed().size());
+        userDto.setFollowers((long) user.getFollowers().size());
 
         return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
@@ -107,7 +111,31 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Override
+    public ResponseEntity follow(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (!optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        User user = optionalUser.get();
+        User currentUser = getCurrentUser();
+        if (currentUser.getId().equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        if (!currentUser.getFollowed().contains(user)) {
+            currentUser.getFollowed().add(user);
+        } else {
+            currentUser.getFollowed().remove(user);
+        }
+        userRepository.save(currentUser);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     public User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findById(user.getId()).get();
     }
 }

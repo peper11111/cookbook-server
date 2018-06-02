@@ -32,4 +32,9 @@ public class UserController {
     public ResponseEntity modify(@PathVariable Long id, @RequestBody Map userMap) {
         return userService.modify(id, userMap);
     }
+
+    @PostMapping("/{id}/follow")
+    public ResponseEntity follow(@PathVariable Long id) {
+        return userService.follow(id);
+    }
 }
