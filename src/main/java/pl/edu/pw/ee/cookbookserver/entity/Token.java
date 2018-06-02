@@ -16,6 +16,7 @@ public class Token {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+    @Column(unique = true)
     private String uuid;
     private LocalDateTime expirationTime;
 }

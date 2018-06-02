@@ -14,9 +14,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(unique = true)
     private String username;
-    private String password;
+    @Column(unique = true)
     private String email;
+    private String password;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;

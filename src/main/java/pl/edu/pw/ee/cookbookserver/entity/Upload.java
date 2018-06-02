@@ -13,6 +13,7 @@ public class Upload {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(unique = true)
     private String filename;
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
