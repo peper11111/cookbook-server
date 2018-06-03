@@ -6,5 +6,6 @@ import lombok.Data;
 public class CurrentUserDto {
 
     private Long id;
+    private String username;
     private String[] authorities;
 }

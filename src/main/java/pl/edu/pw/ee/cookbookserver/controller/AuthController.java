@@ -18,8 +18,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody AuthDto authDto) {
-        return authService.register(authDto);
+    public ResponseEntity register(@RequestBody AuthDto authDto, @RequestHeader("Origin") String origin) {
+        return authService.register(authDto, origin);
     }
 
     @PostMapping("/verify")
@@ -28,8 +28,8 @@ public class AuthController {
     }
 
     @PostMapping("/reset")
-    public ResponseEntity reset(@RequestBody AuthDto authDto) {
-        return authService.reset(authDto);
+    public ResponseEntity reset(@RequestBody AuthDto authDto, @RequestHeader("Origin") String origin) {
+        return authService.reset(authDto, origin);
     }
 
     @PostMapping("/confirm")

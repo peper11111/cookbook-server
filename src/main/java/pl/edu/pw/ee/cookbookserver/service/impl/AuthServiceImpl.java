@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity register(AuthDto authDto) {
+    public ResponseEntity register(AuthDto authDto, String origin) {
         if (authDto.getEmail() == null || authDto.getEmail().length() == 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-email");
         }
@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         Token token = createAccessToken(user);
-        mailService.sendAccountActivationMessage(user.getEmail(), user.getUsername(), token.getUuid());
+        mailService.sendAccountActivationMessage(origin, token);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -97,7 +97,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity reset(AuthDto authDto) {
+    public ResponseEntity reset(AuthDto authDto, String origin) {
         if (authDto.getUsername() == null || authDto.getUsername().length() == 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-username");
         }
@@ -109,7 +109,7 @@ public class AuthServiceImpl implements AuthService {
 
         User user = optionalUser.get();
         Token token = createAccessToken(user);
-        mailService.sendPasswordResetMessage(user.getEmail(), user.getUsername(), token.getUuid());
+        mailService.sendPasswordResetMessage(origin, token);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

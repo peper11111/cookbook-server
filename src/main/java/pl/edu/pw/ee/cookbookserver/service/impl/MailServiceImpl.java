@@ -6,6 +6,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import pl.edu.pw.ee.cookbookserver.entity.Token;
 import pl.edu.pw.ee.cookbookserver.service.MailService;
 
 import javax.mail.MessagingException;
@@ -39,20 +40,20 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendAccountActivationMessage(String to, String username, String token) {
+    public void sendAccountActivationMessage(String origin, Token token) {
         Context context = new Context();
-        context.setVariable("username", username);
-        context.setVariable("accountActivationLink", "http://localhost:8080/verify?token=" + token);
+        context.setVariable("username", token.getUser().getUsername());
+        context.setVariable("accountActivationLink", origin + "/verify?token=" + token.getUuid());
         String text = templateEngine.process("AccountActivation", context);
-        sendMessage(to, "Account activation", text);
+        sendMessage(token.getUser().getEmail(), "Account activation", text);
     }
 
     @Override
-    public void sendPasswordResetMessage(String to, String username, String token) {
+    public void sendPasswordResetMessage(String origin, Token token) {
         Context context = new Context();
-        context.setVariable("username", username);
-        context.setVariable("passwordResetLink", "http://localhost:8080/confirm?token=" + token);
+        context.setVariable("username", token.getUser().getUsername());
+        context.setVariable("passwordResetLink", origin + "/confirm?token=" + token.getUuid());
         String text = templateEngine.process("PasswordReset", context);
-        sendMessage(to, "Password reset", text);
+        sendMessage(token.getUser().getEmail(), "Password reset", text);
     }
 }

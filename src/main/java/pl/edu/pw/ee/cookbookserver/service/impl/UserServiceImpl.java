@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
         User currentUser = getCurrentUser();
         CurrentUserDto currentUserDto = new CurrentUserDto();
         currentUserDto.setId(currentUser.getId());
+        currentUserDto.setUsername(currentUser.getUsername());
         currentUserDto.setAuthorities(currentUser.getAuthorities().stream().map(Role::getAuthority).toArray(String[]::new));
         return ResponseEntity.status(HttpStatus.OK).body(currentUserDto);
     }
@@ -49,6 +50,7 @@ public class UserServiceImpl implements UserService {
 
         User user = optionalUser.get();
         UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
         userDto.setDescription(user.getDescription());
         if (user.getAvatar() != null) {
