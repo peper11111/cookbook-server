@@ -9,4 +9,4 @@ RUN sed -i 's/inet_protocols = all/inet_protocols = ipv4/g' /etc/postfix/main.cf
 
 EXPOSE 25
 
-CMD service rsyslog start && service postfix start && tail -f /var/log/mail.log
+CMD service rsyslog start && service postfix start && sleep 1 && tail -f /var/log/mail.log
