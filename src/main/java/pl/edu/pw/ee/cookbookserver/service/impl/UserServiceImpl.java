@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
         User currentUser = getCurrentUser();
         CurrentUserDto currentUserDto = new CurrentUserDto();
         currentUserDto.setId(currentUser.getId());
+        currentUserDto.setUsername(currentUser.getUsername());
         currentUserDto.setAuthorities(currentUser.getAuthorities());
         return ResponseEntity.status(HttpStatus.OK).body(currentUserDto);
     }

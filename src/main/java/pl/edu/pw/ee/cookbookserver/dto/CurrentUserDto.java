@@ -9,5 +9,6 @@ import java.util.Collection;
 public class CurrentUserDto {
 
     private Long id;
+    private String username;
     private Collection<Role> authorities;
 }
