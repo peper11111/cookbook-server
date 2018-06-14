@@ -36,7 +36,6 @@ public class UserServiceImpl implements UserService {
         User currentUser = getCurrentUser();
         CurrentUserDto currentUserDto = new CurrentUserDto();
         currentUserDto.setId(currentUser.getId());
-        currentUserDto.setUsername(currentUser.getUsername());
         currentUserDto.setAuthorities(currentUser.getAuthorities());
         return ResponseEntity.status(HttpStatus.OK).body(currentUserDto);
     }
@@ -52,7 +51,8 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
-        userDto.setDescription(user.getDescription());
+        userDto.setName(user.getName());
+        userDto.setBiography(user.getBiography());
         if (user.getAvatar() != null) {
             userDto.setAvatarId(user.getAvatar().getId());
         }
@@ -92,9 +92,13 @@ public class UserServiceImpl implements UserService {
                 user.setPassword(new BCryptPasswordEncoder().encode(password));
             }
         }
-        if (userMap.containsKey("description")) {
-            String description = (String) userMap.get("description");
-            user.setDescription(description);
+        if (userMap.containsKey("name")) {
+            String name = (String) userMap.get("name");
+            user.setName(name);
+        }
+        if (userMap.containsKey("biography")) {
+            String biography = (String) userMap.get("biography");
+            user.setBiography(biography);
         }
         if (userMap.containsKey("avatarId")) {
             Number avatarId = (Number) userMap.get("avatarId");
@@ -137,7 +141,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public User getCurrentUser() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository.findById(user.getId()).get();
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
