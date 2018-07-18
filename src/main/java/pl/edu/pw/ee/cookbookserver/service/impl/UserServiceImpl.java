@@ -141,6 +141,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findById(user.getId()).get();
     }
 }
