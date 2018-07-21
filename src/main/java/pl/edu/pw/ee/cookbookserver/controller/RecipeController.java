@@ -2,10 +2,8 @@ package pl.edu.pw.ee.cookbookserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
 
 @RestController
@@ -17,6 +15,11 @@ public class RecipeController {
     @Autowired
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
+    }
+
+    @PostMapping
+    public ResponseEntity create(@RequestBody RecipeDto recipeDto) {
+        return recipeService.create(recipeDto);
     }
 
     @GetMapping("/{id}")

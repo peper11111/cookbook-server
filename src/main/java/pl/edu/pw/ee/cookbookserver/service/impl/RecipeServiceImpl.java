@@ -7,8 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
+import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.repository.CuisineRepository;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRespository;
+import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
+import pl.edu.pw.ee.cookbookserver.service.UserService;
 
 import java.util.Optional;
 
@@ -16,11 +20,17 @@ import java.util.Optional;
 @Transactional
 public class RecipeServiceImpl implements RecipeService {
 
+    private CuisineRepository cuisineRepository;
     private RecipeRespository recipeRepository;
+    private UploadRepository uploadRepository;
+    private UserService userService;
 
     @Autowired
-    public RecipeServiceImpl(RecipeRespository recipeRepository) {
+    public RecipeServiceImpl(CuisineRepository cuisineRepository, RecipeRespository recipeRepository, UploadRepository uploadRepository, UserService userService) {
+        this.cuisineRepository = cuisineRepository;
         this.recipeRepository = recipeRepository;
+        this.uploadRepository = uploadRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -44,5 +54,21 @@ public class RecipeServiceImpl implements RecipeService {
         recipeDto.setPreparationTime(recipe.getPreparationTime());
 
         return ResponseEntity.status(HttpStatus.OK).body(recipeDto);
+    }
+
+    @Override
+    public ResponseEntity create(RecipeDto recipeDto) {
+        User currentUser = userService.getCurrentUser();
+        Recipe recipe = new Recipe();
+        recipe.setAuthor(currentUser);
+        recipe.setBanner(uploadRepository.findById(recipeDto.getBannerId()).orElse(null));
+        recipe.setTitle(recipeDto.getTitle());
+        recipe.setDescription(recipeDto.getDescription());
+        recipe.setCuisine(cuisineRepository.findById(recipeDto.getCuisineId()).orElse(null));
+        recipe.setDifficulty(recipeDto.getDifficulty());
+        recipe.setPlates(recipeDto.getPlates());
+        recipe.setPreparationTime(recipeDto.getPreparationTime());
+        recipeRepository.save(recipe);
+        return ResponseEntity.status(HttpStatus.CREATED).body(recipe.getId());
     }
 }
