@@ -41,7 +41,7 @@ public class RecipeServiceImpl implements RecipeService {
         recipeDto.setCuisineId(recipe.getCuisine().getId());
         recipeDto.setDifficulty(recipe.getDifficulty());
         recipeDto.setPlates(recipe.getPlates());
-        recipeDto.setDuration(recipe.getDuration());
+        recipeDto.setPreparationTime(recipe.getPreparationTime());
 
         return ResponseEntity.status(HttpStatus.OK).body(recipeDto);
     }

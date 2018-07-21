@@ -12,5 +12,5 @@ public class RecipeDto {
     private Long cuisineId;
     private Integer difficulty;
     private Integer plates;
-    private Integer duration;
+    private Integer preparationTime;
 }

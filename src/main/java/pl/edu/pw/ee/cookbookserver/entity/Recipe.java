@@ -22,5 +22,5 @@ public class Recipe {
     private Cuisine cuisine;
     private Integer difficulty;
     private Integer plates;
-    private Integer duration;
+    private Integer preparationTime;
 }
