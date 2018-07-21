@@ -18,7 +18,7 @@ public class Recipe {
     private Upload banner;
     private String title;
     private String description;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Cuisine cuisine;
     private Integer difficulty;
     private Integer plates;
