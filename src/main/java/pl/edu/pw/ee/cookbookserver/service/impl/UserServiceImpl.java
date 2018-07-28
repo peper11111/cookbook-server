@@ -7,25 +7,29 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.dto.CurrentUserDto;
+import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    private RecipeRepository recipeRepository;
     private UploadRepository uploadRepository;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UploadRepository uploadRepository, UserRepository userRepository) {
+    public UserServiceImpl(RecipeRepository recipeRepository, UploadRepository uploadRepository, UserRepository userRepository) {
+        this.recipeRepository = recipeRepository;
         this.uploadRepository = uploadRepository;
         this.userRepository = userRepository;
     }
@@ -140,8 +144,34 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Override
+    public ResponseEntity recipes(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (!optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        User user = optionalUser.get();
+        Collection<RecipeDto> recipeDtoList = new ArrayList<>();
+        Iterable<Recipe> recipes = recipeRepository.findByAuthor(user);
+        for (Recipe recipe : recipes) {
+            RecipeDto recipeDto = new RecipeDto();
+            recipeDto.setAuthorId(recipe.getAuthor().getId());
+            recipeDto.setBannerId(recipe.getBanner().getId());
+            recipeDto.setTitle(recipe.getTitle());
+            recipeDto.setDescription(recipe.getDescription());
+            recipeDto.setCuisineId(recipe.getCuisine().getId());
+            recipeDto.setDifficulty(recipe.getDifficulty());
+            recipeDto.setPlates(recipe.getPlates());
+            recipeDto.setPreparationTime(recipe.getPreparationTime());
+            recipeDtoList.add(recipeDto);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(recipeDtoList);
+    }
+
     public User getCurrentUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(user.getId());
         return userRepository.findById(user.getId()).get();
     }
 }

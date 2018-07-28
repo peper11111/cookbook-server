@@ -37,4 +37,9 @@ public class UserController {
     public ResponseEntity follow(@PathVariable Long id) {
         return userService.follow(id);
     }
+
+    @GetMapping("/{id}/recipes")
+    public ResponseEntity recipes(@PathVariable Long id) {
+        return userService.recipes(id);
+    }
 }

@@ -9,7 +9,7 @@ import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.CuisineRepository;
-import pl.edu.pw.ee.cookbookserver.repository.RecipeRespository;
+import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
@@ -21,12 +21,12 @@ import java.util.Optional;
 public class RecipeServiceImpl implements RecipeService {
 
     private CuisineRepository cuisineRepository;
-    private RecipeRespository recipeRepository;
+    private RecipeRepository recipeRepository;
     private UploadRepository uploadRepository;
     private UserService userService;
 
     @Autowired
-    public RecipeServiceImpl(CuisineRepository cuisineRepository, RecipeRespository recipeRepository, UploadRepository uploadRepository, UserService userService) {
+    public RecipeServiceImpl(CuisineRepository cuisineRepository, RecipeRepository recipeRepository, UploadRepository uploadRepository, UserService userService) {
         this.cuisineRepository = cuisineRepository;
         this.recipeRepository = recipeRepository;
         this.uploadRepository = uploadRepository;

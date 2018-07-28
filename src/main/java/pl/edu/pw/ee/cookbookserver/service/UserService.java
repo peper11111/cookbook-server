@@ -12,4 +12,5 @@ public interface UserService {
     ResponseEntity read(Long id);
     ResponseEntity modify(Long id, Map userMap);
     ResponseEntity follow(Long id);
+    ResponseEntity recipes(Long id);
 }

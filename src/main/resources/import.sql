@@ -1,12 +1,3 @@
-INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_AMERICAN';
-INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_ASIAN';
-INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_CZECH';
-INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_FRENCH';
-INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_GREEK';
-INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_ITALIAN';
-INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_POLISH';
-INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_SPANISH';
-
 INSERT INTO cb_role (id, authority) SELECT nextval('hibernate_sequence'), 'ROLE_ADMIN';
 
 INSERT INTO cb_user (id, account_non_expired, account_non_locked, biography, credentials_non_expired, email, enabled, name, password, username) SELECT nextval('hibernate_sequence'), TRUE, TRUE, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.', TRUE, 'peper11111@example.com', TRUE, 'Piterson Person', '$2a$04$k4tTT3p4C.Np6o/hr9NOOuVR692/uR93J3CVX93ipPgnGnBOzjt1e', 'peper11111';
@@ -16,3 +7,15 @@ INSERT INTO cb_user (id, account_non_expired, account_non_locked, biography, cre
 INSERT INTO cb_user (id, account_non_expired, account_non_locked, biography, credentials_non_expired, email, enabled, name, password, username) SELECT nextval('hibernate_sequence'), TRUE, TRUE, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.', TRUE, 'fitnut@example.com', TRUE, 'Trudny orzech do zgryzienia', '$2a$04$k4tTT3p4C.Np6o/hr9NOOuVR692/uR93J3CVX93ipPgnGnBOzjt1e', 'fitnut';
 
 INSERT INTO cb_user_authorities (user_id, authorities_id) SELECT cb_user.id, cb_role.id FROM cb_user, cb_role WHERE cb_user.username = 'peper11111' AND cb_role.authority = 'ROLE_ADMIN';
+
+INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_AMERICAN';
+INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_ASIAN';
+INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_CZECH';
+INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_FRENCH';
+INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_GREEK';
+INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_ITALIAN';
+INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_POLISH';
+INSERT INTO cb_cuisine (id, name) SELECT nextval('hibernate_sequence'), 'CUISINE_SPANISH';
+
+-- INSERT INTO cb_recipe (id, description, difficulty, plates, preparation_time, title, author_id, cuisine_id) SELECT nextval('hibernate_sequence'), 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi.', 2, 4, 90, 'Test Recipe 1', cb_user.id, cb.cuisine_id FROM cb_user, cb_cuisine WHERE cb_user.username = 'peper11111' AND cb_cuisine.name = 'CUISINE_AMERICAN';
+-- INSERT INTO cb_recipe (id, description, difficulty, plates, preparation_time, title, author_id, cuisine_id) SELECT nextval('hibernate_sequence'), 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi.', 4, 2, 30, 'Test Recipe 2', cb_user.id, cb.cuisine_id FROM cb_user, cb_cuisine WHERE cb_user.username = 'peper11111' AND cb_cuisine.name = 'CUISINE_FRENCH';
