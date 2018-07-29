@@ -157,7 +157,9 @@ public class UserServiceImpl implements UserService {
         for (Recipe recipe : recipes) {
             RecipeDto recipeDto = new RecipeDto();
             recipeDto.setAuthorId(recipe.getAuthor().getId());
-            recipeDto.setBannerId(recipe.getBanner().getId());
+            if (recipe.getBanner() != null) {
+                recipeDto.setBannerId(recipe.getBanner().getId());
+            }
             recipeDto.setTitle(recipe.getTitle());
             recipeDto.setDescription(recipe.getDescription());
             recipeDto.setCuisineId(recipe.getCuisine().getId());
