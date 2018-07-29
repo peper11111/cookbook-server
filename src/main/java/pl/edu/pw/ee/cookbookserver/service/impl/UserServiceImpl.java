@@ -68,6 +68,7 @@ public class UserServiceImpl implements UserService {
         userDto.setFollowing(user.getFollowers().contains(currentUser));
         userDto.setFollowed((long) user.getFollowed().size());
         userDto.setFollowers((long) user.getFollowers().size());
+        userDto.setRecipes((long) user.getRecipes().size());
 
         return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }

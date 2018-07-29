@@ -31,6 +31,8 @@ public class User implements UserDetails {
     private Upload avatar;
     @OneToOne(fetch = FetchType.LAZY)
     private Upload banner;
+    @OneToMany(mappedBy = "author")
+    private Collection<Recipe> recipes;
     @ManyToMany(fetch = FetchType.LAZY)
     private Collection<User> followed;
     @ManyToMany(mappedBy = "followed")
