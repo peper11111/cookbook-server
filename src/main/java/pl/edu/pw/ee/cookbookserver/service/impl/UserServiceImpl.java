@@ -17,6 +17,7 @@ import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 @Service
@@ -156,12 +157,13 @@ public class UserServiceImpl implements UserService {
         Iterable<Recipe> recipes = recipeRepository.findByAuthor(user);
         for (Recipe recipe : recipes) {
             RecipeDto recipeDto = new RecipeDto();
+            recipeDto.setCreationTime(Timestamp.valueOf(recipe.getCreationTime()).getTime());
             recipeDto.setAuthorId(recipe.getAuthor().getId());
             if (recipe.getBanner() != null) {
                 recipeDto.setBannerId(recipe.getBanner().getId());
             }
             recipeDto.setTitle(recipe.getTitle());
-            recipeDto.setDescription(recipe.getDescription());
+            recipeDto.setLead(recipe.getLead());
             recipeDto.setCuisineId(recipe.getCuisine().getId());
             recipeDto.setDifficulty(recipe.getDifficulty());
             recipeDto.setPlates(recipe.getPlates());
@@ -173,7 +175,6 @@ public class UserServiceImpl implements UserService {
 
     public User getCurrentUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println(user.getId());
         return userRepository.findById(user.getId()).get();
     }
 }

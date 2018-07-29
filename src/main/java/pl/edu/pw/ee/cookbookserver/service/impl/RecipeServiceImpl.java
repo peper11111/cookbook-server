@@ -14,6 +14,8 @@ import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -42,12 +44,13 @@ public class RecipeServiceImpl implements RecipeService {
 
         Recipe recipe = optionalRecipe.get();
         RecipeDto recipeDto = new RecipeDto();
+        recipeDto.setCreationTime(Timestamp.valueOf(recipe.getCreationTime()).getTime());
         recipeDto.setAuthorId(recipe.getAuthor().getId());
         if (recipe.getBanner() != null) {
             recipeDto.setBannerId(recipe.getBanner().getId());
         }
         recipeDto.setTitle(recipe.getTitle());
-        recipeDto.setDescription(recipe.getDescription());
+        recipeDto.setLead(recipe.getLead());
         recipeDto.setCuisineId(recipe.getCuisine().getId());
         recipeDto.setDifficulty(recipe.getDifficulty());
         recipeDto.setPlates(recipe.getPlates());
@@ -60,10 +63,11 @@ public class RecipeServiceImpl implements RecipeService {
     public ResponseEntity create(RecipeDto recipeDto) {
         User currentUser = userService.getCurrentUser();
         Recipe recipe = new Recipe();
+        recipe.setCreationTime(LocalDateTime.now());
         recipe.setAuthor(currentUser);
         recipe.setBanner(uploadRepository.findById(recipeDto.getBannerId()).orElse(null));
         recipe.setTitle(recipeDto.getTitle());
-        recipe.setDescription(recipeDto.getDescription());
+        recipe.setLead(recipeDto.getLead());
         recipe.setCuisine(cuisineRepository.findById(recipeDto.getCuisineId()).orElse(null));
         recipe.setDifficulty(recipeDto.getDifficulty());
         recipe.setPlates(recipeDto.getPlates());
