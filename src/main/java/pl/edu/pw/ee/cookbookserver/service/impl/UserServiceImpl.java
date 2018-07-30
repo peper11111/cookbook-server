@@ -7,9 +7,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
-import pl.edu.pw.ee.cookbookserver.dto.CurrentUserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
@@ -38,11 +38,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity current() {
         User currentUser = getCurrentUser();
-        CurrentUserDto currentUserDto = new CurrentUserDto();
-        currentUserDto.setId(currentUser.getId());
-        currentUserDto.setUsername(currentUser.getUsername());
-        currentUserDto.setAuthorities(currentUser.getAuthorities());
-        return ResponseEntity.status(HttpStatus.OK).body(currentUserDto);
+        BasicUserDto basicUserDto = new BasicUserDto();
+        basicUserDto.setId(currentUser.getId());
+        basicUserDto.setUsername(currentUser.getUsername());
+        if (currentUser.getAvatar() != null) {
+            basicUserDto.setAvatarId(currentUser.getAvatar().getId());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(basicUserDto);
     }
 
     @Override
