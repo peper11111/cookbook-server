@@ -7,8 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
-import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
@@ -38,13 +38,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity current() {
         User currentUser = getCurrentUser();
-        BasicUserDto basicUserDto = new BasicUserDto();
-        basicUserDto.setId(currentUser.getId());
-        basicUserDto.setUsername(currentUser.getUsername());
+        BasicUserDto userDto = new BasicUserDto();
+        userDto.setId(currentUser.getId());
+        userDto.setUsername(currentUser.getUsername());
         if (currentUser.getAvatar() != null) {
-            basicUserDto.setAvatarId(currentUser.getAvatar().getId());
+            userDto.setAvatarId(currentUser.getAvatar().getId());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(basicUserDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
     @Override
@@ -156,21 +156,22 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = optionalUser.get();
-        Collection<RecipeDto> recipeDtoList = new ArrayList<>();
+        Collection<BasicRecipeDto> recipeDtoList = new ArrayList<>();
         Iterable<Recipe> recipes = recipeRepository.findByAuthor(user);
         for (Recipe recipe : recipes) {
-            RecipeDto recipeDto = new RecipeDto();
+            BasicRecipeDto recipeDto = new BasicRecipeDto();
             recipeDto.setCreationTime(Timestamp.valueOf(recipe.getCreationTime()).getTime());
-            recipeDto.setAuthorId(recipe.getAuthor().getId());
+            BasicUserDto userDto = new BasicUserDto();
+            userDto.setId(recipe.getAuthor().getId());
+            userDto.setUsername(recipe.getAuthor().getUsername());
+            if (recipe.getAuthor().getAvatar() != null) {
+                userDto.setAvatarId(recipe.getAuthor().getAvatar().getId());
+            }
+            recipeDto.setAuthor(userDto);
             if (recipe.getBanner() != null) {
                 recipeDto.setBannerId(recipe.getBanner().getId());
             }
             recipeDto.setTitle(recipe.getTitle());
-            recipeDto.setLead(recipe.getLead());
-            recipeDto.setCuisineId(recipe.getCuisine().getId());
-            recipeDto.setDifficulty(recipe.getDifficulty());
-            recipeDto.setPlates(recipe.getPlates());
-            recipeDto.setPreparationTime(recipe.getPreparationTime());
             recipeDtoList.add(recipeDto);
         }
         return ResponseEntity.status(HttpStatus.OK).body(recipeDtoList);
