@@ -3,15 +3,16 @@ package pl.edu.pw.ee.cookbookserver.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.edu.pw.ee.cookbookserver.CookbookHelper;
 import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.mapper.UserMapper;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
@@ -24,27 +25,26 @@ import java.util.*;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    private CookbookHelper cookbookHelper;
     private RecipeRepository recipeRepository;
     private UploadRepository uploadRepository;
+    private UserMapper userMapper;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(RecipeRepository recipeRepository, UploadRepository uploadRepository, UserRepository userRepository) {
+    public UserServiceImpl(CookbookHelper cookbookHelper, RecipeRepository recipeRepository,
+                           UploadRepository uploadRepository, UserMapper userMapper, UserRepository userRepository) {
+        this.cookbookHelper = cookbookHelper;
         this.recipeRepository = recipeRepository;
         this.uploadRepository = uploadRepository;
+        this.userMapper = userMapper;
         this.userRepository = userRepository;
     }
 
     @Override
     public ResponseEntity current() {
-        User currentUser = getCurrentUser();
-        BasicUserDto userDto = new BasicUserDto();
-        userDto.setId(currentUser.getId());
-        userDto.setUsername(currentUser.getUsername());
-        if (currentUser.getAvatar() != null) {
-            userDto.setAvatarId(currentUser.getAvatar().getId());
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(userDto);
+        BasicUserDto basicUserDto = userMapper.userToBasicUserDto(cookbookHelper.getCurrentUser());
+        return ResponseEntity.status(HttpStatus.OK).body(basicUserDto);
     }
 
     @Override
@@ -53,25 +53,7 @@ public class UserServiceImpl implements UserService {
         if (!optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
-        User user = optionalUser.get();
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setUsername(user.getUsername());
-        userDto.setName(user.getName());
-        userDto.setBiography(user.getBiography());
-        if (user.getAvatar() != null) {
-            userDto.setAvatarId(user.getAvatar().getId());
-        }
-        if (user.getBanner() != null) {
-            userDto.setBannerId(user.getBanner().getId());
-        }
-        User currentUser = getCurrentUser();
-        userDto.setFollowing(user.getFollowers().contains(currentUser));
-        userDto.setFollowed((long) user.getFollowed().size());
-        userDto.setFollowers((long) user.getFollowers().size());
-        userDto.setRecipes((long) user.getRecipes().size());
-
+        UserDto userDto = userMapper.userToUserDto(optionalUser.get());
         return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
@@ -83,7 +65,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = optionalUser.get();
-        User currentUser = getCurrentUser();
+        User currentUser = cookbookHelper.getCurrentUser();
         if (!user.getId().equals(currentUser.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -133,7 +115,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = optionalUser.get();
-        User currentUser = getCurrentUser();
+        User currentUser = cookbookHelper.getCurrentUser();
         if (currentUser.getId().equals(user.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -161,13 +143,7 @@ public class UserServiceImpl implements UserService {
         for (Recipe recipe : recipes) {
             BasicRecipeDto recipeDto = new BasicRecipeDto();
             recipeDto.setCreationTime(Timestamp.valueOf(recipe.getCreationTime()).getTime());
-            BasicUserDto userDto = new BasicUserDto();
-            userDto.setId(recipe.getAuthor().getId());
-            userDto.setUsername(recipe.getAuthor().getUsername());
-            if (recipe.getAuthor().getAvatar() != null) {
-                userDto.setAvatarId(recipe.getAuthor().getAvatar().getId());
-            }
-            recipeDto.setAuthor(userDto);
+            recipeDto.setAuthor(userMapper.userToBasicUserDto(recipe.getAuthor()));
             if (recipe.getBanner() != null) {
                 recipeDto.setBannerId(recipe.getBanner().getId());
             }
@@ -175,10 +151,5 @@ public class UserServiceImpl implements UserService {
             recipeDtoList.add(recipeDto);
         }
         return ResponseEntity.status(HttpStatus.OK).body(recipeDtoList);
-    }
-
-    public User getCurrentUser() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository.findById(user.getId()).get();
     }
 }

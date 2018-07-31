@@ -7,12 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import pl.edu.pw.ee.cookbookserver.CookbookHelper;
 import pl.edu.pw.ee.cookbookserver.CookbookProperties;
 import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.service.UploadService;
-import pl.edu.pw.ee.cookbookserver.service.UserService;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -26,20 +26,21 @@ import java.util.UUID;
 @Transactional
 public class UploadServiceImpl implements UploadService {
 
+    private CookbookHelper cookbookHelper;
     private String uploadFolder;
     private UploadRepository uploadRepository;
-    private UserService userService;
 
     @Autowired
-    public UploadServiceImpl(CookbookProperties cookbookProperties, UploadRepository uploadRepository, UserService userService) {
+    public UploadServiceImpl(CookbookHelper cookbookHelper, CookbookProperties cookbookProperties,
+                             UploadRepository uploadRepository) {
+        this.cookbookHelper = cookbookHelper;
         this.uploadFolder = cookbookProperties.getUploadFolder();
         this.uploadRepository = uploadRepository;
-        this.userService = userService;
     }
 
     @Override
     public ResponseEntity create(MultipartFile file) throws IOException {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = cookbookHelper.getCurrentUser();
         Upload upload = new Upload();
         upload.setFilename(this.writeImage(file.getBytes()));
         upload.setOwner(currentUser);
@@ -67,7 +68,7 @@ public class UploadServiceImpl implements UploadService {
         }
 
         Upload upload = optionalUpload.get();
-        User currentUser = userService.getCurrentUser();
+        User currentUser = cookbookHelper.getCurrentUser();
         if (!upload.getOwner().getId().equals(currentUser.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
