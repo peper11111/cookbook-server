@@ -12,29 +12,33 @@ import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.mapper.RecipeMapper;
 import pl.edu.pw.ee.cookbookserver.mapper.UserMapper;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
 
     private CookbookHelper cookbookHelper;
+    private RecipeMapper recipeMapper;
     private RecipeRepository recipeRepository;
     private UploadRepository uploadRepository;
     private UserMapper userMapper;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(CookbookHelper cookbookHelper, RecipeRepository recipeRepository,
+    public UserServiceImpl(CookbookHelper cookbookHelper, RecipeMapper recipeMapper, RecipeRepository recipeRepository,
                            UploadRepository uploadRepository, UserMapper userMapper, UserRepository userRepository) {
         this.cookbookHelper = cookbookHelper;
+        this.recipeMapper = recipeMapper;
         this.recipeRepository = recipeRepository;
         this.uploadRepository = uploadRepository;
         this.userMapper = userMapper;
@@ -43,28 +47,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity current() {
-        BasicUserDto basicUserDto = userMapper.userToBasicUserDto(cookbookHelper.getCurrentUser());
+        User currentUser = cookbookHelper.getCurrentUser();
+        BasicUserDto basicUserDto = userMapper.userToBasicUserDto(currentUser);
         return ResponseEntity.status(HttpStatus.OK).body(basicUserDto);
     }
 
     @Override
     public ResponseEntity read(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (!optionalUser.isPresent()) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        UserDto userDto = userMapper.userToUserDto(optionalUser.get());
+        UserDto userDto = userMapper.userToUserDto(user);
         return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
     @Override
     public ResponseEntity modify(Long id, Map userMap) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (!optionalUser.isPresent()) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        User user = optionalUser.get();
         User currentUser = cookbookHelper.getCurrentUser();
         if (!user.getId().equals(currentUser.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -131,24 +135,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity recipes(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (!optionalUser.isPresent()) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        User user = optionalUser.get();
-        Collection<BasicRecipeDto> recipeDtoList = new ArrayList<>();
+        Collection<BasicRecipeDto> basicRecipeDtoList = new ArrayList<>();
         Iterable<Recipe> recipes = recipeRepository.findByAuthor(user);
         for (Recipe recipe : recipes) {
-            BasicRecipeDto recipeDto = new BasicRecipeDto();
-            recipeDto.setCreationTime(Timestamp.valueOf(recipe.getCreationTime()).getTime());
-            recipeDto.setAuthor(userMapper.userToBasicUserDto(recipe.getAuthor()));
-            if (recipe.getBanner() != null) {
-                recipeDto.setBannerId(recipe.getBanner().getId());
-            }
-            recipeDto.setTitle(recipe.getTitle());
-            recipeDtoList.add(recipeDto);
+            BasicRecipeDto basicRecipeDto = recipeMapper.recipeToBasicRecipeDto(recipe);
+            basicRecipeDtoList.add(basicRecipeDto);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(recipeDtoList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtoList);
     }
 }
