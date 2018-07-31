@@ -109,21 +109,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity follow(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (!optionalUser.isPresent()) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        User user = optionalUser.get();
         User currentUser = cookbookHelper.getCurrentUser();
         if (currentUser.getId().equals(user.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        if (!currentUser.getFollowed().contains(user)) {
-            currentUser.getFollowed().add(user);
-        } else {
+        if (currentUser.getFollowed().contains(user)) {
             currentUser.getFollowed().remove(user);
+        } else {
+            currentUser.getFollowed().add(user);
         }
         userRepository.save(currentUser);
 
