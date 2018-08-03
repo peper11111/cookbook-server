@@ -17,9 +17,11 @@ import pl.edu.pw.ee.cookbookserver.service.UploadService;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -51,23 +53,21 @@ public class UploadServiceImpl implements UploadService {
 
     @Override
     public ResponseEntity read(Long id) throws IOException {
-        Optional<Upload> optionalUpload = uploadRepository.findById(id);
-        if (!optionalUpload.isPresent()) {
+        Upload upload = uploadRepository.findById(id).orElse(null);
+        if (upload == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Upload upload = optionalUpload.get();
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(this.readImage(upload.getFilename()));
     }
 
     @Override
     public ResponseEntity delete(Long id) {
-        Optional<Upload> optionalUpload = uploadRepository.findById(id);
-        if (!optionalUpload.isPresent()) {
+        Upload upload = uploadRepository.findById(id).orElse(null);
+        if (upload == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Upload upload = optionalUpload.get();
         User currentUser = cookbookHelper.getCurrentUser();
         if (!upload.getOwner().getId().equals(currentUser.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
