@@ -9,14 +9,13 @@ import pl.edu.pw.ee.cookbookserver.CookbookHelper;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.mapper.RecipeMapper;
 import pl.edu.pw.ee.cookbookserver.repository.CuisineRepository;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -24,39 +23,28 @@ public class RecipeServiceImpl implements RecipeService {
 
     private CookbookHelper cookbookHelper;
     private CuisineRepository cuisineRepository;
+    private RecipeMapper recipeMapper;
     private RecipeRepository recipeRepository;
     private UploadRepository uploadRepository;
 
     @Autowired
-    public RecipeServiceImpl(CookbookHelper cookbookHelper, CuisineRepository cuisineRepository,
+    public RecipeServiceImpl(CookbookHelper cookbookHelper, CuisineRepository cuisineRepository, RecipeMapper recipeMapper,
                              RecipeRepository recipeRepository, UploadRepository uploadRepository) {
         this.cookbookHelper = cookbookHelper;
         this.cuisineRepository = cuisineRepository;
+        this.recipeMapper = recipeMapper;
         this.recipeRepository = recipeRepository;
         this.uploadRepository = uploadRepository;
     }
 
     @Override
     public ResponseEntity read(Long id) {
-        Optional<Recipe> optionalRecipe = recipeRepository.findById(id);
-        if (!optionalRecipe.isPresent()) {
+        Recipe recipe = recipeRepository.findById(id).orElse(null);
+        if (recipe == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Recipe recipe = optionalRecipe.get();
-        RecipeDto recipeDto = new RecipeDto();
-        recipeDto.setCreationTime(Timestamp.valueOf(recipe.getCreationTime()).getTime());
-        recipeDto.setAuthorId(recipe.getAuthor().getId());
-        if (recipe.getBanner() != null) {
-            recipeDto.setBannerId(recipe.getBanner().getId());
-        }
-        recipeDto.setTitle(recipe.getTitle());
-        recipeDto.setLead(recipe.getLead());
-        recipeDto.setCuisineId(recipe.getCuisine().getId());
-        recipeDto.setDifficulty(recipe.getDifficulty());
-        recipeDto.setPlates(recipe.getPlates());
-        recipeDto.setPreparationTime(recipe.getPreparationTime());
-
+        RecipeDto recipeDto = recipeMapper.recipeToRecipeDto(recipe);
         return ResponseEntity.status(HttpStatus.OK).body(recipeDto);
     }
 

@@ -15,7 +15,6 @@ import pl.edu.pw.ee.cookbookserver.service.AuthService;
 import pl.edu.pw.ee.cookbookserver.service.MailService;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -45,17 +44,16 @@ public class AuthServiceImpl implements AuthService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-password");
         }
 
-        Optional<User> optionalUser;
-        optionalUser = userRepository.findByEmail(authDto.getEmail());
-        if (optionalUser.isPresent()) {
+        User user = userRepository.findByEmail(authDto.getEmail()).orElse(null);
+        if (user != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("error.email-occupied");
         }
-        optionalUser = userRepository.findByUsername(authDto.getUsername());
-        if (optionalUser.isPresent()) {
+        user = userRepository.findByUsername(authDto.getUsername()).orElse(null);
+        if (user != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("error.username-occupied");
         }
 
-        User user = new User();
+        user = new User();
         user.setUsername(authDto.getUsername());
         user.setPassword(new BCryptPasswordEncoder().encode(authDto.getPassword()));
         user.setEmail(authDto.getEmail());
@@ -77,13 +75,11 @@ public class AuthServiceImpl implements AuthService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-token");
         }
 
-        Optional<Token> optionalToken;
-        optionalToken = tokenRepository.findByUuid(authDto.getToken());
-        if (!optionalToken.isPresent()) {
+        Token token = tokenRepository.findByUuid(authDto.getToken()).orElse(null);
+        if (token == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Token token = optionalToken.get();
         if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.token-expired");
         }
@@ -102,12 +98,11 @@ public class AuthServiceImpl implements AuthService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-username");
         }
 
-        Optional<User> optionalUser = userRepository.findByUsernameOrEmail(authDto.getUsername(), authDto.getUsername());
-        if (!optionalUser.isPresent()) {
+        User user = userRepository.findByUsernameOrEmail(authDto.getUsername(), authDto.getUsername()).orElse(null);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        User user = optionalUser.get();
         Token token = createAccessToken(user);
         mailService.sendPasswordResetMessage(origin, token);
 
@@ -123,13 +118,10 @@ public class AuthServiceImpl implements AuthService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-password");
         }
 
-        Optional<Token> optionalToken;
-        optionalToken = tokenRepository.findByUuid(authDto.getToken());
-        if (!optionalToken.isPresent()) {
+        Token token = tokenRepository.findByUuid(authDto.getToken()).orElse(null);
+        if (token == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
-        Token token = optionalToken.get();
         if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.token-expired");
         }
