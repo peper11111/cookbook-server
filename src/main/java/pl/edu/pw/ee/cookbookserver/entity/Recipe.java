@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Data
 @Entity
@@ -25,4 +26,6 @@ public class Recipe {
     private Integer difficulty;
     private Integer plates;
     private Integer preparationTime;
+    @OneToMany(fetch = FetchType.LAZY)
+    private Collection<Comment> comments;
 }

@@ -2,6 +2,8 @@ package pl.edu.pw.ee.cookbookserver.dto;
 
 import lombok.Data;
 
+import java.util.Collection;
+
 @Data
 public class RecipeDto {
 
@@ -14,4 +16,5 @@ public class RecipeDto {
     private Integer difficulty;
     private Integer plates;
     private Integer preparationTime;
+    private Collection<CommentDto> comments;
 }
