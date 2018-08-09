@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User currentUser = cookbookHelper.getCurrentUser();
-        if (currentUser.getId().equals(user.getId())) {
+        if (currentUser == null || currentUser.getId().equals(user.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
