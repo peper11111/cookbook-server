@@ -5,7 +5,6 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.pw.ee.cookbookserver.dto.AuthDto;
 import pl.edu.pw.ee.cookbookserver.service.AuthService;
 
 @RestController
@@ -20,8 +19,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody AuthDto authDto, @RequestHeader("Origin") String origin) {
-        return authService.register(authDto, origin);
+    public ResponseEntity register(@RequestBody JSONObject payload, @RequestHeader("Origin") String origin) throws JSONException {
+        return authService.register(payload, origin);
     }
 
     @PostMapping("/verify")

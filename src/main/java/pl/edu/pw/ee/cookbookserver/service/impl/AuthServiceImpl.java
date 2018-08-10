@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.edu.pw.ee.cookbookserver.dto.AuthDto;
 import pl.edu.pw.ee.cookbookserver.entity.Token;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
@@ -35,30 +34,39 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity register(AuthDto authDto, String origin) {
-        if (authDto.getEmail() == null || authDto.getEmail().length() == 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-email");
-        }
-        if (authDto.getUsername() == null || authDto.getUsername().length() == 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-username");
-        }
-        if (authDto.getPassword() == null || authDto.getPassword().length() == 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-password");
+    public ResponseEntity register(JSONObject payload, String origin) throws JSONException {
+        String emailKey = PayloadKey.EMAIL.value();
+        if (!payload.has(emailKey) || payload.isNull(emailKey)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_EMAIL.value());
         }
 
-        User user = userRepository.findByEmail(authDto.getEmail()).orElse(null);
-        if (user != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("error.email-occupied");
-        }
-        user = userRepository.findByUsername(authDto.getUsername()).orElse(null);
-        if (user != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("error.username-occupied");
+        String usernameKey = PayloadKey.USERNAME.value();
+        if (!payload.has(usernameKey) || payload.isNull(usernameKey)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_USERNAME.value());
         }
 
+        String passwordKey = PayloadKey.PASSWORD.value();
+        if (!payload.has(passwordKey) || payload.isNull(passwordKey)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_PASSWORD.value());
+        }
+
+        String email = payload.getString(emailKey);
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ResponseMessage.EMAIL_OCCUPIED.value());
+        }
+
+        String username = payload.getString(usernameKey);
+        user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ResponseMessage.USERNAME_OCCUPIED.value());
+        }
+
+        String password = payload.getString(passwordKey);
         user = new User();
-        user.setUsername(authDto.getUsername());
-        user.setPassword(new BCryptPasswordEncoder().encode(authDto.getPassword()));
-        user.setEmail(authDto.getEmail());
+        user.setUsername(username);
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.setEmail(email);
         user.setAccountNonExpired(true);
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);
