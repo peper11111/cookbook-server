@@ -114,24 +114,27 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity confirm(AuthDto authDto) {
-        if (authDto.getToken() == null || authDto.getToken().length() == 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-token");
-        }
-        if (authDto.getPassword() == null || authDto.getPassword().length() == 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-password");
+    public ResponseEntity confirm(JSONObject payload) throws JSONException {
+        String tokenKey = PayloadKey.TOKEN.value();
+        if (!payload.has(tokenKey) || payload.isNull(tokenKey)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_TOKEN.value());
         }
 
-        Token token = tokenRepository.findByUuid(authDto.getToken()).orElse(null);
+        String passwordKey = PayloadKey.PASSWORD.value();
+        if (!payload.has(passwordKey) || payload.isNull(passwordKey)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_PASSWORD.value());
+        }
+
+        Token token = tokenRepository.findByUuid(payload.getString(tokenKey)).orElse(null);
         if (token == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.token-expired");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.TOKEN_EXPIRED.value());
         }
 
         User user = token.getUser();
-        user.setPassword(new BCryptPasswordEncoder().encode(authDto.getPassword()));
+        user.setPassword(new BCryptPasswordEncoder().encode(payload.getString(passwordKey)));
         userRepository.save(user);
         tokenRepository.delete(token);
 

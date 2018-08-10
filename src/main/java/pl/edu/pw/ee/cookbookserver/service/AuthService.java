@@ -10,5 +10,5 @@ public interface AuthService {
     ResponseEntity register(AuthDto authDto, String origin);
     ResponseEntity verify(AuthDto authDto);
     ResponseEntity reset(JSONObject payload, String origin) throws JSONException;
-    ResponseEntity confirm(AuthDto authDto);
+    ResponseEntity confirm(JSONObject payload) throws JSONException;
 }

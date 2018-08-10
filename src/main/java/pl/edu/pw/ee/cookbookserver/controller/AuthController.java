@@ -35,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity confirm(@RequestBody AuthDto authDto) {
-        return authService.confirm(authDto);
+    public ResponseEntity confirm(@RequestBody JSONObject payload) throws JSONException {
+        return authService.confirm(payload);
     }
 }
