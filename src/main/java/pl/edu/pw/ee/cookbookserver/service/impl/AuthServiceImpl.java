@@ -1,6 +1,8 @@
 package pl.edu.pw.ee.cookbookserver.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -93,12 +95,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity reset(AuthDto authDto, String origin) {
-        if (authDto.getUsername() == null || authDto.getUsername().length() == 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.missing-username");
+    public ResponseEntity reset(JSONObject payload, String origin) throws JSONException {
+        String usernameKey = PayloadKey.USERNAME.value();
+        if (!payload.has(usernameKey) || payload.isNull(usernameKey)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_USERNAME.value());
         }
 
-        User user = userRepository.findByUsernameOrEmail(authDto.getUsername(), authDto.getUsername()).orElse(null);
+        String username = payload.getString(usernameKey);
+        User user = userRepository.findByUsernameOrEmail(username, username).orElse(null);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

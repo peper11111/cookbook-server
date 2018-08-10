@@ -1,6 +1,8 @@
 package pl.edu.pw.ee.cookbookserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pw.ee.cookbookserver.dto.AuthDto;
@@ -28,8 +30,8 @@ public class AuthController {
     }
 
     @PostMapping("/reset")
-    public ResponseEntity reset(@RequestBody AuthDto authDto, @RequestHeader("Origin") String origin) {
-        return authService.reset(authDto, origin);
+    public ResponseEntity reset(@RequestBody JSONObject payload, @RequestHeader("Origin") String origin) throws JSONException {
+        return authService.reset(payload, origin);
     }
 
     @PostMapping("/confirm")
