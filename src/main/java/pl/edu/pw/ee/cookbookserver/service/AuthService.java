@@ -8,7 +8,7 @@ import pl.edu.pw.ee.cookbookserver.dto.AuthDto;
 public interface AuthService {
 
     ResponseEntity register(AuthDto authDto, String origin);
-    ResponseEntity verify(AuthDto authDto);
+    ResponseEntity verify(JSONObject payload) throws JSONException;
     ResponseEntity reset(JSONObject payload, String origin) throws JSONException;
     ResponseEntity confirm(JSONObject payload) throws JSONException;
 }

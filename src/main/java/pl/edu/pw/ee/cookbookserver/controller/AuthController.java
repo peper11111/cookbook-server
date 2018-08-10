@@ -25,8 +25,8 @@ public class AuthController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity verify(@RequestBody AuthDto authDto) {
-        return authService.verify(authDto);
+    public ResponseEntity verify(@RequestBody JSONObject payload) throws JSONException {
+        return authService.verify(payload);
     }
 
     @PostMapping("/reset")
