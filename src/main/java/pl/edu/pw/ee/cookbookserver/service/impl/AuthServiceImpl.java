@@ -14,6 +14,9 @@ import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.AuthService;
 import pl.edu.pw.ee.cookbookserver.service.MailService;
+import pl.edu.pw.ee.cookbookserver.util.PayloadException;
+import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
+import pl.edu.pw.ee.cookbookserver.util.ResponseMessage;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -34,88 +37,65 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity register(JSONObject payload, String origin) {
-        try {
-            String email = getValidEmail(payload);
-            String username = getValidUsername(payload);
-            String password = getValidPassword(payload);
+    public ResponseEntity register(JSONObject payload, String origin) throws Exception {
+        String email = getValidEmail(payload);
+        String username = getValidUsername(payload);
+        String password = getValidPassword(payload);
 
-            User user = new User();
-            user.setUsername(username);
-            user.setPassword(new BCryptPasswordEncoder().encode(password));
-            user.setEmail(email);
-            user.setAccountNonExpired(true);
-            user.setAccountNonLocked(true);
-            user.setCredentialsNonExpired(true);
-            user.setEnabled(false);
-            userRepository.save(user);
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.setEmail(email);
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+        user.setEnabled(false);
+        userRepository.save(user);
 
-            Token token = createToken(user);
-            mailService.sendAccountActivationMessage(origin, token);
+        Token token = createToken(user);
+        mailService.sendAccountActivationMessage(origin, token);
 
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (PayloadException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override
-    public ResponseEntity verify(JSONObject payload) {
-        try {
-            Token token = getValidToken(payload);
+    public ResponseEntity verify(JSONObject payload) throws Exception {
+        Token token = getValidToken(payload);
 
-            User user = token.getUser();
-            user.setEnabled(true);
-            userRepository.save(user);
-            tokenRepository.delete(token);
+        User user = token.getUser();
+        user.setEnabled(true);
+        userRepository.save(user);
+        tokenRepository.delete(token);
 
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (PayloadException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override
-    public ResponseEntity reset(JSONObject payload, String origin) {
-        try {
-            User user = getValidUser(payload);
+    public ResponseEntity reset(JSONObject payload, String origin) throws Exception {
+        User user = getValidUser(payload);
 
-            Token token = createToken(user);
-            mailService.sendPasswordResetMessage(origin, token);
+        Token token = createToken(user);
+        mailService.sendPasswordResetMessage(origin, token);
 
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (PayloadException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override
-    public ResponseEntity confirm(JSONObject payload) {
-        try {
-            Token token = getValidToken(payload);
-            String password = getValidPassword(payload);
+    public ResponseEntity confirm(JSONObject payload) throws Exception {
+        Token token = getValidToken(payload);
+        String password = getValidPassword(payload);
 
-            User user = token.getUser();
-            user.setPassword(new BCryptPasswordEncoder().encode(password));
-            userRepository.save(user);
-            tokenRepository.delete(token);
+        User user = token.getUser();
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        userRepository.save(user);
+        tokenRepository.delete(token);
 
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (PayloadException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     private String getValidEmail(JSONObject payload) throws JSONException, PayloadException {
         String emailKey = PayloadKey.EMAIL.value();
+        System.out.println(emailKey + " " + payload.toString());
         if (!payload.has(emailKey) || payload.isNull(emailKey) || payload.getString(emailKey).isEmpty()) {
             throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_EMAIL.value());
         }

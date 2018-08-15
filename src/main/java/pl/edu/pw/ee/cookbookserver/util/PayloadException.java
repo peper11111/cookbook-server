@@ -1,4 +1,4 @@
-package pl.edu.pw.ee.cookbookserver.service.impl;
+package pl.edu.pw.ee.cookbookserver.util;
 
 import org.springframework.http.HttpStatus;
 

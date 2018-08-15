@@ -1,4 +1,4 @@
-package pl.edu.pw.ee.cookbookserver.service.impl;
+package pl.edu.pw.ee.cookbookserver.util;
 
 public enum ResponseMessage {
 
@@ -10,7 +10,8 @@ public enum ResponseMessage {
     PASSWORD_TOO_SHORT("error.password-too-short"),
     INVALID_EMAIL("error.invalid-email"),
     EMAIL_OCCUPIED("error.email-occupied"),
-    TOKEN_EXPIRED("error.token-expired");
+    TOKEN_EXPIRED("error.token-expired"),
+    INTERNAL_SERVER_ERROR("error.internal-server-error");
 
     private final String value;
 

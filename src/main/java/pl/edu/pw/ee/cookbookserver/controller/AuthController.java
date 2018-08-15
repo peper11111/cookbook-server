@@ -18,22 +18,22 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody JSONObject payload, @RequestHeader("Origin") String origin) {
-        return authService.register(payload, origin);
+    public ResponseEntity register(@RequestBody String body, @RequestHeader("Origin") String origin) throws Exception {
+        return authService.register(new JSONObject(body), origin);
     }
 
     @PostMapping("/verify")
-    public ResponseEntity verify(@RequestBody JSONObject payload) {
-        return authService.verify(payload);
+    public ResponseEntity verify(@RequestBody String body) throws Exception {
+        return authService.verify(new JSONObject(body));
     }
 
     @PostMapping("/reset")
-    public ResponseEntity reset(@RequestBody JSONObject payload, @RequestHeader("Origin") String origin) {
-        return authService.reset(payload, origin);
+    public ResponseEntity reset(@RequestBody String body, @RequestHeader("Origin") String origin) throws Exception {
+        return authService.reset(new JSONObject(body), origin);
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity confirm(@RequestBody JSONObject payload) {
-        return authService.confirm(payload);
+    public ResponseEntity confirm(@RequestBody String body) throws Exception {
+        return authService.confirm(new JSONObject(body));
     }
 }
