@@ -34,126 +34,154 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity register(JSONObject payload, String origin) throws JSONException {
+    public ResponseEntity register(JSONObject payload, String origin) {
+        try {
+            String email = getValidEmail(payload);
+            String username = getValidUsername(payload);
+            String password = getValidPassword(payload);
+
+            User user = new User();
+            user.setUsername(username);
+            user.setPassword(new BCryptPasswordEncoder().encode(password));
+            user.setEmail(email);
+            user.setAccountNonExpired(true);
+            user.setAccountNonLocked(true);
+            user.setCredentialsNonExpired(true);
+            user.setEnabled(false);
+            userRepository.save(user);
+
+            Token token = createToken(user);
+            mailService.sendAccountActivationMessage(origin, token);
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (PayloadException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity verify(JSONObject payload) {
+        try {
+            Token token = getValidToken(payload);
+
+            User user = token.getUser();
+            user.setEnabled(true);
+            userRepository.save(user);
+            tokenRepository.delete(token);
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (PayloadException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity reset(JSONObject payload, String origin) {
+        try {
+            User user = getValidUser(payload);
+
+            Token token = createToken(user);
+            mailService.sendPasswordResetMessage(origin, token);
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (PayloadException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity confirm(JSONObject payload) {
+        try {
+            Token token = getValidToken(payload);
+            String password = getValidPassword(payload);
+
+            User user = token.getUser();
+            user.setPassword(new BCryptPasswordEncoder().encode(password));
+            userRepository.save(user);
+            tokenRepository.delete(token);
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (PayloadException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    private String getValidEmail(JSONObject payload) throws JSONException, PayloadException {
         String emailKey = PayloadKey.EMAIL.value();
         if (!payload.has(emailKey) || payload.isNull(emailKey) || payload.getString(emailKey).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_EMAIL.value());
+            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_EMAIL.value());
         }
         String email = payload.getString(emailKey);
         if (!email.matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.INVALID_EMAIL.value());
+            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.INVALID_EMAIL.value());
         }
         User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(ResponseMessage.EMAIL_OCCUPIED.value());
+            throw new PayloadException(HttpStatus.CONFLICT, ResponseMessage.EMAIL_OCCUPIED.value());
         }
+        return email;
+    }
 
+    private String getValidUsername(JSONObject payload) throws JSONException, PayloadException {
         String usernameKey = PayloadKey.USERNAME.value();
         if (!payload.has(usernameKey) || payload.isNull(usernameKey) || payload.getString(usernameKey).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_USERNAME.value());
+            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_USERNAME.value());
         }
         String username = payload.getString(usernameKey);
-        user = userRepository.findByUsername(username).orElse(null);
+        User user = userRepository.findByUsername(username).orElse(null);
         if (user != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(ResponseMessage.USERNAME_OCCUPIED.value());
+            throw new PayloadException(HttpStatus.CONFLICT, ResponseMessage.USERNAME_OCCUPIED.value());
         }
+        return username;
+    }
 
+    private String getValidPassword(JSONObject payload) throws JSONException, PayloadException {
         String passwordKey = PayloadKey.PASSWORD.value();
         if (!payload.has(passwordKey) || payload.isNull(passwordKey) || payload.getString(passwordKey).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_PASSWORD.value());
+            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_PASSWORD.value());
         }
         String password = payload.getString(passwordKey);
         if (password.length() < 8) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.PASSWORD_TOO_SHORT.value());
+            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.PASSWORD_TOO_SHORT.value());
         }
-
-        user = new User();
-        user.setUsername(username);
-        user.setPassword(new BCryptPasswordEncoder().encode(password));
-        user.setEmail(email);
-        user.setAccountNonExpired(true);
-        user.setAccountNonLocked(true);
-        user.setCredentialsNonExpired(true);
-        user.setEnabled(false);
-        userRepository.save(user);
-
-        Token token = createToken(user);
-        mailService.sendAccountActivationMessage(origin, token);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return password;
     }
 
-    @Override
-    public ResponseEntity verify(JSONObject payload) throws JSONException {
-        String uuidKey = PayloadKey.UUID.value();
-        if (!payload.has(uuidKey) || payload.isNull(uuidKey) || payload.getString(uuidKey).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_UUID.value());
-        }
-        String uuid = payload.getString(uuidKey);
-        Token token = tokenRepository.findByUuid(uuid).orElse(null);
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.TOKEN_EXPIRED.value());
-        }
-
-        User user = token.getUser();
-        user.setEnabled(true);
-        userRepository.save(user);
-        tokenRepository.delete(token);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @Override
-    public ResponseEntity reset(JSONObject payload, String origin) throws JSONException {
+    private User getValidUser(JSONObject payload) throws JSONException, PayloadException {
         String usernameKey = PayloadKey.USERNAME.value();
         if (!payload.has(usernameKey) || payload.isNull(usernameKey) || payload.getString(usernameKey).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_USERNAME.value());
+            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_USERNAME.value());
         }
         String username = payload.getString(usernameKey);
         User user = userRepository.findByUsernameOrEmail(username, username).orElse(null);
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new PayloadException(HttpStatus.NOT_FOUND);
         }
-
-        Token token = createToken(user);
-        mailService.sendPasswordResetMessage(origin, token);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return user;
     }
 
-    @Override
-    public ResponseEntity confirm(JSONObject payload) throws JSONException {
+    private Token getValidToken(JSONObject payload) throws JSONException, PayloadException {
         String uuidKey = PayloadKey.UUID.value();
         if (!payload.has(uuidKey) || payload.isNull(uuidKey) || payload.getString(uuidKey).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_UUID.value());
+            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_UUID.value());
         }
         String uuid = payload.getString(uuidKey);
         Token token = tokenRepository.findByUuid(uuid).orElse(null);
         if (token == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new PayloadException(HttpStatus.NOT_FOUND);
         }
         if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.TOKEN_EXPIRED.value());
+            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.TOKEN_EXPIRED.value());
         }
-
-        String passwordKey = PayloadKey.PASSWORD.value();
-        if (!payload.has(passwordKey) || payload.isNull(passwordKey) || payload.getString(passwordKey).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.MISSING_PASSWORD.value());
-        }
-        String password = payload.getString(passwordKey);
-        if (password.length() < 8) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.PASSWORD_TOO_SHORT.value());
-        }
-
-        User user = token.getUser();
-        user.setPassword(new BCryptPasswordEncoder().encode(password));
-        userRepository.save(user);
-        tokenRepository.delete(token);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return token;
     }
 
     private Token createToken(User user) {
