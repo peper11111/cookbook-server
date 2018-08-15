@@ -5,10 +5,12 @@ public enum ResponseMessage {
     MISSING_USERNAME("error.missing-username"),
     MISSING_PASSWORD("error.missing-password"),
     MISSING_EMAIL("error.missing-email"),
-    MISSING_TOKEN("error.missing-token"),
-    TOKEN_EXPIRED("error.token-expired"),
+    MISSING_UUID("error.missing-token"),
+    USERNAME_OCCUPIED("error.username-occupied"),
+    PASSWORD_TOO_SHORT("error.password-too-short"),
+    INVALID_EMAIL("error.invalid-email"),
     EMAIL_OCCUPIED("error.email-occupied"),
-    USERNAME_OCCUPIED("error.username-occupied");
+    TOKEN_EXPIRED("error.token-expired");
 
     private final String value;
 

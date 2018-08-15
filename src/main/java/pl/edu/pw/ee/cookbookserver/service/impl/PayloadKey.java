@@ -4,7 +4,7 @@ public enum PayloadKey {
 
     USERNAME("username"),
     PASSWORD("password"),
-    TOKEN("token"),
+    UUID("token"),
     EMAIL("email"),
     NAME("name");
 
