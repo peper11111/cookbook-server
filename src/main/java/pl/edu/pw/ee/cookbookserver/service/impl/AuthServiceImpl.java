@@ -14,7 +14,7 @@ import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.AuthService;
 import pl.edu.pw.ee.cookbookserver.service.MailService;
-import pl.edu.pw.ee.cookbookserver.util.PayloadException;
+import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.util.ResponseMessage;
 
@@ -93,73 +93,73 @@ public class AuthServiceImpl implements AuthService {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    private String getValidEmail(JSONObject payload) throws JSONException, PayloadException {
+    private String getValidEmail(JSONObject payload) throws JSONException, ProcessingException {
         String emailKey = PayloadKey.EMAIL.value();
         System.out.println(emailKey + " " + payload.toString());
         if (!payload.has(emailKey) || payload.isNull(emailKey) || payload.getString(emailKey).isEmpty()) {
-            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_EMAIL.value());
+            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_EMAIL.value());
         }
         String email = payload.getString(emailKey);
         if (!email.matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$")) {
-            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.INVALID_EMAIL.value());
+            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.INVALID_EMAIL.value());
         }
         User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
-            throw new PayloadException(HttpStatus.CONFLICT, ResponseMessage.EMAIL_OCCUPIED.value());
+            throw new ProcessingException(HttpStatus.CONFLICT, ResponseMessage.EMAIL_OCCUPIED.value());
         }
         return email;
     }
 
-    private String getValidUsername(JSONObject payload) throws JSONException, PayloadException {
+    private String getValidUsername(JSONObject payload) throws JSONException, ProcessingException {
         String usernameKey = PayloadKey.USERNAME.value();
         if (!payload.has(usernameKey) || payload.isNull(usernameKey) || payload.getString(usernameKey).isEmpty()) {
-            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_USERNAME.value());
+            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_USERNAME.value());
         }
         String username = payload.getString(usernameKey);
         User user = userRepository.findByUsername(username).orElse(null);
         if (user != null) {
-            throw new PayloadException(HttpStatus.CONFLICT, ResponseMessage.USERNAME_OCCUPIED.value());
+            throw new ProcessingException(HttpStatus.CONFLICT, ResponseMessage.USERNAME_OCCUPIED.value());
         }
         return username;
     }
 
-    private String getValidPassword(JSONObject payload) throws JSONException, PayloadException {
+    private String getValidPassword(JSONObject payload) throws JSONException, ProcessingException {
         String passwordKey = PayloadKey.PASSWORD.value();
         if (!payload.has(passwordKey) || payload.isNull(passwordKey) || payload.getString(passwordKey).isEmpty()) {
-            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_PASSWORD.value());
+            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_PASSWORD.value());
         }
         String password = payload.getString(passwordKey);
         if (password.length() < 8) {
-            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.PASSWORD_TOO_SHORT.value());
+            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.PASSWORD_TOO_SHORT.value());
         }
         return password;
     }
 
-    private User getValidUser(JSONObject payload) throws JSONException, PayloadException {
+    private User getValidUser(JSONObject payload) throws JSONException, ProcessingException {
         String usernameKey = PayloadKey.USERNAME.value();
         if (!payload.has(usernameKey) || payload.isNull(usernameKey) || payload.getString(usernameKey).isEmpty()) {
-            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_USERNAME.value());
+            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_USERNAME.value());
         }
         String username = payload.getString(usernameKey);
         User user = userRepository.findByUsernameOrEmail(username, username).orElse(null);
         if (user == null) {
-            throw new PayloadException(HttpStatus.NOT_FOUND);
+            throw new ProcessingException(HttpStatus.NOT_FOUND);
         }
         return user;
     }
 
-    private Token getValidToken(JSONObject payload) throws JSONException, PayloadException {
+    private Token getValidToken(JSONObject payload) throws JSONException, ProcessingException {
         String uuidKey = PayloadKey.UUID.value();
         if (!payload.has(uuidKey) || payload.isNull(uuidKey) || payload.getString(uuidKey).isEmpty()) {
-            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_UUID.value());
+            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_UUID.value());
         }
         String uuid = payload.getString(uuidKey);
         Token token = tokenRepository.findByUuid(uuid).orElse(null);
         if (token == null) {
-            throw new PayloadException(HttpStatus.NOT_FOUND);
+            throw new ProcessingException(HttpStatus.NOT_FOUND);
         }
         if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
-            throw new PayloadException(HttpStatus.BAD_REQUEST, ResponseMessage.TOKEN_EXPIRED.value());
+            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.TOKEN_EXPIRED.value());
         }
         return token;
     }

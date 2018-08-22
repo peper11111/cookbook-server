@@ -2,16 +2,16 @@ package pl.edu.pw.ee.cookbookserver.util;
 
 import org.springframework.http.HttpStatus;
 
-public class PayloadException extends Exception {
+public class ProcessingException extends Exception {
 
     private HttpStatus status;
 
-    public PayloadException(HttpStatus status) {
+    public ProcessingException(HttpStatus status) {
         super();
         this.status = status;
     }
 
-    public PayloadException(HttpStatus status, String message) {
+    public ProcessingException(HttpStatus status, String message) {
         super(message);
         this.status = status;
     }
