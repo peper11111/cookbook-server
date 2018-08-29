@@ -4,19 +4,27 @@ import org.springframework.http.HttpStatus;
 
 public class ProcessingException extends Exception {
 
+    private int code;
     private HttpStatus status;
+    private String message;
 
-    public ProcessingException(HttpStatus status) {
+    public ProcessingException(Error error) {
         super();
-        this.status = status;
+        this.code = error.code();
+        this.status = error.status();
+        this.message = error.message();
     }
 
-    public ProcessingException(HttpStatus status, String message) {
-        super(message);
-        this.status = status;
+    public int getCode() {
+        return code;
     }
 
     public HttpStatus getStatus() {
         return status;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
     }
 }

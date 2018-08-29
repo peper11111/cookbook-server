@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.io.PrintWriter;
+import pl.edu.pw.ee.cookbookserver.dto.ErrorDto;
 
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -41,10 +41,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/auth/login")
                 .successHandler((request, response, authentication) -> response.setStatus(HttpStatus.NO_CONTENT.value()))
                 .failureHandler((request, response, exception) -> {
+                    ErrorDto errorDto = new ErrorDto(2, exception.getMessage());
                     response.setStatus(HttpStatus.FORBIDDEN.value());
-                    PrintWriter printWriter = response.getWriter();
-                    printWriter.write("error." + exception.getMessage().toLowerCase().replace(" ", "-"));
-                    printWriter.flush();
+                    response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                    response.getWriter().write(errorDto.toString());
                 })
                 .and()
             .logout()

@@ -14,9 +14,9 @@ import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.AuthService;
 import pl.edu.pw.ee.cookbookserver.service.MailService;
+import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
-import pl.edu.pw.ee.cookbookserver.util.ResponseMessage;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -97,15 +97,15 @@ public class AuthServiceImpl implements AuthService {
         String emailKey = PayloadKey.EMAIL.value();
         System.out.println(emailKey + " " + payload.toString());
         if (!payload.has(emailKey) || payload.isNull(emailKey) || payload.getString(emailKey).isEmpty()) {
-            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_EMAIL.value());
+            throw new ProcessingException(Error.MISSING_EMAIL);
         }
         String email = payload.getString(emailKey);
         if (!email.matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$")) {
-            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.INVALID_EMAIL.value());
+            throw new ProcessingException(Error.INVALID_EMAIL);
         }
         User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
-            throw new ProcessingException(HttpStatus.CONFLICT, ResponseMessage.EMAIL_OCCUPIED.value());
+            throw new ProcessingException(Error.EMAIL_OCCUPIED);
         }
         return email;
     }
@@ -113,12 +113,12 @@ public class AuthServiceImpl implements AuthService {
     private String getValidUsername(JSONObject payload) throws JSONException, ProcessingException {
         String usernameKey = PayloadKey.USERNAME.value();
         if (!payload.has(usernameKey) || payload.isNull(usernameKey) || payload.getString(usernameKey).isEmpty()) {
-            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_USERNAME.value());
+            throw new ProcessingException(Error.MISSING_USERNAME);
         }
         String username = payload.getString(usernameKey);
         User user = userRepository.findByUsername(username).orElse(null);
         if (user != null) {
-            throw new ProcessingException(HttpStatus.CONFLICT, ResponseMessage.USERNAME_OCCUPIED.value());
+            throw new ProcessingException(Error.USERNAME_OCCUPIED);
         }
         return username;
     }
@@ -126,11 +126,11 @@ public class AuthServiceImpl implements AuthService {
     private String getValidPassword(JSONObject payload) throws JSONException, ProcessingException {
         String passwordKey = PayloadKey.PASSWORD.value();
         if (!payload.has(passwordKey) || payload.isNull(passwordKey) || payload.getString(passwordKey).isEmpty()) {
-            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_PASSWORD.value());
+            throw new ProcessingException(Error.MISSING_PASSWORD);
         }
         String password = payload.getString(passwordKey);
         if (password.length() < 8) {
-            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.PASSWORD_TOO_SHORT.value());
+            throw new ProcessingException(Error.PASSWORD_TOO_SHORT);
         }
         return password;
     }
@@ -138,12 +138,12 @@ public class AuthServiceImpl implements AuthService {
     private User getValidUser(JSONObject payload) throws JSONException, ProcessingException {
         String usernameKey = PayloadKey.USERNAME.value();
         if (!payload.has(usernameKey) || payload.isNull(usernameKey) || payload.getString(usernameKey).isEmpty()) {
-            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_USERNAME.value());
+            throw new ProcessingException(Error.MISSING_USERNAME);
         }
         String username = payload.getString(usernameKey);
         User user = userRepository.findByUsernameOrEmail(username, username).orElse(null);
         if (user == null) {
-            throw new ProcessingException(HttpStatus.NOT_FOUND);
+            throw new ProcessingException(Error.USER_NOT_FOUND);
         }
         return user;
     }
@@ -151,15 +151,15 @@ public class AuthServiceImpl implements AuthService {
     private Token getValidToken(JSONObject payload) throws JSONException, ProcessingException {
         String uuidKey = PayloadKey.UUID.value();
         if (!payload.has(uuidKey) || payload.isNull(uuidKey) || payload.getString(uuidKey).isEmpty()) {
-            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.MISSING_UUID.value());
+            throw new ProcessingException(Error.MISSING_UUID);
         }
         String uuid = payload.getString(uuidKey);
         Token token = tokenRepository.findByUuid(uuid).orElse(null);
         if (token == null) {
-            throw new ProcessingException(HttpStatus.NOT_FOUND);
+            throw new ProcessingException(Error.TOKEN_NOT_FOUND);
         }
         if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
-            throw new ProcessingException(HttpStatus.BAD_REQUEST, ResponseMessage.TOKEN_EXPIRED.value());
+            throw new ProcessingException(Error.TOKEN_EXPIRED);
         }
         return token;
     }
