@@ -15,8 +15,8 @@ import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.AuthService;
 import pl.edu.pw.ee.cookbookserver.service.MailService;
 import pl.edu.pw.ee.cookbookserver.util.Error;
-import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
+import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -38,20 +38,36 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity register(JSONObject payload, String origin) throws Exception {
-        String email = getValidEmail(payload);
-        String username = getValidUsername(payload);
-        String password = getValidPassword(payload);
-
         User user = new User();
-        user.setUsername(username);
-        user.setPassword(new BCryptPasswordEncoder().encode(password));
-        user.setEmail(email);
-        user.setAccountNonExpired(true);
-        user.setAccountNonLocked(true);
-        user.setCredentialsNonExpired(true);
-        user.setEnabled(false);
-        userRepository.save(user);
 
+        String emailKey = PayloadKey.EMAIL.value();
+        if (payload.has(emailKey)) {
+            user.setEmail(payload.getString(emailKey));
+            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+                throw new ProcessingException(Error.EMAIL_OCCUPIED);
+            }
+        } else {
+            throw new ProcessingException(Error.MISSING_EMAIL);
+        }
+
+        String usernameKey = PayloadKey.USERNAME.value();
+        if (payload.has(usernameKey)) {
+            user.setUsername(payload.getString(usernameKey));
+            if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+                throw new ProcessingException(Error.USERNAME_OCCUPIED);
+            }
+        } else {
+            throw new ProcessingException(Error.MISSING_USERNAME);
+        }
+
+        String passwordKey = PayloadKey.PASSWORD.value();
+        if (payload.has(passwordKey)) {
+            user.setPassword(payload.getString(passwordKey));
+        } else {
+            throw new ProcessingException(Error.MISSING_PASSWORD);
+        }
+
+        userRepository.save(user);
         Token token = createToken(user);
         mailService.sendAccountActivationMessage(origin, token);
 
@@ -91,36 +107,6 @@ public class AuthServiceImpl implements AuthService {
         tokenRepository.delete(token);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    private String getValidEmail(JSONObject payload) throws JSONException, ProcessingException {
-        String emailKey = PayloadKey.EMAIL.value();
-        System.out.println(emailKey + " " + payload.toString());
-        if (!payload.has(emailKey) || payload.isNull(emailKey) || payload.getString(emailKey).isEmpty()) {
-            throw new ProcessingException(Error.MISSING_EMAIL);
-        }
-        String email = payload.getString(emailKey);
-        if (!email.matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$")) {
-            throw new ProcessingException(Error.INVALID_EMAIL);
-        }
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user != null) {
-            throw new ProcessingException(Error.EMAIL_OCCUPIED);
-        }
-        return email;
-    }
-
-    private String getValidUsername(JSONObject payload) throws JSONException, ProcessingException {
-        String usernameKey = PayloadKey.USERNAME.value();
-        if (!payload.has(usernameKey) || payload.isNull(usernameKey) || payload.getString(usernameKey).isEmpty()) {
-            throw new ProcessingException(Error.MISSING_USERNAME);
-        }
-        String username = payload.getString(usernameKey);
-        User user = userRepository.findByUsername(username).orElse(null);
-        if (user != null) {
-            throw new ProcessingException(Error.USERNAME_OCCUPIED);
-        }
-        return username;
     }
 
     private String getValidPassword(JSONObject payload) throws JSONException, ProcessingException {

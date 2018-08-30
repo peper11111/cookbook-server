@@ -14,7 +14,10 @@ public enum Error {
     EMAIL_OCCUPIED(107, HttpStatus.CONFLICT, "User with the given email already exists"),
     TOKEN_EXPIRED(108, HttpStatus.BAD_REQUEST, "Token expired"),
     USER_NOT_FOUND(109, HttpStatus.NOT_FOUND, "User not found"),
-    TOKEN_NOT_FOUND(110, HttpStatus.NOT_FOUND, "Token not found");
+    TOKEN_NOT_FOUND(110, HttpStatus.NOT_FOUND, "Token not found"),
+    NULL_USERNAME(111, HttpStatus.BAD_REQUEST, "Username can't be null"),
+    NULL_EMAIL(112, HttpStatus.BAD_REQUEST, "Email can't be null"),
+    NULL_PASSWORD(113, HttpStatus.BAD_REQUEST, "Passwrod can't be null");
 
     private final int code;
     private final HttpStatus status;
