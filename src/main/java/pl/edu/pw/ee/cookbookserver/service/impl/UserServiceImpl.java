@@ -6,12 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.edu.pw.ee.cookbookserver.CookbookHelper;
 import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.mapper.RecipeMapper;
 import pl.edu.pw.ee.cookbookserver.mapper.UserMapper;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
@@ -29,27 +29,28 @@ import java.util.Collection;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    private CookbookHelper cookbookHelper;
     private RecipeMapper recipeMapper;
     private RecipeRepository recipeRepository;
     private UploadRepository uploadRepository;
+    private UserHelper userHelper;
     private UserMapper userMapper;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(CookbookHelper cookbookHelper, RecipeMapper recipeMapper, RecipeRepository recipeRepository,
-                           UploadRepository uploadRepository, UserMapper userMapper, UserRepository userRepository) {
-        this.cookbookHelper = cookbookHelper;
+    public UserServiceImpl(RecipeMapper recipeMapper, RecipeRepository recipeRepository,
+                           UploadRepository uploadRepository, UserHelper userHelper, UserMapper userMapper,
+                           UserRepository userRepository) {
         this.recipeMapper = recipeMapper;
         this.recipeRepository = recipeRepository;
         this.uploadRepository = uploadRepository;
+        this.userHelper = userHelper;
         this.userMapper = userMapper;
         this.userRepository = userRepository;
     }
 
     @Override
     public ResponseEntity current() throws Exception {
-        User currentUser = cookbookHelper.getCurrentUser();
+        User currentUser = userHelper.getCurrentUser();
         BasicUserDto basicUserDto = userMapper.userToBasicUserDto(currentUser);
         return ResponseEntity.status(HttpStatus.OK).body(basicUserDto);
     }
@@ -71,7 +72,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        User currentUser = cookbookHelper.getCurrentUser();
+        User currentUser = userHelper.getCurrentUser();
         if (!user.getId().equals(currentUser.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -122,7 +123,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        User currentUser = cookbookHelper.getCurrentUser();
+        User currentUser = userHelper.getCurrentUser();
         if (currentUser.getId().equals(user.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

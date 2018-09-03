@@ -1,4 +1,4 @@
-package pl.edu.pw.ee.cookbookserver;
+package pl.edu.pw.ee.cookbookserver.helper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,12 +9,12 @@ import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 @Component
-public class CookbookHelper {
+public class UserHelper {
 
     private UserRepository userRepository;
 
     @Autowired
-    public CookbookHelper(UserRepository userRepository) {
+    public UserHelper(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

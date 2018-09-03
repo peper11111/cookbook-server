@@ -2,21 +2,21 @@ package pl.edu.pw.ee.cookbookserver.mapper.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.edu.pw.ee.cookbookserver.CookbookHelper;
 import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.mapper.UserMapper;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 @Component
 public class UserMapperImpl implements UserMapper {
 
-    private CookbookHelper cookbookHelper;
+    private UserHelper userHelper;
 
     @Autowired
-    public UserMapperImpl(CookbookHelper cookbookHelper) {
-        this.cookbookHelper = cookbookHelper;
+    public UserMapperImpl(UserHelper userHelper) {
+        this.userHelper = userHelper;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class UserMapperImpl implements UserMapper {
         if (user.getBanner() != null) {
             userDto.setBannerId(user.getBanner().getId());
         }
-        User currentUser = cookbookHelper.getCurrentUser();
+        User currentUser = userHelper.getCurrentUser();
         userDto.setFollowing(user.getFollowers().contains(currentUser));
         userDto.setFollowed((long) user.getFollowed().size());
         userDto.setFollowers((long) user.getFollowers().size());

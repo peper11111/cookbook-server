@@ -5,10 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.edu.pw.ee.cookbookserver.CookbookHelper;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
-import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.mapper.RecipeMapper;
 import pl.edu.pw.ee.cookbookserver.repository.CuisineRepository;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
@@ -21,20 +20,21 @@ import java.time.LocalDateTime;
 @Transactional
 public class RecipeServiceImpl implements RecipeService {
 
-    private CookbookHelper cookbookHelper;
     private CuisineRepository cuisineRepository;
     private RecipeMapper recipeMapper;
     private RecipeRepository recipeRepository;
     private UploadRepository uploadRepository;
+    private UserHelper userHelper;
 
     @Autowired
-    public RecipeServiceImpl(CookbookHelper cookbookHelper, CuisineRepository cuisineRepository, RecipeMapper recipeMapper,
-                             RecipeRepository recipeRepository, UploadRepository uploadRepository) {
-        this.cookbookHelper = cookbookHelper;
+    public RecipeServiceImpl(CuisineRepository cuisineRepository, RecipeMapper recipeMapper,
+                             RecipeRepository recipeRepository, UploadRepository uploadRepository,
+                             UserHelper userHelper) {
         this.cuisineRepository = cuisineRepository;
         this.recipeMapper = recipeMapper;
         this.recipeRepository = recipeRepository;
         this.uploadRepository = uploadRepository;
+        this.userHelper = userHelper;
     }
 
     @Override
@@ -50,10 +50,9 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public ResponseEntity create(RecipeDto recipeDto) throws Exception {
-        User currentUser = cookbookHelper.getCurrentUser();
         Recipe recipe = new Recipe();
         recipe.setCreationTime(LocalDateTime.now());
-        recipe.setAuthor(currentUser);
+        recipe.setAuthor(userHelper.getCurrentUser());
         recipe.setBanner(uploadRepository.findById(recipeDto.getBannerId()).orElse(null));
         recipe.setTitle(recipeDto.getTitle());
         recipe.setLead(recipeDto.getLead());
