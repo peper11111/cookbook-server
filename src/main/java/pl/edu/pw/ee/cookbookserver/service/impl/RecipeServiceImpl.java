@@ -49,7 +49,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public ResponseEntity create(RecipeDto recipeDto) {
+    public ResponseEntity create(RecipeDto recipeDto) throws Exception {
         User currentUser = cookbookHelper.getCurrentUser();
         Recipe recipe = new Recipe();
         recipe.setCreationTime(LocalDateTime.now());

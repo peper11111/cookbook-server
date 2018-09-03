@@ -18,7 +18,7 @@ public class RecipeController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody RecipeDto recipeDto) {
+    public ResponseEntity create(@RequestBody RecipeDto recipeDto) throws Exception {
         return recipeService.create(recipeDto);
     }
 
