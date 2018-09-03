@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.edu.pw.ee.cookbookserver.dto.ErrorDto;
+import pl.edu.pw.ee.cookbookserver.util.Error;
 
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -41,8 +42,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/auth/login")
                 .successHandler((request, response, authentication) -> response.setStatus(HttpStatus.NO_CONTENT.value()))
                 .failureHandler((request, response, exception) -> {
-                    ErrorDto errorDto = new ErrorDto(2, exception.getMessage());
-                    response.setStatus(HttpStatus.FORBIDDEN.value());
+                    ErrorDto errorDto = new ErrorDto(Error.LOGIN_FAILURE.code(), exception.getMessage());
+                    response.setStatus(Error.LOGIN_FAILURE.status().value());
                     response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                     response.getWriter().write(errorDto.toString());
                 })

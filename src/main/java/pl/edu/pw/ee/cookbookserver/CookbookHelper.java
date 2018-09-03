@@ -5,6 +5,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
+import pl.edu.pw.ee.cookbookserver.util.Error;
+import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 @Component
 public class CookbookHelper {
@@ -16,8 +18,12 @@ public class CookbookHelper {
         this.userRepository = userRepository;
     }
 
-    public User getCurrentUser() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository.findById(user.getId()).orElse(null);
+    public User getCurrentUser() throws ProcessingException {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = userRepository.findById(principal.getId()).orElse(null);
+        if (currentUser == null) {
+            throw new ProcessingException(Error.ACCESS_DENIED);
+        }
+        return currentUser;
     }
 }
