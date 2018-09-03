@@ -1,11 +1,10 @@
 package pl.edu.pw.ee.cookbookserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -29,8 +28,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity modify(@PathVariable Long id, @RequestBody Map userMap) {
-        return userService.modify(id, userMap);
+    public ResponseEntity modify(@PathVariable Long id, @RequestBody String body) throws Exception {
+        return userService.modify(id, new JSONObject(body));
     }
 
     @PostMapping("/{id}/follow")

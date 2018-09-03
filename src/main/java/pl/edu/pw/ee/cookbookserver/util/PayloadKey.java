@@ -6,7 +6,10 @@ public enum PayloadKey {
     PASSWORD("password"),
     UUID("token"),
     EMAIL("email"),
-    NAME("name");
+    NAME("name"),
+    BIOGRAPHY("biography"),
+    AVATAR_ID("avatarId"),
+    BANNER_ID("bannerId");
 
     private final String value;
 

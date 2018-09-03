@@ -1,9 +1,9 @@
 package pl.edu.pw.ee.cookbookserver.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.CookbookHelper;
@@ -18,10 +18,12 @@ import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
+import pl.edu.pw.ee.cookbookserver.util.Error;
+import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
+import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 @Service
 @Transactional
@@ -63,48 +65,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity modify(Long id, Map userMap) {
+    public ResponseEntity modify(Long id, JSONObject payload) throws Exception {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         User currentUser = cookbookHelper.getCurrentUser();
-        if (!user.getId().equals(currentUser.getId())) {
+        if (currentUser == null || !user.getId().equals(currentUser.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        if (userMap.containsKey("email")) {
-            String email = (String) userMap.get("email");
-            if (email != null && !userRepository.findByEmail(email).isPresent()) {
-                user.setEmail(email);
+        String emailKey = PayloadKey.EMAIL.value();
+        if (payload.has(emailKey)) {
+            user.setEmail(payload.getString(emailKey));
+            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+                throw new ProcessingException(Error.EMAIL_OCCUPIED);
             }
         }
-        if (userMap.containsKey("password")) {
-            String password = (String) userMap.get("password");
-            if (password != null) {
-                user.setPassword(new BCryptPasswordEncoder().encode(password));
-            }
+
+        String passwordKey = PayloadKey.PASSWORD.value();
+        if (payload.has(passwordKey)) {
+            user.setPassword(payload.getString(passwordKey));
         }
-        if (userMap.containsKey("name")) {
-            String name = (String) userMap.get("name");
-            user.setName(name);
+
+        String nameKey = PayloadKey.NAME.value();
+        if (payload.has(nameKey)) {
+            user.setName(payload.getString(nameKey));
         }
-        if (userMap.containsKey("biography")) {
-            String biography = (String) userMap.get("biography");
-            user.setBiography(biography);
+
+        String biographyKey = PayloadKey.BIOGRAPHY.value();
+        if (payload.has(biographyKey)) {
+            user.setBiography(payload.getString(biographyKey));
         }
-        if (userMap.containsKey("avatarId")) {
-            Number avatarId = (Number) userMap.get("avatarId");
-            user.setAvatar(avatarId != null
-                    ? uploadRepository.findById(avatarId.longValue()).orElse(null)
-                    : null);
+
+        String avatarIdKey = PayloadKey.AVATAR_ID.value();
+        if (payload.has(avatarIdKey)) {
+            long avatarId = payload.getLong(avatarIdKey);
+            user.setAvatar(uploadRepository.findById(avatarId).orElse(null));
         }
-        if (userMap.containsKey("bannerId")) {
-            Number bannerId = (Number) userMap.get("bannerId");
-            user.setBanner(bannerId != null
-                    ? uploadRepository.findById(bannerId.longValue()).orElse(null)
-                    : null);
+
+        String bannerIdKey = PayloadKey.BANNER_ID.value();
+        if (payload.has(bannerIdKey)) {
+            long bannerId = payload.getLong(bannerIdKey);
+            user.setBanner(uploadRepository.findById(bannerId).orElse(null));
         }
         userRepository.save(user);
 
