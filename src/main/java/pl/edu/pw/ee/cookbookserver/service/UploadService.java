@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public interface UploadService {
 
-    ResponseEntity create(MultipartFile file) throws IOException;
+    ResponseEntity create(MultipartFile file) throws Exception;
     ResponseEntity read(Long id) throws IOException;
-    ResponseEntity delete(Long id);
+    ResponseEntity delete(Long id) throws Exception;
 }

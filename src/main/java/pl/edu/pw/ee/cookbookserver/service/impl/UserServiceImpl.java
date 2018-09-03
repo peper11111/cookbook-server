@@ -48,14 +48,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity current() {
+    public ResponseEntity current() throws Exception {
         User currentUser = cookbookHelper.getCurrentUser();
         BasicUserDto basicUserDto = userMapper.userToBasicUserDto(currentUser);
         return ResponseEntity.status(HttpStatus.OK).body(basicUserDto);
     }
 
     @Override
-    public ResponseEntity read(Long id) {
+    public ResponseEntity read(Long id) throws Exception {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User currentUser = cookbookHelper.getCurrentUser();
-        if (currentUser == null || !user.getId().equals(currentUser.getId())) {
+        if (!user.getId().equals(currentUser.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
@@ -116,14 +116,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity follow(Long id) {
+    public ResponseEntity follow(Long id) throws Exception {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         User currentUser = cookbookHelper.getCurrentUser();
-        if (currentUser == null || currentUser.getId().equals(user.getId())) {
+        if (currentUser.getId().equals(user.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 

@@ -7,6 +7,7 @@ import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.mapper.UserMapper;
+import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 @Component
 public class UserMapperImpl implements UserMapper {
@@ -33,7 +34,7 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public UserDto userToUserDto(User user) {
+    public UserDto userToUserDto(User user) throws ProcessingException {
         if (user == null) {
             return null;
         }

@@ -41,7 +41,7 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public ResponseEntity create(MultipartFile file) throws IOException {
+    public ResponseEntity create(MultipartFile file) throws Exception {
         User currentUser = cookbookHelper.getCurrentUser();
         Upload upload = new Upload();
         upload.setFilename(this.writeImage(file.getBytes()));
@@ -62,7 +62,7 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public ResponseEntity delete(Long id) {
+    public ResponseEntity delete(Long id) throws Exception {
         Upload upload = uploadRepository.findById(id).orElse(null);
         if (upload == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

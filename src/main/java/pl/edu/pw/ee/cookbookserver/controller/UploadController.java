@@ -20,7 +20,7 @@ public class UploadController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestParam MultipartFile file) throws IOException {
+    public ResponseEntity create(@RequestParam MultipartFile file) throws Exception {
         return uploadService.create(file);
     }
 
@@ -30,7 +30,7 @@ public class UploadController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Long id) throws Exception {
         return uploadService.delete(id);
     }
 }

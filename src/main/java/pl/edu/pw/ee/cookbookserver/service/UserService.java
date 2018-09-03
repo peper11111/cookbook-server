@@ -5,9 +5,9 @@ import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
-    ResponseEntity current();
-    ResponseEntity read(Long id);
+    ResponseEntity current() throws Exception;
+    ResponseEntity read(Long id) throws Exception;
     ResponseEntity modify(Long id, JSONObject payload) throws Exception;
-    ResponseEntity follow(Long id);
+    ResponseEntity follow(Long id) throws Exception;
     ResponseEntity recipes(Long id);
 }

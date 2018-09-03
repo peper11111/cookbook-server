@@ -18,12 +18,12 @@ public class UserController {
     }
 
     @GetMapping("/current")
-    public ResponseEntity current() {
+    public ResponseEntity current() throws Exception {
         return userService.current();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity read(@PathVariable Long id) {
+    public ResponseEntity read(@PathVariable Long id) throws Exception {
         return userService.read(id);
     }
 
@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/follow")
-    public ResponseEntity follow(@PathVariable Long id) {
+    public ResponseEntity follow(@PathVariable Long id) throws Exception {
         return userService.follow(id);
     }
 
