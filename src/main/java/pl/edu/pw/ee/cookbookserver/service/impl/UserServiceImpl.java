@@ -11,9 +11,8 @@ import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
-import pl.edu.pw.ee.cookbookserver.mapper.RecipeMapper;
-import pl.edu.pw.ee.cookbookserver.mapper.UserMapper;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
@@ -29,29 +28,26 @@ import java.util.Collection;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    private RecipeMapper recipeMapper;
+    private RecipeHelper recipeHelper;
     private RecipeRepository recipeRepository;
     private UploadRepository uploadRepository;
     private UserHelper userHelper;
-    private UserMapper userMapper;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(RecipeMapper recipeMapper, RecipeRepository recipeRepository,
-                           UploadRepository uploadRepository, UserHelper userHelper, UserMapper userMapper,
-                           UserRepository userRepository) {
-        this.recipeMapper = recipeMapper;
+    public UserServiceImpl(RecipeHelper recipeHelper, RecipeRepository recipeRepository,
+                           UploadRepository uploadRepository, UserHelper userHelper, UserRepository userRepository) {
+        this.recipeHelper = recipeHelper;
         this.recipeRepository = recipeRepository;
         this.uploadRepository = uploadRepository;
         this.userHelper = userHelper;
-        this.userMapper = userMapper;
         this.userRepository = userRepository;
     }
 
     @Override
     public ResponseEntity current() throws Exception {
         User currentUser = userHelper.getCurrentUser();
-        BasicUserDto basicUserDto = userMapper.userToBasicUserDto(currentUser);
+        BasicUserDto basicUserDto = userHelper.userToBasicUserDto(currentUser);
         return ResponseEntity.status(HttpStatus.OK).body(basicUserDto);
     }
 
@@ -61,7 +57,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        UserDto userDto = userMapper.userToUserDto(user);
+        UserDto userDto = userHelper.userToUserDto(user);
         return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
@@ -148,7 +144,7 @@ public class UserServiceImpl implements UserService {
         Collection<BasicRecipeDto> basicRecipeDtoList = new ArrayList<>();
         Iterable<Recipe> recipes = recipeRepository.findByAuthor(user);
         for (Recipe recipe : recipes) {
-            BasicRecipeDto basicRecipeDto = recipeMapper.recipeToBasicRecipeDto(recipe);
+            BasicRecipeDto basicRecipeDto = recipeHelper.recipeToBasicRecipeDto(recipe);
             basicRecipeDtoList.add(basicRecipeDto);
         }
 

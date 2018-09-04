@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
+import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
-import pl.edu.pw.ee.cookbookserver.mapper.RecipeMapper;
 import pl.edu.pw.ee.cookbookserver.repository.CuisineRepository;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
@@ -21,17 +21,17 @@ import java.time.LocalDateTime;
 public class RecipeServiceImpl implements RecipeService {
 
     private CuisineRepository cuisineRepository;
-    private RecipeMapper recipeMapper;
+    private RecipeHelper recipeHelper;
     private RecipeRepository recipeRepository;
     private UploadRepository uploadRepository;
     private UserHelper userHelper;
 
     @Autowired
-    public RecipeServiceImpl(CuisineRepository cuisineRepository, RecipeMapper recipeMapper,
+    public RecipeServiceImpl(CuisineRepository cuisineRepository, RecipeHelper recipeHelper,
                              RecipeRepository recipeRepository, UploadRepository uploadRepository,
                              UserHelper userHelper) {
         this.cuisineRepository = cuisineRepository;
-        this.recipeMapper = recipeMapper;
+        this.recipeHelper = recipeHelper;
         this.recipeRepository = recipeRepository;
         this.uploadRepository = uploadRepository;
         this.userHelper = userHelper;
@@ -44,7 +44,7 @@ public class RecipeServiceImpl implements RecipeService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        RecipeDto recipeDto = recipeMapper.recipeToRecipeDto(recipe);
+        RecipeDto recipeDto = recipeHelper.recipeToRecipeDto(recipe);
         return ResponseEntity.status(HttpStatus.OK).body(recipeDto);
     }
 
