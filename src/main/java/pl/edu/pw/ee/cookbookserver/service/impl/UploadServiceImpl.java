@@ -10,9 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.edu.pw.ee.cookbookserver.CookbookProperties;
 import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.helper.UploadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.service.UploadService;
+import pl.edu.pw.ee.cookbookserver.util.Error;
+import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -21,7 +24,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -29,13 +31,15 @@ import java.util.UUID;
 public class UploadServiceImpl implements UploadService {
 
     private String uploadFolder;
+    private UploadHelper uploadHelper;
     private UploadRepository uploadRepository;
     private UserHelper userHelper;
 
     @Autowired
-    public UploadServiceImpl(CookbookProperties cookbookProperties, UploadRepository uploadRepository,
-                             UserHelper userHelper) {
+    public UploadServiceImpl(CookbookProperties cookbookProperties, UploadHelper uploadHelper,
+                             UploadRepository uploadRepository, UserHelper userHelper) {
         this.uploadFolder = cookbookProperties.getUploadFolder();
+        this.uploadHelper = uploadHelper;
         this.uploadRepository = uploadRepository;
         this.userHelper = userHelper;
     }
@@ -43,34 +47,28 @@ public class UploadServiceImpl implements UploadService {
     @Override
     public ResponseEntity create(MultipartFile file) throws Exception {
         User currentUser = userHelper.getCurrentUser();
+
         Upload upload = new Upload();
         upload.setFilename(this.writeImage(file.getBytes()));
         upload.setOwner(currentUser);
-        upload.setCreationTime(LocalDateTime.now());
         uploadRepository.save(upload);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(upload.getId());
     }
 
     @Override
-    public ResponseEntity read(Long id) throws IOException {
-        Upload upload = uploadRepository.findById(id).orElse(null);
-        if (upload == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
+    public ResponseEntity read(Long id) throws Exception {
+        Upload upload = uploadHelper.getUpload(id);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(this.readImage(upload.getFilename()));
     }
 
     @Override
     public ResponseEntity delete(Long id) throws Exception {
-        Upload upload = uploadRepository.findById(id).orElse(null);
-        if (upload == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
+        Upload upload = uploadHelper.getUpload(id);
         User currentUser = userHelper.getCurrentUser();
+
         if (!upload.getOwner().getId().equals(currentUser.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ProcessingException(Error.ACCESS_DENIED);
         }
 
         uploadRepository.delete(upload);

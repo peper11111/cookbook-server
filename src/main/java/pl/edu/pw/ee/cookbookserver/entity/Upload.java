@@ -18,4 +18,8 @@ public class Upload {
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
     private LocalDateTime creationTime;
+
+    public Upload() {
+        this.creationTime = LocalDateTime.now();
+    }
 }

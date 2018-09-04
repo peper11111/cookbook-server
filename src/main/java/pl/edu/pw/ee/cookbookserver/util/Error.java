@@ -19,7 +19,8 @@ public enum Error {
     USER_NOT_FOUND(109, HttpStatus.NOT_FOUND, "User not found"),
     TOKEN_NOT_FOUND(110, HttpStatus.NOT_FOUND, "Token not found"),
     INVALID_USERNAME(114, HttpStatus.BAD_REQUEST, "Username can't be empty"),
-    RECIPE_NOT_FOUND(115, HttpStatus.NOT_FOUND, "Recipe not found");
+    RECIPE_NOT_FOUND(115, HttpStatus.NOT_FOUND, "Recipe not found"),
+    UPLOAD_NOT_FOUND(116, HttpStatus.NOT_FOUND, "Upload not found");
 
     private final int code;
     private final HttpStatus status;

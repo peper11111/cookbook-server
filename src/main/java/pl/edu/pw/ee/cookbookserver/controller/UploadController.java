@@ -25,7 +25,7 @@ public class UploadController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity read(@PathVariable Long id) throws IOException {
+    public ResponseEntity read(@PathVariable Long id) throws Exception {
         return uploadService.read(id);
     }
 
