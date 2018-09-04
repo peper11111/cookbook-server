@@ -69,12 +69,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity reset(JSONObject payload, String origin) throws Exception {
-        String usernameKey = PayloadKey.USERNAME.value();
-        if (!payload.has(usernameKey)) {
-            throw new ProcessingException(Error.MISSING_USERNAME);
-        }
-
-        String username = payload.optString(PayloadKey.USERNAME.value());
+        String username = payloadHelper.getUsername(payload);
         User user = userHelper.getUser(username);
 
         Token token = new Token(user);
