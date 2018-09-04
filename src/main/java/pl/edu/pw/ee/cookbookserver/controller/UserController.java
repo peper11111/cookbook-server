@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/recipes")
-    public ResponseEntity recipes(@PathVariable Long id) {
+    public ResponseEntity recipes(@PathVariable Long id) throws Exception {
         return userService.recipes(id);
     }
 }

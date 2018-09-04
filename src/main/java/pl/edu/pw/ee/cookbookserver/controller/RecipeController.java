@@ -23,7 +23,7 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity read(@PathVariable Long id) {
+    public ResponseEntity read(@PathVariable Long id) throws Exception {
         return recipeService.read(id);
     }
 }

@@ -5,26 +5,31 @@ import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
+import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
+import pl.edu.pw.ee.cookbookserver.util.Error;
+import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 import java.time.ZoneOffset;
 
 @Component
 public class RecipeHelper {
 
+    private RecipeRepository recipeRepository;
     private UserHelper userHelper;
 
     @Autowired
-    public RecipeHelper(UserHelper userHelper) {
+    public RecipeHelper(RecipeRepository recipeRepository, UserHelper userHelper) {
+        this.recipeRepository = recipeRepository;
         this.userHelper = userHelper;
     }
 
-    public BasicRecipeDto recipeToBasicRecipeDto(Recipe recipe) {
+    public BasicRecipeDto mapRecipeToBasicRecipeDto(Recipe recipe) {
         if (recipe == null) {
             return null;
         }
         BasicRecipeDto basicRecipeDto = new BasicRecipeDto();
         basicRecipeDto.setId(recipe.getId());
-        basicRecipeDto.setAuthor(userHelper.userToBasicUserDto(recipe.getAuthor()));
+        basicRecipeDto.setAuthor(userHelper.mapUserToBasicUserDto(recipe.getAuthor()));
         if (recipe.getBanner() != null) {
             basicRecipeDto.setBannerId(recipe.getBanner().getId());
         }
@@ -34,7 +39,7 @@ public class RecipeHelper {
         return basicRecipeDto;
     }
 
-    public RecipeDto recipeToRecipeDto(Recipe recipe) {
+    public RecipeDto mapRecipeToRecipeDto(Recipe recipe) {
         if (recipe == null) {
             return null;
         }
@@ -51,5 +56,13 @@ public class RecipeHelper {
         recipeDto.setPlates(recipe.getPlates());
         recipeDto.setPreparationTime(recipe.getPreparationTime());
         return recipeDto;
+    }
+
+    public Recipe getRecipe(Long id) throws ProcessingException {
+        Recipe recipe = recipeRepository.findById(id).orElse(null);
+        if (recipe == null) {
+            throw new ProcessingException(Error.RECIPE_NOT_FOUND);
+        }
+        return recipe;
     }
 }

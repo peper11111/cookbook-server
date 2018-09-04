@@ -5,6 +5,6 @@ import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 
 public interface RecipeService {
 
-    ResponseEntity read(Long id);
+    ResponseEntity read(Long id) throws Exception;
     ResponseEntity create(RecipeDto recipeDto) throws Exception;
 }

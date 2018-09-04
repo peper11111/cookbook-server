@@ -11,6 +11,7 @@ import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
@@ -28,6 +29,7 @@ import java.util.Collection;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    private PayloadHelper payloadHelper;
     private RecipeHelper recipeHelper;
     private RecipeRepository recipeRepository;
     private UploadRepository uploadRepository;
@@ -35,8 +37,9 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(RecipeHelper recipeHelper, RecipeRepository recipeRepository,
+    public UserServiceImpl(PayloadHelper payloadHelper, RecipeHelper recipeHelper, RecipeRepository recipeRepository,
                            UploadRepository uploadRepository, UserHelper userHelper, UserRepository userRepository) {
+        this.payloadHelper = payloadHelper;
         this.recipeHelper = recipeHelper;
         this.recipeRepository = recipeRepository;
         this.uploadRepository = uploadRepository;
@@ -47,64 +50,55 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity current() throws Exception {
         User currentUser = userHelper.getCurrentUser();
-        BasicUserDto basicUserDto = userHelper.userToBasicUserDto(currentUser);
+        BasicUserDto basicUserDto = userHelper.mapUserToBasicUserDto(currentUser);
         return ResponseEntity.status(HttpStatus.OK).body(basicUserDto);
     }
 
     @Override
     public ResponseEntity read(Long id) throws Exception {
-        User user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        UserDto userDto = userHelper.userToUserDto(user);
+        User user = userHelper.getUser(id);
+        UserDto userDto = userHelper.mapUserToUserDto(user);
         return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
     @Override
     public ResponseEntity modify(Long id, JSONObject payload) throws Exception {
-        User user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
+        User user = userHelper.getUser(id);
         User currentUser = userHelper.getCurrentUser();
+
         if (!user.getId().equals(currentUser.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ProcessingException(Error.ACCESS_DENIED);
         }
 
         String emailKey = PayloadKey.EMAIL.value();
         if (payload.has(emailKey)) {
-            user.setEmail(payload.getString(emailKey));
-            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-                throw new ProcessingException(Error.EMAIL_OCCUPIED);
-            }
+            user.setEmail(payloadHelper.getValidEmail(payload));
         }
 
         String passwordKey = PayloadKey.PASSWORD.value();
         if (payload.has(passwordKey)) {
-            user.setPassword(payload.getString(passwordKey));
+            user.setPassword(payloadHelper.getValidPassword(payload));
         }
 
         String nameKey = PayloadKey.NAME.value();
         if (payload.has(nameKey)) {
-            user.setName(payload.getString(nameKey));
+            user.setName(payload.optString(nameKey));
         }
 
         String biographyKey = PayloadKey.BIOGRAPHY.value();
         if (payload.has(biographyKey)) {
-            user.setBiography(payload.getString(biographyKey));
+            user.setBiography(payload.optString(biographyKey));
         }
 
         String avatarIdKey = PayloadKey.AVATAR_ID.value();
         if (payload.has(avatarIdKey)) {
-            long avatarId = payload.getLong(avatarIdKey);
+            long avatarId = payload.optLong(avatarIdKey);
             user.setAvatar(uploadRepository.findById(avatarId).orElse(null));
         }
 
         String bannerIdKey = PayloadKey.BANNER_ID.value();
         if (payload.has(bannerIdKey)) {
-            long bannerId = payload.getLong(bannerIdKey);
+            long bannerId = payload.optLong(bannerIdKey);
             user.setBanner(uploadRepository.findById(bannerId).orElse(null));
         }
         userRepository.save(user);
@@ -114,14 +108,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity follow(Long id) throws Exception {
-        User user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
+        User user = userHelper.getUser(id);
         User currentUser = userHelper.getCurrentUser();
+
         if (currentUser.getId().equals(user.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ProcessingException(Error.ACCESS_DENIED);
         }
 
         if (currentUser.getFollowed().contains(user)) {
@@ -135,16 +126,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity recipes(Long id) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity recipes(Long id) throws Exception {
+        User user = userHelper.getUser(id);
 
         Collection<BasicRecipeDto> basicRecipeDtoList = new ArrayList<>();
         Iterable<Recipe> recipes = recipeRepository.findByAuthor(user);
         for (Recipe recipe : recipes) {
-            BasicRecipeDto basicRecipeDto = recipeHelper.recipeToBasicRecipeDto(recipe);
+            BasicRecipeDto basicRecipeDto = recipeHelper.mapRecipeToBasicRecipeDto(recipe);
             basicRecipeDtoList.add(basicRecipeDto);
         }
 

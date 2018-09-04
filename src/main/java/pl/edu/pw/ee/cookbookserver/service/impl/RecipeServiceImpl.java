@@ -38,20 +38,15 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public ResponseEntity read(Long id) {
-        Recipe recipe = recipeRepository.findById(id).orElse(null);
-        if (recipe == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        RecipeDto recipeDto = recipeHelper.recipeToRecipeDto(recipe);
+    public ResponseEntity read(Long id) throws Exception {
+        Recipe recipe = recipeHelper.getRecipe(id);
+        RecipeDto recipeDto = recipeHelper.mapRecipeToRecipeDto(recipe);
         return ResponseEntity.status(HttpStatus.OK).body(recipeDto);
     }
 
     @Override
     public ResponseEntity create(RecipeDto recipeDto) throws Exception {
         Recipe recipe = new Recipe();
-        recipe.setCreationTime(LocalDateTime.now());
         recipe.setAuthor(userHelper.getCurrentUser());
         recipe.setBanner(uploadRepository.findById(recipeDto.getBannerId()).orElse(null));
         recipe.setTitle(recipeDto.getTitle());

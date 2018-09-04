@@ -20,7 +20,7 @@ public class UserHelper {
         this.userRepository = userRepository;
     }
 
-    public BasicUserDto userToBasicUserDto(User user) {
+    public BasicUserDto mapUserToBasicUserDto(User user) {
         if (user == null) {
             return null;
         }
@@ -33,7 +33,7 @@ public class UserHelper {
         return basicUserDto;
     }
 
-    public UserDto userToUserDto(User user) throws ProcessingException {
+    public UserDto mapUserToUserDto(User user) throws ProcessingException {
         if (user == null) {
             return null;
         }
@@ -61,5 +61,21 @@ public class UserHelper {
             throw new ProcessingException(Error.ACCESS_DENIED);
         }
         return currentUser;
+    }
+
+    public User getUser(Long id) throws ProcessingException {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            throw new ProcessingException(Error.USER_NOT_FOUND);
+        }
+        return user;
+    }
+
+    public User getUser(String username) throws ProcessingException {
+        User user = userRepository.findByUsernameOrEmail(username, username).orElse(null);
+        if (user == null) {
+            throw new ProcessingException(Error.USER_NOT_FOUND);
+        }
+        return user;
     }
 }

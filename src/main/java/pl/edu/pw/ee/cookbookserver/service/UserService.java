@@ -9,5 +9,5 @@ public interface UserService {
     ResponseEntity read(Long id) throws Exception;
     ResponseEntity modify(Long id, JSONObject payload) throws Exception;
     ResponseEntity follow(Long id) throws Exception;
-    ResponseEntity recipes(Long id);
+    ResponseEntity recipes(Long id) throws Exception;
 }

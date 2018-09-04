@@ -3,8 +3,6 @@ package pl.edu.pw.ee.cookbookserver.entity;
 import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import pl.edu.pw.ee.cookbookserver.util.Error;
-import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -48,30 +46,7 @@ public class User implements UserDetails {
         this.enabled = false;
     }
 
-    public void setUsername(String username) throws ProcessingException {
-        if (username == null) {
-            throw new ProcessingException(Error.NULL_USERNAME);
-        }
-        this.username = username;
-    }
-
-    public void setEmail(String email) throws ProcessingException {
-        if (email == null) {
-            throw new ProcessingException(Error.NULL_EMAIL);
-        }
-        if (!email.matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$")) {
-            throw new ProcessingException(Error.INVALID_EMAIL);
-        }
-        this.email = email;
-    }
-
-    public void setPassword(String password) throws ProcessingException {
-        if (password == null) {
-            throw new ProcessingException(Error.NULL_PASSWORD);
-        }
-        if (password.length() < 8) {
-            throw new ProcessingException(Error.PASSWORD_TOO_SHORT);
-        }
+    public void setPassword(String password) {
         this.password = new BCryptPasswordEncoder().encode(password);
     }
 }

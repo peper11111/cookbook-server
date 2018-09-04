@@ -28,4 +28,8 @@ public class Recipe {
     private Integer preparationTime;
     @OneToMany(fetch = FetchType.LAZY)
     private Collection<Comment> comments;
+
+    public Recipe() {
+        this.creationTime = LocalDateTime.now();
+    }
 }

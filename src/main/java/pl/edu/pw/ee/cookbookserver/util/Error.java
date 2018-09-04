@@ -18,9 +18,8 @@ public enum Error {
     TOKEN_EXPIRED(108, HttpStatus.BAD_REQUEST, "Token expired"),
     USER_NOT_FOUND(109, HttpStatus.NOT_FOUND, "User not found"),
     TOKEN_NOT_FOUND(110, HttpStatus.NOT_FOUND, "Token not found"),
-    NULL_USERNAME(111, HttpStatus.BAD_REQUEST, "Username can't be null"),
-    NULL_EMAIL(112, HttpStatus.BAD_REQUEST, "Email can't be null"),
-    NULL_PASSWORD(113, HttpStatus.BAD_REQUEST, "Password can't be null");
+    INVALID_USERNAME(114, HttpStatus.BAD_REQUEST, "Username can't be empty"),
+    RECIPE_NOT_FOUND(115, HttpStatus.NOT_FOUND, "Recipe not found");
 
     private final int code;
     private final HttpStatus status;
