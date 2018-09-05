@@ -15,7 +15,6 @@ import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
-import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 import pl.edu.pw.ee.cookbookserver.util.Error;
@@ -32,17 +31,15 @@ public class UserServiceImpl implements UserService {
     private PayloadHelper payloadHelper;
     private RecipeHelper recipeHelper;
     private RecipeRepository recipeRepository;
-    private UploadRepository uploadRepository;
     private UserHelper userHelper;
     private UserRepository userRepository;
 
     @Autowired
     public UserServiceImpl(PayloadHelper payloadHelper, RecipeHelper recipeHelper, RecipeRepository recipeRepository,
-                           UploadRepository uploadRepository, UserHelper userHelper, UserRepository userRepository) {
+                           UserHelper userHelper, UserRepository userRepository) {
         this.payloadHelper = payloadHelper;
         this.recipeHelper = recipeHelper;
         this.recipeRepository = recipeRepository;
-        this.uploadRepository = uploadRepository;
         this.userHelper = userHelper;
         this.userRepository = userRepository;
     }
@@ -70,13 +67,11 @@ public class UserServiceImpl implements UserService {
             throw new ProcessingException(Error.ACCESS_DENIED);
         }
 
-        String emailKey = PayloadKey.EMAIL.value();
-        if (payload.has(emailKey)) {
+        if (payload.has(PayloadKey.EMAIL.value())) {
             user.setEmail(payloadHelper.getValidEmail(payload));
         }
 
-        String passwordKey = PayloadKey.PASSWORD.value();
-        if (payload.has(passwordKey)) {
+        if (payload.has(PayloadKey.PASSWORD.value())) {
             user.setPassword(payloadHelper.getValidPassword(payload));
         }
 
@@ -90,16 +85,12 @@ public class UserServiceImpl implements UserService {
             user.setBiography(payload.optString(biographyKey));
         }
 
-        String avatarIdKey = PayloadKey.AVATAR_ID.value();
-        if (payload.has(avatarIdKey)) {
-            long avatarId = payload.optLong(avatarIdKey);
-            user.setAvatar(uploadRepository.findById(avatarId).orElse(null));
+        if (payload.has(PayloadKey.AVATAR_ID.value())) {
+            user.setAvatar(payloadHelper.getValidAvatar(payload));
         }
 
-        String bannerIdKey = PayloadKey.BANNER_ID.value();
-        if (payload.has(bannerIdKey)) {
-            long bannerId = payload.optLong(bannerIdKey);
-            user.setBanner(uploadRepository.findById(bannerId).orElse(null));
+        if (payload.has(PayloadKey.BANNER_ID.value())) {
+            user.setBanner(payloadHelper.getValidBanner(payload));
         }
         userRepository.save(user);
 

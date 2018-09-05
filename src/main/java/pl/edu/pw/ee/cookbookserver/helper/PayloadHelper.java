@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.entity.Token;
+import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
+import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
@@ -16,11 +18,14 @@ import java.time.LocalDateTime;
 public class PayloadHelper {
 
     private TokenRepository tokenRepository;
+    private UploadRepository uploadRepository;
     private UserRepository userRepository;
 
     @Autowired
-    public PayloadHelper(TokenRepository tokenRepository, UserRepository userRepository) {
+    public PayloadHelper(TokenRepository tokenRepository, UploadRepository uploadRepository,
+                         UserRepository userRepository) {
         this.tokenRepository = tokenRepository;
+        this.uploadRepository = uploadRepository;
         this.userRepository = userRepository;
     }
 
@@ -30,6 +35,14 @@ public class PayloadHelper {
             throw new ProcessingException(error);
         }
         return payload.optString(key);
+    }
+
+    public long getValidLong(JSONObject payload, PayloadKey payloadKey, Error error) throws ProcessingException {
+        String key = payloadKey.value();
+        if (!payload.has(key)) {
+            throw new ProcessingException(error);
+        }
+        return payload.optLong(key);
     }
 
     public Token getValidToken(JSONObject payload) throws ProcessingException {
@@ -72,5 +85,23 @@ public class PayloadHelper {
             throw new ProcessingException(Error.PASSWORD_TOO_SHORT);
         }
         return password;
+    }
+
+    public Upload getValidAvatar(JSONObject payload) throws ProcessingException {
+        long avatarId = getValidLong(payload, PayloadKey.AVATAR_ID, Error.MISSING_AVATAR_ID);
+        Upload avatar = uploadRepository.findById(avatarId).orElse(null);
+        if (avatarId != 0 && avatar == null) {
+            throw new ProcessingException(Error.AVATAR_NOT_FOUND);
+        }
+        return avatar;
+    }
+
+    public Upload getValidBanner(JSONObject payload) throws ProcessingException {
+        long bannerId = getValidLong(payload, PayloadKey.BANNER_ID, Error.MISSING_BANNER_ID);
+        Upload banner = uploadRepository.findById(bannerId).orElse(null);
+        if (bannerId != 0 && banner == null) {
+            throw new ProcessingException(Error.BANNER_NOT_FOUND);
+        }
+        return banner;
     }
 }
