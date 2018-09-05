@@ -14,6 +14,7 @@ public enum Error {
     RECIPE_NOT_FOUND(203, HttpStatus.NOT_FOUND, "Recipe not found"),
     AVATAR_NOT_FOUND(204, HttpStatus.NOT_FOUND, "Avatar with the given id not found"),
     BANNER_NOT_FOUND(205, HttpStatus.NOT_FOUND, "Banner with the giver id not found"),
+    CUISINE_NOT_FOUND(206, HttpStatus.NOT_FOUND, "Cuisine with the given id not found"),
 
     MISSING_USERNAME(300, HttpStatus.BAD_REQUEST, "Missing username in payload"),
     MISSING_PASSWORD(301, HttpStatus.BAD_REQUEST, "Missing password in payload"),
@@ -21,13 +22,22 @@ public enum Error {
     MISSING_UUID(303, HttpStatus.BAD_REQUEST, "Missing uuid in payload"),
     MISSING_AVATAR_ID(304, HttpStatus.BAD_REQUEST, "missing avatar id in payload"),
     MISSING_BANNER_ID(305, HttpStatus.BAD_REQUEST, "Missing banner id in payload"),
+    MISSING_TITLE(306, HttpStatus.BAD_REQUEST, "Missing title in payload"),
+    MISSING_CUISINE_ID(307, HttpStatus.BAD_REQUEST, "Missing cuisine id in payload"),
+    MISSING_DIFFICULTY(308, HttpStatus.BAD_REQUEST, "Missing difficulty in payload"),
+    MISSING_PLATES(309, HttpStatus.BAD_REQUEST, "Missing plates in payload"),
+    MISSING_PREPARATION_TIME(310, HttpStatus.BAD_REQUEST, "Missing preparation time in payload"),
 
-    INVALID_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
+    EMPTY_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
     USERNAME_OCCUPIED(401, HttpStatus.CONFLICT, "User with the given username already exists"),
     PASSWORD_TOO_SHORT(402, HttpStatus.BAD_REQUEST, "Password too short"),
     INVALID_EMAIL(403, HttpStatus.BAD_REQUEST, "Incorrect email address format"),
     EMAIL_OCCUPIED(404, HttpStatus.CONFLICT, "User with the given email already exists"),
-    TOKEN_EXPIRED(405, HttpStatus.BAD_REQUEST, "Token expired");
+    TOKEN_EXPIRED(405, HttpStatus.BAD_REQUEST, "Token expired"),
+    EMPTY_TITLE(406, HttpStatus.BAD_REQUEST, "Title can't be empty"),
+    INVALID_DIFFICULTY(407, HttpStatus.BAD_REQUEST, "Difficulty must be in range (1-5)"),
+    INVALID_PLATES(408, HttpStatus.BAD_REQUEST, "Plates number must be positive value"),
+    INVALID_PREPARATION_TIME(409, HttpStatus.BAD_REQUEST, "Preparation time must be positive value");
 
     private final int code;
     private final HttpStatus status;

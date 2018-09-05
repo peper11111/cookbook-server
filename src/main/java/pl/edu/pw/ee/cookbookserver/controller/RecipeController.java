@@ -1,9 +1,9 @@
 package pl.edu.pw.ee.cookbookserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
 
 @RestController
@@ -18,8 +18,8 @@ public class RecipeController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody RecipeDto recipeDto) throws Exception {
-        return recipeService.create(recipeDto);
+    public ResponseEntity create(@RequestBody String body) throws Exception {
+        return recipeService.create(new JSONObject(body));
     }
 
     @GetMapping("/{id}")

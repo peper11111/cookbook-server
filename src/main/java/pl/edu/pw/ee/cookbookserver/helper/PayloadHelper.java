@@ -3,8 +3,10 @@ package pl.edu.pw.ee.cookbookserver.helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Component;
+import pl.edu.pw.ee.cookbookserver.entity.Cuisine;
 import pl.edu.pw.ee.cookbookserver.entity.Token;
 import pl.edu.pw.ee.cookbookserver.entity.Upload;
+import pl.edu.pw.ee.cookbookserver.repository.CuisineRepository;
 import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
@@ -17,13 +19,15 @@ import java.time.LocalDateTime;
 @Component
 public class PayloadHelper {
 
+    private CuisineRepository cuisineRepository;
     private TokenRepository tokenRepository;
     private UploadRepository uploadRepository;
     private UserRepository userRepository;
 
     @Autowired
-    public PayloadHelper(TokenRepository tokenRepository, UploadRepository uploadRepository,
-                         UserRepository userRepository) {
+    public PayloadHelper(CuisineRepository cuisineRepository, TokenRepository tokenRepository,
+                         UploadRepository uploadRepository, UserRepository userRepository) {
+        this.cuisineRepository = cuisineRepository;
         this.tokenRepository = tokenRepository;
         this.uploadRepository = uploadRepository;
         this.userRepository = userRepository;
@@ -43,6 +47,14 @@ public class PayloadHelper {
             throw new ProcessingException(error);
         }
         return payload.optLong(key);
+    }
+
+    public int getValidInt(JSONObject payload, PayloadKey payloadKey, Error error) throws ProcessingException {
+        String key = payloadKey.value();
+        if (!payload.has(key)) {
+            throw new ProcessingException(error);
+        }
+        return payload.optInt(key);
     }
 
     public Token getValidToken(JSONObject payload) throws ProcessingException {
@@ -71,7 +83,7 @@ public class PayloadHelper {
     public String getValidUsername(JSONObject payload) throws ProcessingException {
         String username = getValidString(payload, PayloadKey.USERNAME, Error.MISSING_USERNAME);
         if (username.isEmpty()) {
-            throw new ProcessingException(Error.INVALID_USERNAME);
+            throw new ProcessingException(Error.EMPTY_USERNAME);
         }
         if (userRepository.findByUsername(username).isPresent()) {
             throw new ProcessingException(Error.USERNAME_OCCUPIED);
@@ -103,5 +115,46 @@ public class PayloadHelper {
             throw new ProcessingException(Error.BANNER_NOT_FOUND);
         }
         return banner;
+    }
+
+    public String getValidTitle(JSONObject payload) throws ProcessingException {
+        String title = getValidString(payload, PayloadKey.TITLE, Error.MISSING_TITLE);
+        if (title.isEmpty()) {
+            throw new ProcessingException(Error.EMPTY_TITLE);
+        }
+        return title;
+    }
+
+    public Cuisine getValidCuisine(JSONObject payload) throws ProcessingException {
+        long cuisineId = getValidLong(payload, PayloadKey.CUISINE_ID, Error.MISSING_CUISINE_ID);
+        Cuisine cuisine = cuisineRepository.findById(cuisineId).orElse(null);
+        if (cuisine == null) {
+            throw new ProcessingException(Error.CUISINE_NOT_FOUND);
+        }
+        return cuisine;
+    }
+
+    public int getValidDifficulty(JSONObject payload) throws ProcessingException {
+        int difficulty = getValidInt(payload, PayloadKey.DIFFICULTY, Error.MISSING_DIFFICULTY);
+        if (difficulty < 1 || difficulty > 5) {
+            throw new ProcessingException(Error.INVALID_DIFFICULTY);
+        }
+        return difficulty;
+    }
+
+    public int getValidPlates(JSONObject payload) throws ProcessingException {
+        int plates = getValidInt(payload, PayloadKey.PLATES, Error.MISSING_PLATES);
+        if (plates < 1) {
+            throw new ProcessingException(Error.INVALID_PLATES);
+        }
+        return plates;
+    }
+
+    public int getValidPreparationTime(JSONObject payload) throws ProcessingException {
+        int preparationTime = getValidInt(payload, PayloadKey.PREPARATION_TIME, Error.MISSING_PREPARATION_TIME);
+        if (preparationTime < 1) {
+            throw new ProcessingException(Error.INVALID_PREPARATION_TIME);
+        }
+        return preparationTime;
     }
 }

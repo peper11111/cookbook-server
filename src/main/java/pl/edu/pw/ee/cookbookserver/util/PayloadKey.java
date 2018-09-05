@@ -9,7 +9,13 @@ public enum PayloadKey {
     NAME("name"),
     BIOGRAPHY("biography"),
     AVATAR_ID("avatarId"),
-    BANNER_ID("bannerId");
+    BANNER_ID("bannerId"),
+    TITLE("title"),
+    LEAD("lead"),
+    CUISINE_ID("cuisineId"),
+    DIFFICULTY("difficulty"),
+    PLATES("plates"),
+    PREPARATION_TIME("preparationTime");
 
     private final String value;
 
