@@ -24,16 +24,16 @@ public class PayloadHelper {
         this.userRepository = userRepository;
     }
 
-    public String getUuid(JSONObject payload) throws ProcessingException {
-        String uuidKey = PayloadKey.UUID.value();
-        if (!payload.has(uuidKey)) {
-            throw new ProcessingException(Error.MISSING_UUID);
+    public String getValidString(JSONObject payload, PayloadKey payloadKey, Error error) throws ProcessingException {
+        String key = payloadKey.value();
+        if (!payload.has(key)) {
+            throw new ProcessingException(error);
         }
-        return payload.optString(uuidKey);
+        return payload.optString(key);
     }
 
     public Token getValidToken(JSONObject payload) throws ProcessingException {
-        String uuid = getUuid(payload);
+        String uuid = getValidString(payload, PayloadKey.UUID, Error.MISSING_UUID);
         Token token = tokenRepository.findByUuid(uuid).orElse(null);
         if (token == null) {
             throw new ProcessingException(Error.TOKEN_NOT_FOUND);
@@ -44,16 +44,8 @@ public class PayloadHelper {
         return token;
     }
 
-    public String getEmail(JSONObject payload) throws ProcessingException {
-        String emailKey = PayloadKey.EMAIL.value();
-        if (!payload.has(emailKey)) {
-            throw new ProcessingException(Error.MISSING_EMAIL);
-        }
-        return payload.optString(emailKey);
-    }
-
     public String getValidEmail(JSONObject payload) throws ProcessingException {
-        String email = getEmail(payload);
+        String email = getValidString(payload, PayloadKey.EMAIL, Error.MISSING_EMAIL);
         if (!email.matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$")) {
             throw new ProcessingException(Error.INVALID_EMAIL);
         }
@@ -63,16 +55,8 @@ public class PayloadHelper {
         return email;
     }
 
-    public String getUsername(JSONObject payload) throws ProcessingException {
-        String usernameKey = PayloadKey.USERNAME.value();
-        if (!payload.has(usernameKey)) {
-            throw new ProcessingException(Error.MISSING_USERNAME);
-        }
-        return payload.optString(usernameKey);
-    }
-
     public String getValidUsername(JSONObject payload) throws ProcessingException {
-        String username = getUsername(payload);
+        String username = getValidString(payload, PayloadKey.USERNAME, Error.MISSING_USERNAME);
         if (username.isEmpty()) {
             throw new ProcessingException(Error.INVALID_USERNAME);
         }
@@ -82,16 +66,8 @@ public class PayloadHelper {
         return username;
     }
 
-    public String getPassword(JSONObject payload) throws ProcessingException {
-        String passwordKey = PayloadKey.PASSWORD.value();
-        if (!payload.has(passwordKey)) {
-            throw new ProcessingException(Error.MISSING_PASSWORD);
-        }
-        return payload.optString(passwordKey);
-    }
-
     public String getValidPassword(JSONObject payload) throws ProcessingException {
-        String password = getPassword(payload);
+        String password = getValidString(payload, PayloadKey.PASSWORD, Error.MISSING_PASSWORD);
         if (password.length() < 8) {
             throw new ProcessingException(Error.PASSWORD_TOO_SHORT);
         }

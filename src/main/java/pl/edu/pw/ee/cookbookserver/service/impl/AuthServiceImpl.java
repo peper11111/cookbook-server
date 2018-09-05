@@ -16,7 +16,6 @@ import pl.edu.pw.ee.cookbookserver.service.AuthService;
 import pl.edu.pw.ee.cookbookserver.service.MailService;
 import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
-import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 @Service
 @Transactional
@@ -69,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity reset(JSONObject payload, String origin) throws Exception {
-        String username = payloadHelper.getUsername(payload);
+        String username = payloadHelper.getValidString(payload, PayloadKey.USERNAME, Error.MISSING_USERNAME);
         User user = userHelper.getUser(username);
 
         Token token = new Token(user);
