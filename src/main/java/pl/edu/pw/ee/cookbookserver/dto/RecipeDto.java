@@ -8,7 +8,7 @@ import java.util.Collection;
 public class RecipeDto {
 
     private Long creationTime;
-    private Long authorId;
+    private BasicUserDto author;
     private Long bannerId;
     private String title;
     private String lead;

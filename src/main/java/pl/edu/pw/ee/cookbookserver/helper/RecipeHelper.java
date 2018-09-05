@@ -45,7 +45,7 @@ public class RecipeHelper {
         }
         RecipeDto recipeDto = new RecipeDto();
         recipeDto.setCreationTime(recipe.getCreationTime().toInstant(ZoneOffset.UTC).toEpochMilli());
-        recipeDto.setAuthorId(recipe.getAuthor().getId());
+        recipeDto.setAuthor(userHelper.mapUserToBasicUserDto(recipe.getAuthor()));
         if (recipe.getBanner() != null) {
             recipeDto.setBannerId(recipe.getBanner().getId());
         }
