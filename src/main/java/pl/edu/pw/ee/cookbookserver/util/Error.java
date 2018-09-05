@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 
 public enum Error {
 
-    UNKNOWN_ERROR(100, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error occurred"),
+    SERVER_ERROR(100, HttpStatus.INTERNAL_SERVER_ERROR, "Server error"),
     ACCESS_DENIED(101, HttpStatus.FORBIDDEN, "Access denied"),
-    LOGIN_FAILURE(102, HttpStatus.FORBIDDEN, "Login failed"),
+    LOGIN_FAILURE(102, HttpStatus.FORBIDDEN, "Login failure"),
 
     USER_NOT_FOUND(200, HttpStatus.NOT_FOUND, "User not found"),
     TOKEN_NOT_FOUND(201, HttpStatus.NOT_FOUND, "Token not found"),

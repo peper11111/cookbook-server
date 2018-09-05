@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleException(Exception e) {
         e.printStackTrace();
-        ErrorDto errorDto = new ErrorDto(Error.UNKNOWN_ERROR.code(), e.getMessage());
-        return ResponseEntity.status(Error.UNKNOWN_ERROR.status()).body(errorDto);
+        ErrorDto errorDto = new ErrorDto(Error.SERVER_ERROR.code(), e.getMessage());
+        return ResponseEntity.status(Error.SERVER_ERROR.status()).body(errorDto);
     }
 }
