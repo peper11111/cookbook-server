@@ -16,8 +16,14 @@ public class Comment {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Recipe recipe;
     private String content;
     private LocalDateTime creationTime;
     @OneToMany(fetch = FetchType.LAZY)
     private Collection<Comment> comments;
+
+    public Comment() {
+        this.creationTime = LocalDateTime.now();
+    }
 }

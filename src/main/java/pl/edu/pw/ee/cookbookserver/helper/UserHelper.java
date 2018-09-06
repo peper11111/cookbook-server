@@ -6,17 +6,22 @@ import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
+import java.util.stream.StreamSupport;
+
 @Component
 public class UserHelper {
 
+    private RecipeRepository recipeRepository;
     private UserRepository userRepository;
 
     @Autowired
-    public UserHelper(UserRepository userRepository) {
+    public UserHelper(RecipeRepository recipeRepository, UserRepository userRepository) {
+        this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
     }
 
@@ -50,7 +55,7 @@ public class UserHelper {
         userDto.setFollowing(user.getFollowers().contains(getCurrentUser()));
         userDto.setFollowed((long) user.getFollowed().size());
         userDto.setFollowers((long) user.getFollowers().size());
-        userDto.setRecipes((long) user.getRecipes().size());
+        userDto.setRecipes(StreamSupport.stream(recipeRepository.findByAuthor(user).spliterator(), false).count());
         return userDto;
     }
 
