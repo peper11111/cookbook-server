@@ -59,15 +59,16 @@ public class UploadServiceImpl implements UploadService {
     @Override
     public ResponseEntity read(Long id) throws Exception {
         Upload upload = uploadHelper.getUpload(id);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(this.readImage(upload.getFilename()));
+        byte[] image = this.readImage(upload.getFilename());
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(image);
     }
 
     @Override
     public ResponseEntity delete(Long id) throws Exception {
-        Upload upload = uploadHelper.getUpload(id);
         User currentUser = userHelper.getCurrentUser();
+        Upload upload = uploadHelper.getUpload(id);
 
-        if (!upload.getOwner().getId().equals(currentUser.getId())) {
+        if (!currentUser.getId().equals(upload.getOwner().getId())) {
             throw new ProcessingException(Error.ACCESS_DENIED);
         }
 

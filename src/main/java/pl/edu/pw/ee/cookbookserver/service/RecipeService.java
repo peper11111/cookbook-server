@@ -7,4 +7,5 @@ public interface RecipeService {
 
     ResponseEntity create(JSONObject payload) throws Exception;
     ResponseEntity read(Long id) throws Exception;
+    ResponseEntity delete(Long id) throws Exception;
 }

@@ -26,4 +26,9 @@ public class RecipeController {
     public ResponseEntity read(@PathVariable Long id) throws Exception {
         return recipeService.read(id);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) throws Exception {
+        return recipeService.delete(id);
+    }
 }

@@ -60,10 +60,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity modify(Long id, JSONObject payload) throws Exception {
-        User user = userHelper.getUser(id);
         User currentUser = userHelper.getCurrentUser();
+        User user = userHelper.getUser(id);
 
-        if (!user.getId().equals(currentUser.getId())) {
+        if (!currentUser.getId().equals(user.getId())) {
             throw new ProcessingException(Error.ACCESS_DENIED);
         }
 
@@ -99,8 +99,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity follow(Long id) throws Exception {
-        User user = userHelper.getUser(id);
         User currentUser = userHelper.getCurrentUser();
+        User user = userHelper.getUser(id);
 
         if (currentUser.getId().equals(user.getId())) {
             throw new ProcessingException(Error.ACCESS_DENIED);

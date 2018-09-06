@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
+import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
+import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
+import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 @Service
 @Transactional
@@ -35,8 +38,10 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public ResponseEntity create(JSONObject payload) throws Exception {
+        User currentUser = userHelper.getCurrentUser();
+
         Recipe recipe = new Recipe();
-        recipe.setAuthor(userHelper.getCurrentUser());
+        recipe.setAuthor(currentUser);
         if (payload.has(PayloadKey.BANNER_ID.value())) {
             recipe.setBanner(payloadHelper.getValidBanner(payload));
         }
@@ -61,5 +66,19 @@ public class RecipeServiceImpl implements RecipeService {
         Recipe recipe = recipeHelper.getRecipe(id);
         RecipeDto recipeDto = recipeHelper.mapRecipeToRecipeDto(recipe);
         return ResponseEntity.status(HttpStatus.OK).body(recipeDto);
+    }
+
+    @Override
+    public ResponseEntity delete(Long id) throws Exception {
+        User currentUser = userHelper.getCurrentUser();
+        Recipe recipe = recipeHelper.getRecipe(id);
+
+        if (!currentUser.getId().equals(recipe.getAuthor().getId())) {
+            throw new ProcessingException(Error.ACCESS_DENIED);
+        }
+
+        recipeRepository.delete(recipe);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
