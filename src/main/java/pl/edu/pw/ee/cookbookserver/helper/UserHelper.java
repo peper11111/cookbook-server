@@ -11,8 +11,6 @@ import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
-import java.util.stream.StreamSupport;
-
 @Component
 public class UserHelper {
 
@@ -55,7 +53,7 @@ public class UserHelper {
         userDto.setFollowing(user.getFollowers().contains(getCurrentUser()));
         userDto.setFollowed((long) user.getFollowed().size());
         userDto.setFollowers((long) user.getFollowers().size());
-        userDto.setRecipes(StreamSupport.stream(recipeRepository.findByAuthor(user).spliterator(), false).count());
+        userDto.setRecipes(recipeRepository.countByAuthor(user));
         return userDto;
     }
 
