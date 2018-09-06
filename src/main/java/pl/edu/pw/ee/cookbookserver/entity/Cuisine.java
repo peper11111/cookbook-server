@@ -14,4 +14,8 @@ public class Cuisine {
     private Long id;
     @Column(unique = true)
     private String name;
+
+    public Cuisine(String name) {
+        this.name = name;
+    }
 }
