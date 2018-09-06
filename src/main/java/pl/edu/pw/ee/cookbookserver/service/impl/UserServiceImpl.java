@@ -106,12 +106,13 @@ public class UserServiceImpl implements UserService {
             throw new ProcessingException(Error.ACCESS_DENIED);
         }
 
-        if (currentUser.getFollowed().contains(user)) {
-            currentUser.getFollowed().remove(user);
+        Collection<User> followers = user.getFollowers();
+        if (followers.contains(currentUser)) {
+            followers.remove(currentUser);
         } else {
-            currentUser.getFollowed().add(user);
+            followers.add(currentUser);
         }
-        userRepository.save(currentUser);
+        userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

@@ -33,8 +33,6 @@ public class User implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY)
     private Upload banner;
     @ManyToMany(fetch = FetchType.LAZY)
-    private Collection<User> followed;
-    @ManyToMany(mappedBy = "followed")
     private Collection<User> followers;
 
     public User() {

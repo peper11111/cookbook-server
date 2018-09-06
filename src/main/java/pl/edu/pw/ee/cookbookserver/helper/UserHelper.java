@@ -51,8 +51,8 @@ public class UserHelper {
             userDto.setBannerId(user.getBanner().getId());
         }
         userDto.setFollowing(user.getFollowers().contains(getCurrentUser()));
-        userDto.setFollowed((long) user.getFollowed().size());
         userDto.setFollowers((long) user.getFollowers().size());
+        userDto.setFollowed(userRepository.countByFollowersContaining(user));
         userDto.setRecipes(recipeRepository.countByAuthor(user));
         return userDto;
     }
