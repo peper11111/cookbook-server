@@ -15,6 +15,7 @@ public enum Error {
     AVATAR_NOT_FOUND(204, HttpStatus.NOT_FOUND, "Avatar with the given id not found"),
     BANNER_NOT_FOUND(205, HttpStatus.NOT_FOUND, "Banner with the giver id not found"),
     CUISINE_NOT_FOUND(206, HttpStatus.NOT_FOUND, "Cuisine with the given id not found"),
+    COMMENT_NOT_FOUND(207, HttpStatus.NOT_FOUND, "Comment with the given id not found"),
 
     MISSING_USERNAME(300, HttpStatus.BAD_REQUEST, "Missing username in payload"),
     MISSING_PASSWORD(301, HttpStatus.BAD_REQUEST, "Missing password in payload"),
