@@ -15,6 +15,10 @@ public class Cuisine {
     @Column(unique = true)
     private String name;
 
+    public Cuisine() {
+        this(null);
+    }
+
     public Cuisine(String name) {
         this.name = name;
     }

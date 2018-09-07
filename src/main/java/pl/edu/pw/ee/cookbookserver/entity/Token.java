@@ -20,6 +20,10 @@ public class Token {
     private String uuid;
     private LocalDateTime expirationTime;
 
+    public Token() {
+        this(null);
+    }
+
     public Token(User user) {
         this.user = user;
         this.uuid = UUID.randomUUID().toString();

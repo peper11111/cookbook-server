@@ -16,6 +16,10 @@ public class Role implements GrantedAuthority {
     @Column(unique = true)
     private String authority;
 
+    public Role() {
+        this(null);
+    }
+
     public Role(String authority) {
         this.authority = authority;
     }
