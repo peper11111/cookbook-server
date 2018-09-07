@@ -35,7 +35,7 @@ public class RecipeHelper {
         }
         basicRecipeDto.setTitle(recipe.getTitle());
         basicRecipeDto.setCreationTime(recipe.getCreationTime().toInstant(ZoneOffset.UTC).toEpochMilli());
-
+        basicRecipeDto.setComments((long) recipe.getComments().size());
         return basicRecipeDto;
     }
 
