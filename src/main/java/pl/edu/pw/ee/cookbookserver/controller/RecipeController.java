@@ -31,4 +31,9 @@ public class RecipeController {
     public ResponseEntity delete(@PathVariable Long id) throws Exception {
         return recipeService.delete(id);
     }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity readComments(@PathVariable Long id) throws Exception {
+        return recipeService.readComments(id);
+    }
 }

@@ -9,7 +9,7 @@ public class CommentDto {
 
     private Long id;
     private Long creationTime;
-    private Long authorId;
+    private BasicUserDto author;
     private String content;
     private Collection<CommentDto> comments;
 }

@@ -6,9 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.edu.pw.ee.cookbookserver.dto.CommentDto;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
+import pl.edu.pw.ee.cookbookserver.entity.Comment;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.helper.CommentHelper;
 import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
@@ -18,18 +21,23 @@ import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 @Service
 @Transactional
 public class RecipeServiceImpl implements RecipeService {
 
+    private CommentHelper commentHelper;
     private PayloadHelper payloadHelper;
     private RecipeHelper recipeHelper;
     private RecipeRepository recipeRepository;
     private UserHelper userHelper;
 
     @Autowired
-    public RecipeServiceImpl(PayloadHelper payloadHelper, RecipeHelper recipeHelper, RecipeRepository recipeRepository,
-                             UserHelper userHelper) {
+    public RecipeServiceImpl(CommentHelper commentHelper, PayloadHelper payloadHelper, RecipeHelper recipeHelper,
+                             RecipeRepository recipeRepository, UserHelper userHelper) {
+        this.commentHelper = commentHelper;
         this.payloadHelper = payloadHelper;
         this.recipeHelper = recipeHelper;
         this.recipeRepository = recipeRepository;
@@ -80,5 +88,18 @@ public class RecipeServiceImpl implements RecipeService {
         recipeRepository.delete(recipe);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
+    public ResponseEntity readComments(Long id) throws Exception {
+        Recipe recipe = recipeHelper.getRecipe(id);
+
+        Collection<CommentDto> commentDtoList = new ArrayList<>();
+        for (Comment comment: recipe.getComments()) {
+            CommentDto commentDto = commentHelper.mapCommentToCommentDto(comment);
+            commentDtoList.add(commentDto);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(commentDtoList);
     }
 }
