@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity recipes(Long id) throws Exception {
+    public ResponseEntity readRecipes(Long id) throws Exception {
         User user = userHelper.getUser(id);
 
         Collection<BasicRecipeDto> basicRecipeDtoList = new ArrayList<>();

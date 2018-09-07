@@ -54,8 +54,8 @@ public class DatabaseRunner implements CommandLineRunner {
         Comment comment4 = createComment(user4, "Komentarz 4");
         Comment comment5 = createComment(user5, "Komentarz 5");
 
-        Recipe recipe1 = createRecipe(user1, "Przepis 1", cuisine1, Arrays.asList(comment1, comment2, comment3));
-        Recipe recipe2 = createRecipe(user1, "Przepis 2", cuisine2, Arrays.asList(comment4, comment5));
+        Recipe recipe1 = createRecipe(user5, "Przepis 1", cuisine1, Arrays.asList(comment1, comment2, comment3));
+        Recipe recipe2 = createRecipe(user5, "Przepis 2", cuisine2, Arrays.asList(comment4, comment5));
     }
 
     private Role createRole(String authority) {
