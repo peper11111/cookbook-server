@@ -14,7 +14,6 @@ import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
-import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 import pl.edu.pw.ee.cookbookserver.util.Error;
@@ -30,16 +29,14 @@ public class UserServiceImpl implements UserService {
 
     private PayloadHelper payloadHelper;
     private RecipeHelper recipeHelper;
-    private RecipeRepository recipeRepository;
     private UserHelper userHelper;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(PayloadHelper payloadHelper, RecipeHelper recipeHelper, RecipeRepository recipeRepository,
-                           UserHelper userHelper, UserRepository userRepository) {
+    public UserServiceImpl(PayloadHelper payloadHelper, RecipeHelper recipeHelper, UserHelper userHelper,
+                           UserRepository userRepository) {
         this.payloadHelper = payloadHelper;
         this.recipeHelper = recipeHelper;
-        this.recipeRepository = recipeRepository;
         this.userHelper = userHelper;
         this.userRepository = userRepository;
     }
@@ -122,8 +119,25 @@ public class UserServiceImpl implements UserService {
         User user = userHelper.getUser(id);
 
         Collection<BasicRecipeDto> basicRecipeDtoList = new ArrayList<>();
-        Iterable<Recipe> recipes = recipeRepository.findByAuthor(user);
-        for (Recipe recipe : recipes) {
+        for (Recipe recipe : user.getRecipes()) {
+            BasicRecipeDto basicRecipeDto = recipeHelper.mapRecipeToBasicRecipeDto(recipe);
+            basicRecipeDtoList.add(basicRecipeDto);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtoList);
+    }
+
+    @Override
+    public ResponseEntity readFavourites(Long id) throws Exception {
+        User currentUser = userHelper.getCurrentUser();
+        User user = userHelper.getUser(id);
+
+        if (!currentUser.getId().equals(user.getId())) {
+            throw new ProcessingException(Error.ACCESS_DENIED);
+        }
+
+        Collection<BasicRecipeDto> basicRecipeDtoList = new ArrayList<>();
+        for (Recipe recipe : user.getFavourites()) {
             BasicRecipeDto basicRecipeDto = recipeHelper.mapRecipeToBasicRecipeDto(recipe);
             basicRecipeDtoList.add(basicRecipeDto);
         }

@@ -41,4 +41,9 @@ public class UserController {
     public ResponseEntity readRecipes(@PathVariable Long id) throws Exception {
         return userService.readRecipes(id);
     }
+
+    @GetMapping("/{id}/favourites")
+    public ResponseEntity readFavourites(@PathVariable Long id) throws Exception {
+        return userService.readFavourites(id);
+    }
 }

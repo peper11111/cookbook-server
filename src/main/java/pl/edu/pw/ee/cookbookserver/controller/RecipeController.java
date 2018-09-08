@@ -37,6 +37,11 @@ public class RecipeController {
         return recipeService.like(id);
     }
 
+    @PostMapping("/{id}/favourite")
+    public ResponseEntity favourite(@PathVariable Long id) throws Exception {
+        return recipeService.favourite(id);
+    }
+
     @GetMapping("/{id}/comments")
     public ResponseEntity readComments(@PathVariable Long id) throws Exception {
         return recipeService.readComments(id);

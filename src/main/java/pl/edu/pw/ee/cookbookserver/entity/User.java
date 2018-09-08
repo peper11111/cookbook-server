@@ -36,6 +36,11 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(inverseJoinColumns = @JoinColumn(name = "follower_id"))
     private Collection<User> followers;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+    private Collection<Recipe> recipes;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(inverseJoinColumns = @JoinColumn(name = "favourite_id"))
+    private Collection<Recipe> favourites;
 
     public User() {
         this.accountNonExpired = true;

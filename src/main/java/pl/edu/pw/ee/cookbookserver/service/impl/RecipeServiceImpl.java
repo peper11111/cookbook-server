@@ -17,6 +17,7 @@ import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
+import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
 import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
@@ -35,17 +36,19 @@ public class RecipeServiceImpl implements RecipeService {
     private RecipeHelper recipeHelper;
     private RecipeRepository recipeRepository;
     private UserHelper userHelper;
+    private UserRepository userRepository;
 
     @Autowired
     public RecipeServiceImpl(CommentHelper commentHelper, CommentRepository commentRepository,
                              PayloadHelper payloadHelper, RecipeHelper recipeHelper, RecipeRepository recipeRepository,
-                             UserHelper userHelper) {
+                             UserHelper userHelper, UserRepository userRepository) {
         this.commentHelper = commentHelper;
         this.commentRepository = commentRepository;
         this.payloadHelper = payloadHelper;
         this.recipeHelper = recipeHelper;
         this.recipeRepository = recipeRepository;
         this.userHelper = userHelper;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -109,6 +112,29 @@ public class RecipeServiceImpl implements RecipeService {
         } else {
             likes.add(currentUser);
         }
+
+        recipeRepository.save(recipe);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
+    public ResponseEntity favourite(Long id) throws Exception {
+        User currentUser = userHelper.getCurrentUser();
+        Recipe recipe = recipeHelper.getRecipe(id);
+
+        if (currentUser.getId().equals(recipe.getAuthor().getId())) {
+            throw new ProcessingException(Error.ACCESS_DENIED);
+        }
+
+        Collection<Recipe> favourites = currentUser.getFavourites();
+        if (favourites.contains(recipe)) {
+            favourites.remove(recipe);
+        } else {
+            favourites.add(recipe);
+        }
+
+        userRepository.save(currentUser);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
