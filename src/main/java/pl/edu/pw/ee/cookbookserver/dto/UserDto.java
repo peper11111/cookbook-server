@@ -13,5 +13,5 @@ public class UserDto extends BasicUserDto {
     private Long recipesCount;
     private Long followedCount;
     private Long followersCount;
-    private Boolean followed;
+    private Boolean isFollowed;
 }
