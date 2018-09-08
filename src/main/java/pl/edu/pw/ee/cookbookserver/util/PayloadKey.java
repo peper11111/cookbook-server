@@ -18,7 +18,8 @@ public enum PayloadKey {
     PLATES("plates"),
     PREPARATION_TIME("preparationTime"),
     CONTENT("content"),
-    PARENT_ID("parentId");
+    PARENT_ID("parentId"),
+    INGREDIENTS("ingredients");
 
     private final String value;
 

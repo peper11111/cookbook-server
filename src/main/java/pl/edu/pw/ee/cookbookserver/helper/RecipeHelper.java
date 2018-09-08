@@ -63,6 +63,7 @@ public class RecipeHelper {
         recipeDto.setDifficulty(recipe.getDifficulty());
         recipeDto.setPlates(recipe.getPlates());
         recipeDto.setPreparationTime(recipe.getPreparationTime());
+        recipeDto.setIngredients(recipe.getIngredients());
         return recipeDto;
     }
 

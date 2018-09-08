@@ -1,6 +1,7 @@
 package pl.edu.pw.ee.cookbookserver.helper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.entity.*;
@@ -10,6 +11,9 @@ import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Component
 public class PayloadHelper {
@@ -33,28 +37,36 @@ public class PayloadHelper {
         this.userRepository = userRepository;
     }
 
-    public String getValidString(JSONObject payload, PayloadKey payloadKey, Error error) throws ProcessingException {
+    public List JSONArrayToList(JSONArray jsonArray) {
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            list.add(jsonArray.opt(i));
+        }
+        return list;
+    }
+
+    public String getValidKey(JSONObject payload, PayloadKey payloadKey, Error error) throws ProcessingException {
         String key = payloadKey.value();
         if (!payload.has(key)) {
             throw new ProcessingException(error);
         }
-        return payload.optString(key);
+        return key;
+    }
+
+    public String getValidString(JSONObject payload, PayloadKey payloadKey, Error error) throws ProcessingException {
+        return payload.optString(getValidKey(payload, payloadKey, error));
     }
 
     public long getValidLong(JSONObject payload, PayloadKey payloadKey, Error error) throws ProcessingException {
-        String key = payloadKey.value();
-        if (!payload.has(key)) {
-            throw new ProcessingException(error);
-        }
-        return payload.optLong(key);
+        return payload.optLong(getValidKey(payload, payloadKey, error));
     }
 
     public int getValidInt(JSONObject payload, PayloadKey payloadKey, Error error) throws ProcessingException {
-        String key = payloadKey.value();
-        if (!payload.has(key)) {
-            throw new ProcessingException(error);
-        }
-        return payload.optInt(key);
+        return payload.optInt(getValidKey(payload, payloadKey, error));
+    }
+
+    public JSONArray getValidJSONArray(JSONObject payload, PayloadKey payloadKey, Error error) throws ProcessingException {
+        return payload.optJSONArray(getValidKey(payload, payloadKey, error));
     }
 
     public Token getValidToken(JSONObject payload) throws ProcessingException {
@@ -182,5 +194,13 @@ public class PayloadHelper {
             throw new ProcessingException(Error.COMMENT_NOT_FOUND);
         }
         return parent;
+    }
+
+    public Collection<String> getValidIngredients(JSONObject payload) throws ProcessingException {
+        JSONArray ingredients = getValidJSONArray(payload, PayloadKey.INGREDIENTS, Error.MISSING_INGREDIENTS);
+        if (ingredients == null || ingredients.length() == 0) {
+            throw new ProcessingException(Error.EMPTY_INGREDIENTS);
+        }
+        return JSONArrayToList(ingredients);
     }
 }

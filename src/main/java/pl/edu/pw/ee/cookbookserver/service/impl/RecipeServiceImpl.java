@@ -23,6 +23,7 @@ import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
+import javax.persistence.CollectionTable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -71,6 +72,7 @@ public class RecipeServiceImpl implements RecipeService {
         recipe.setDifficulty(payloadHelper.getValidDifficulty(payload));
         recipe.setPlates(payloadHelper.getValidPlates(payload));
         recipe.setPreparationTime(payloadHelper.getValidPreparationTime(payload));
+        recipe.setIngredients(payloadHelper.getValidIngredients(payload));
         recipeRepository.save(recipe);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(recipe.getId());

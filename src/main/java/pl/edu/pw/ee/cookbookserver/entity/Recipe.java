@@ -26,6 +26,10 @@ public class Recipe {
     private Integer difficulty;
     private Integer plates;
     private Integer preparationTime;
+    @ElementCollection
+    @CollectionTable(name = "cb_recipe_ingredients")
+    @Column(name = "ingredient")
+    private Collection<String> ingredients;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
     private Collection<Comment> comments;
     @ManyToMany(fetch = FetchType.LAZY)
