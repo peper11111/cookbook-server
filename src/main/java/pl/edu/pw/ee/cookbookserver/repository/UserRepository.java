@@ -14,8 +14,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findByUsername(String username);
     Optional<User> findByUsernameOrEmail(String username, String email);
 
-    @Query(value = "SELECT COUNT(*) FROM cb_user_followers WHERE user_id = :userId AND follower_id = :followerId", nativeQuery = true)
-    long countFollowing(@Param("userId") Long userId, @Param("followerId") Long followerId);
     @Query(value = "SELECT COUNT(*) FROM cb_user_followers WHERE user_id = :id", nativeQuery = true)
     long countFollowers(@Param("id") Long id);
     @Query(value = "SELECT COUNT(*) FROM cb_user_followers WHERE follower_id = :id", nativeQuery = true)

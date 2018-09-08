@@ -1,17 +1,17 @@
 package pl.edu.pw.ee.cookbookserver.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class UserDto {
+@EqualsAndHashCode(callSuper = true)
+public class UserDto extends BasicUserDto {
 
-    private String username;
     private String name;
     private String biography;
-    private Long avatarId;
     private Long bannerId;
-    private Long recipes;
-    private Long followed;
-    private Long followers;
-    private Boolean following;
+    private Long recipesCount;
+    private Long followedCount;
+    private Long followersCount;
+    private Boolean followed;
 }

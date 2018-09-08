@@ -41,6 +41,7 @@ public class UserHelper {
             return null;
         }
         UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
         userDto.setName(user.getName());
         userDto.setBiography(user.getBiography());
@@ -50,10 +51,10 @@ public class UserHelper {
         if (user.getBanner() != null) {
             userDto.setBannerId(user.getBanner().getId());
         }
-        userDto.setFollowing(userRepository.countFollowing(user.getId(), getCurrentUser().getId()) != 0);
-        userDto.setFollowers(userRepository.countFollowers(user.getId()));
-        userDto.setFollowed(userRepository.countFollowed(user.getId()));
-        userDto.setRecipes(recipeRepository.countByAuthor(user));
+        userDto.setFollowed(user.getFollowers().contains(getCurrentUser()));
+        userDto.setFollowersCount(userRepository.countFollowers(user.getId()));
+        userDto.setFollowedCount(userRepository.countFollowed(user.getId()));
+        userDto.setRecipesCount(recipeRepository.countByAuthor(user));
         return userDto;
     }
 

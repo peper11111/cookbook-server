@@ -10,5 +10,5 @@ public class BasicRecipeDto {
     private Long bannerId;
     private String title;
     private Long creationTime;
-    private Long comments;
+    private Long commentsCount;
 }
