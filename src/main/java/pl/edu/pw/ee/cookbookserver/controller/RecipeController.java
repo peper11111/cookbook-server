@@ -32,6 +32,11 @@ public class RecipeController {
         return recipeService.delete(id);
     }
 
+    @PostMapping("/{id}/like")
+    public ResponseEntity like(@PathVariable Long id) throws Exception {
+        return recipeService.like(id);
+    }
+
     @GetMapping("/{id}/comments")
     public ResponseEntity readComments(@PathVariable Long id) throws Exception {
         return recipeService.readComments(id);

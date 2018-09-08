@@ -11,4 +11,5 @@ public class BasicRecipeDto {
     private String title;
     private Long creationTime;
     private Long commentsCount;
+    private Long likesCount;
 }

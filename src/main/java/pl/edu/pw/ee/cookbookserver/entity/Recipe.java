@@ -28,6 +28,9 @@ public class Recipe {
     private Integer preparationTime;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
     private Collection<Comment> comments;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Collection<User> likes;
 
     public Recipe() {
         this.creationTime = LocalDateTime.now();

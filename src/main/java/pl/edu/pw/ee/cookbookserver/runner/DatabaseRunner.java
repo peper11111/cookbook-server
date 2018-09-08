@@ -48,8 +48,8 @@ public class DatabaseRunner implements CommandLineRunner {
         Cuisine cuisine7 = createCuisine("CUISINE_POLISH");
         Cuisine cuisine8 = createCuisine("CUISINE_SPANISH");
 
-        Recipe recipe1 = createRecipe(user5, "Przepis 1", cuisine1);
-        Recipe recipe2 = createRecipe(user5, "Przepis 2", cuisine2);
+        Recipe recipe1 = createRecipe(user5, "Przepis 1", cuisine1, Arrays.asList(user1, user2, user3));
+        Recipe recipe2 = createRecipe(user5, "Przepis 2", cuisine2, Arrays.asList(user1, user3, user4));
 
         Comment comment1 = createComment(user1, "Komentarz 1", recipe1, null);
         Comment comment2 = createComment(user2, "Komentarz 2", recipe1, comment1);
@@ -94,11 +94,12 @@ public class DatabaseRunner implements CommandLineRunner {
         return comment;
     }
 
-    private Recipe createRecipe(User author, String title, Cuisine cuisine) {
+    private Recipe createRecipe(User author, String title, Cuisine cuisine, Collection<User> likes) {
         Recipe recipe = new Recipe();
         recipe.setAuthor(author);
         recipe.setTitle(title);
         recipe.setCuisine(cuisine);
+        recipe.setLikes(likes);
         recipe.setDifficulty(3);
         recipe.setPlates(4);
         recipe.setPreparationTime(90);

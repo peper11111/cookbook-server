@@ -12,4 +12,5 @@ public class RecipeDto extends BasicRecipeDto {
     private Integer difficulty;
     private Integer plates;
     private Integer preparationTime;
+    private Boolean isLiked;
 }

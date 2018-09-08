@@ -39,10 +39,11 @@ public class RecipeHelper {
         }
         basicRecipeDto.setTitle(recipe.getTitle());
         basicRecipeDto.setCommentsCount(commentRepository.countByRecipe(recipe));
+        basicRecipeDto.setLikesCount((long) recipe.getLikes().size());
         return basicRecipeDto;
     }
 
-    public RecipeDto mapRecipeToRecipeDto(Recipe recipe) {
+    public RecipeDto mapRecipeToRecipeDto(Recipe recipe) throws ProcessingException {
         if (recipe == null) {
             return null;
         }
@@ -55,6 +56,8 @@ public class RecipeHelper {
         }
         recipeDto.setTitle(recipe.getTitle());
         recipeDto.setCommentsCount(commentRepository.countByRecipe(recipe));
+        recipeDto.setLikesCount((long) recipe.getLikes().size());
+        recipeDto.setIsLiked(recipe.getLikes().contains(userHelper.getCurrentUser()));
         recipeDto.setLead(recipe.getLead());
         recipeDto.setCuisineId(recipe.getCuisine().getId());
         recipeDto.setDifficulty(recipe.getDifficulty());

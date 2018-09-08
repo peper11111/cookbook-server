@@ -95,6 +95,25 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    public ResponseEntity like(Long id) throws Exception {
+        User currentUser = userHelper.getCurrentUser();
+        Recipe recipe = recipeHelper.getRecipe(id);
+
+        if (currentUser.getId().equals(recipe.getAuthor().getId())) {
+            throw new ProcessingException(Error.ACCESS_DENIED);
+        }
+
+        Collection<User> likes = recipe.getLikes();
+        if (likes.contains(currentUser)) {
+            likes.remove(currentUser);
+        } else {
+            likes.add(currentUser);
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
     public ResponseEntity readComments(Long id) throws Exception {
         Recipe recipe = recipeHelper.getRecipe(id);
 
