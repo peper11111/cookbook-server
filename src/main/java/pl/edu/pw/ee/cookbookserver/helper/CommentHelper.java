@@ -32,7 +32,7 @@ public class CommentHelper {
         commentDto.setId(comment.getId());
         commentDto.setAuthor(userHelper.mapUserToBasicUserDto(comment.getAuthor()));
         commentDto.setContent(comment.getContent());
-        commentDto.setCreationTime(comment.getCreationTime().toInstant(ZoneOffset.UTC).toEpochMilli());
+        commentDto.setCreationTime(comment.getCreationTime());
         Collection<CommentDto> commentDtoList = new ArrayList<>();
         for (Comment comment1: comment.getComments()) {
             CommentDto commentDto1 = mapCommentToCommentDto(comment1);

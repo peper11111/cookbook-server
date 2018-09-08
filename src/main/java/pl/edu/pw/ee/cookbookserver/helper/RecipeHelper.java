@@ -10,8 +10,6 @@ import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
-import java.time.ZoneOffset;
-
 @Component
 public class RecipeHelper {
 
@@ -32,7 +30,7 @@ public class RecipeHelper {
         }
         BasicRecipeDto basicRecipeDto = new BasicRecipeDto();
         basicRecipeDto.setId(recipe.getId());
-        basicRecipeDto.setCreationTime(recipe.getCreationTime().toInstant(ZoneOffset.UTC).toEpochMilli());
+        basicRecipeDto.setCreationTime(recipe.getCreationTime());
         basicRecipeDto.setAuthor(userHelper.mapUserToBasicUserDto(recipe.getAuthor()));
         if (recipe.getBanner() != null) {
             basicRecipeDto.setBannerId(recipe.getBanner().getId());
@@ -49,7 +47,7 @@ public class RecipeHelper {
         }
         RecipeDto recipeDto = new RecipeDto();
         recipeDto.setId(recipe.getId());
-        recipeDto.setCreationTime(recipe.getCreationTime().toInstant(ZoneOffset.UTC).toEpochMilli());
+        recipeDto.setCreationTime(recipe.getCreationTime());
         recipeDto.setAuthor(userHelper.mapUserToBasicUserDto(recipe.getAuthor()));
         if (recipe.getBanner() != null) {
             recipeDto.setBannerId(recipe.getBanner().getId());
