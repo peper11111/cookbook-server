@@ -19,7 +19,8 @@ public enum PayloadKey {
     PREPARATION_TIME("preparationTime"),
     CONTENT("content"),
     PARENT_ID("parentId"),
-    INGREDIENTS("ingredients");
+    INGREDIENTS("ingredients"),
+    STEPS("steps");
 
     private final String value;
 

@@ -104,6 +104,7 @@ public class DatabaseRunner implements CommandLineRunner {
         recipe.setPlates(4);
         recipe.setPreparationTime(90);
         recipe.setIngredients(Arrays.asList("sok z gumijagód", "wyborowa żytnia", "3/4 butelki wody"));
+        recipe.setSteps(Arrays.asList("W pierwszej kolejności przygotuj składniki,", "Następnie pokrój papryke.", "Smacznego :)"));
         recipeRepository.save(recipe);
         return recipe;
     }

@@ -16,4 +16,5 @@ public class RecipeDto extends BasicRecipeDto {
     private Integer preparationTime;
     private Boolean isLiked;
     private Collection<String> ingredients;
+    private Collection<String> steps;
 }

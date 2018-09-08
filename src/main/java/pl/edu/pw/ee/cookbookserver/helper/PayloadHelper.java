@@ -203,4 +203,12 @@ public class PayloadHelper {
         }
         return JSONArrayToList(ingredients);
     }
+
+    public Collection<String> getValidSteps(JSONObject payload) throws ProcessingException {
+        JSONArray steps = getValidJSONArray(payload, PayloadKey.STEPS, Error.MISSING_STEPS);
+        if (steps == null || steps.length() == 0) {
+            throw new ProcessingException(Error.EMPTY_STEPS);
+        }
+        return JSONArrayToList(steps);
+    }
 }

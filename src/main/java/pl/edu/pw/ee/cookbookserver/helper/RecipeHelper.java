@@ -62,6 +62,7 @@ public class RecipeHelper {
         recipeDto.setPlates(recipe.getPlates());
         recipeDto.setPreparationTime(recipe.getPreparationTime());
         recipeDto.setIngredients(recipe.getIngredients());
+        recipeDto.setSteps(recipe.getSteps());
         return recipeDto;
     }
 

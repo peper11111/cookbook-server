@@ -32,6 +32,7 @@ public enum Error {
     MISSING_CONTENT(312, HttpStatus.BAD_REQUEST, "Missing content in payload"),
     MISSING_PARENT_ID(313, HttpStatus.BAD_REQUEST, "Missing parent comment id in payload"),
     MISSING_INGREDIENTS(313, HttpStatus.BAD_REQUEST, "Missing ingredients array in payload"),
+    MISSING_STEPS(314, HttpStatus.BAD_REQUEST, "Missing steps array in payload"),
 
     EMPTY_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
     USERNAME_OCCUPIED(401, HttpStatus.CONFLICT, "User with the given username already exists"),
@@ -44,7 +45,8 @@ public enum Error {
     INVALID_PLATES(408, HttpStatus.BAD_REQUEST, "Plates number must be positive value"),
     INVALID_PREPARATION_TIME(409, HttpStatus.BAD_REQUEST, "Preparation time must be positive value"),
     EMPTY_CONTENT(410, HttpStatus.BAD_REQUEST, "Comment content can't be empty"),
-    EMPTY_INGREDIENTS(411, HttpStatus.BAD_REQUEST, "Ingredients array can't be empty");
+    EMPTY_INGREDIENTS(411, HttpStatus.BAD_REQUEST, "Ingredients array can't be empty"),
+    EMPTY_STEPS(412, HttpStatus.BAD_REQUEST, "Steps array can't be empty");
 
     private final int code;
     private final HttpStatus status;

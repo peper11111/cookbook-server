@@ -30,6 +30,10 @@ public class Recipe {
     @CollectionTable(name = "cb_recipe_ingredients")
     @Column(name = "ingredient")
     private Collection<String> ingredients;
+    @ElementCollection
+    @CollectionTable(name = "cb_recipe_steps")
+    @Column(name = "step")
+    private Collection<String> steps;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
     private Collection<Comment> comments;
     @ManyToMany(fetch = FetchType.LAZY)
