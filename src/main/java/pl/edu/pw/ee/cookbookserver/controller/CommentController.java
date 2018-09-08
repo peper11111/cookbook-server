@@ -1,11 +1,9 @@
 package pl.edu.pw.ee.cookbookserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.edu.pw.ee.cookbookserver.service.CommentService;
 
 @RestController
@@ -17,6 +15,11 @@ public class CommentController {
     @Autowired
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
+    }
+
+    @PostMapping
+    public ResponseEntity create(@RequestBody String body) throws Exception {
+        return commentService.create(new JSONObject(body));
     }
 
     @DeleteMapping("/{id}")

@@ -28,6 +28,9 @@ public enum Error {
     MISSING_DIFFICULTY(308, HttpStatus.BAD_REQUEST, "Missing difficulty in payload"),
     MISSING_PLATES(309, HttpStatus.BAD_REQUEST, "Missing plates in payload"),
     MISSING_PREPARATION_TIME(310, HttpStatus.BAD_REQUEST, "Missing preparation time in payload"),
+    MISSING_RECIPE_ID(311, HttpStatus.BAD_REQUEST, "Missing recipe id in payload"),
+    MISSING_CONTENT(312, HttpStatus.BAD_REQUEST, "Missing content in payload"),
+    MISSING_PARENT_ID(313, HttpStatus.BAD_REQUEST, "Missing parent comment id in payload"),
 
     EMPTY_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
     USERNAME_OCCUPIED(401, HttpStatus.CONFLICT, "User with the given username already exists"),
@@ -38,7 +41,8 @@ public enum Error {
     EMPTY_TITLE(406, HttpStatus.BAD_REQUEST, "Title can't be empty"),
     INVALID_DIFFICULTY(407, HttpStatus.BAD_REQUEST, "Difficulty must be in range (1-5)"),
     INVALID_PLATES(408, HttpStatus.BAD_REQUEST, "Plates number must be positive value"),
-    INVALID_PREPARATION_TIME(409, HttpStatus.BAD_REQUEST, "Preparation time must be positive value");
+    INVALID_PREPARATION_TIME(409, HttpStatus.BAD_REQUEST, "Preparation time must be positive value"),
+    EMPTY_CONTENT(410, HttpStatus.BAD_REQUEST, "Comment content can't be empty");
 
     private final int code;
     private final HttpStatus status;

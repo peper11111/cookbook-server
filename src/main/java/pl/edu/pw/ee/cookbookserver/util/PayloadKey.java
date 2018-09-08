@@ -10,12 +10,15 @@ public enum PayloadKey {
     BIOGRAPHY("biography"),
     AVATAR_ID("avatarId"),
     BANNER_ID("bannerId"),
+    RECIPE_ID("recipeId"),
     TITLE("title"),
     LEAD("lead"),
     CUISINE_ID("cuisineId"),
     DIFFICULTY("difficulty"),
     PLATES("plates"),
-    PREPARATION_TIME("preparationTime");
+    PREPARATION_TIME("preparationTime"),
+    CONTENT("content"),
+    PARENT_ID("parentId");
 
     private final String value;
 

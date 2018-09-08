@@ -3,13 +3,8 @@ package pl.edu.pw.ee.cookbookserver.helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Component;
-import pl.edu.pw.ee.cookbookserver.entity.Cuisine;
-import pl.edu.pw.ee.cookbookserver.entity.Token;
-import pl.edu.pw.ee.cookbookserver.entity.Upload;
-import pl.edu.pw.ee.cookbookserver.repository.CuisineRepository;
-import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
-import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
-import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
+import pl.edu.pw.ee.cookbookserver.entity.*;
+import pl.edu.pw.ee.cookbookserver.repository.*;
 import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
@@ -19,15 +14,20 @@ import java.time.LocalDateTime;
 @Component
 public class PayloadHelper {
 
+    private CommentRepository commentRepository;
     private CuisineRepository cuisineRepository;
+    private RecipeRepository recipeRepository;
     private TokenRepository tokenRepository;
     private UploadRepository uploadRepository;
     private UserRepository userRepository;
 
     @Autowired
-    public PayloadHelper(CuisineRepository cuisineRepository, TokenRepository tokenRepository,
+    public PayloadHelper(CommentRepository commentRepository, CuisineRepository cuisineRepository,
+                         RecipeRepository recipeRepository, TokenRepository tokenRepository,
                          UploadRepository uploadRepository, UserRepository userRepository) {
+        this.commentRepository = commentRepository;
         this.cuisineRepository = cuisineRepository;
+        this.recipeRepository = recipeRepository;
         this.tokenRepository = tokenRepository;
         this.uploadRepository = uploadRepository;
         this.userRepository = userRepository;
@@ -156,5 +156,31 @@ public class PayloadHelper {
             throw new ProcessingException(Error.INVALID_PREPARATION_TIME);
         }
         return preparationTime;
+    }
+
+    public Recipe getValidRecipe(JSONObject payload) throws ProcessingException {
+        long recipeId = getValidLong(payload, PayloadKey.RECIPE_ID, Error.MISSING_RECIPE_ID);
+        Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
+        if (recipe == null) {
+            throw new ProcessingException(Error.RECIPE_NOT_FOUND);
+        }
+        return recipe;
+    }
+
+    public String getValidContent(JSONObject payload) throws ProcessingException {
+        String content = getValidString(payload, PayloadKey.CONTENT, Error.MISSING_CONTENT);
+        if (content.isEmpty()) {
+            throw new ProcessingException(Error.EMPTY_CONTENT);
+        }
+        return content;
+    }
+
+    public Comment getValidParent(JSONObject payload) throws ProcessingException {
+        long parentId = getValidLong(payload, PayloadKey.PARENT_ID, Error.MISSING_PARENT_ID);
+        Comment parent = commentRepository.findById(parentId).orElse(null);
+        if (parent == null) {
+            throw new ProcessingException(Error.COMMENT_NOT_FOUND);
+        }
+        return parent;
     }
 }

@@ -1,6 +1,7 @@
 package pl.edu.pw.ee.cookbookserver.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -8,10 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.entity.Comment;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.CommentHelper;
+import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.service.CommentService;
 import pl.edu.pw.ee.cookbookserver.util.Error;
+import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 @Service
@@ -20,13 +23,32 @@ public class CommentServiceImpl implements CommentService {
 
     private CommentHelper commentHelper;
     private CommentRepository commentRepository;
+    private PayloadHelper payloadHelper;
     private UserHelper userHelper;
 
     @Autowired
-    public CommentServiceImpl(CommentHelper commentHelper, CommentRepository commentRepository, UserHelper userHelper) {
+    public CommentServiceImpl(CommentHelper commentHelper, CommentRepository commentRepository,
+                              PayloadHelper payloadHelper, UserHelper userHelper) {
         this.commentHelper = commentHelper;
         this.commentRepository = commentRepository;
+        this.payloadHelper = payloadHelper;
         this.userHelper = userHelper;
+    }
+
+    @Override
+    public ResponseEntity create(JSONObject payload) throws Exception {
+        User currentUser = userHelper.getCurrentUser();
+
+        Comment comment = new Comment();
+        comment.setAuthor(currentUser);
+        comment.setRecipe(payloadHelper.getValidRecipe(payload));
+        comment.setContent(payloadHelper.getValidContent(payload));
+        if (payload.has(PayloadKey.PARENT_ID.value())) {
+            comment.setParent(payloadHelper.getValidParent(payload));
+        }
+        commentRepository.save(comment);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(comment.getId());
     }
 
     @Override
