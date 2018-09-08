@@ -15,6 +15,7 @@ import pl.edu.pw.ee.cookbookserver.helper.CommentHelper;
 import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
+import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
 import pl.edu.pw.ee.cookbookserver.util.Error;
@@ -29,15 +30,18 @@ import java.util.Collection;
 public class RecipeServiceImpl implements RecipeService {
 
     private CommentHelper commentHelper;
+    private CommentRepository commentRepository;
     private PayloadHelper payloadHelper;
     private RecipeHelper recipeHelper;
     private RecipeRepository recipeRepository;
     private UserHelper userHelper;
 
     @Autowired
-    public RecipeServiceImpl(CommentHelper commentHelper, PayloadHelper payloadHelper, RecipeHelper recipeHelper,
-                             RecipeRepository recipeRepository, UserHelper userHelper) {
+    public RecipeServiceImpl(CommentHelper commentHelper, CommentRepository commentRepository,
+                             PayloadHelper payloadHelper, RecipeHelper recipeHelper, RecipeRepository recipeRepository,
+                             UserHelper userHelper) {
         this.commentHelper = commentHelper;
+        this.commentRepository = commentRepository;
         this.payloadHelper = payloadHelper;
         this.recipeHelper = recipeHelper;
         this.recipeRepository = recipeRepository;
@@ -95,7 +99,8 @@ public class RecipeServiceImpl implements RecipeService {
         Recipe recipe = recipeHelper.getRecipe(id);
 
         Collection<CommentDto> commentDtoList = new ArrayList<>();
-        for (Comment comment: recipe.getComments()) {
+        Iterable<Comment> comments = commentRepository.findByRecipeAndParentIsNull(recipe);
+        for (Comment comment: comments) {
             CommentDto commentDto = commentHelper.mapCommentToCommentDto(comment);
             commentDtoList.add(commentDto);
         }

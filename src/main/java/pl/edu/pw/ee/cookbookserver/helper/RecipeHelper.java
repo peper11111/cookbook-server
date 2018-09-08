@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
+import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
@@ -14,11 +15,13 @@ import java.time.ZoneOffset;
 @Component
 public class RecipeHelper {
 
+    private CommentRepository commentRepository;
     private RecipeRepository recipeRepository;
     private UserHelper userHelper;
 
     @Autowired
-    public RecipeHelper(RecipeRepository recipeRepository, UserHelper userHelper) {
+    public RecipeHelper(CommentRepository commentRepository, RecipeRepository recipeRepository, UserHelper userHelper) {
+        this.commentRepository = commentRepository;
         this.recipeRepository = recipeRepository;
         this.userHelper = userHelper;
     }
@@ -35,7 +38,7 @@ public class RecipeHelper {
         }
         basicRecipeDto.setTitle(recipe.getTitle());
         basicRecipeDto.setCreationTime(recipe.getCreationTime().toInstant(ZoneOffset.UTC).toEpochMilli());
-        basicRecipeDto.setComments((long) recipe.getComments().size());
+        basicRecipeDto.setComments(commentRepository.countByRecipe(recipe));
         return basicRecipeDto;
     }
 
@@ -55,6 +58,7 @@ public class RecipeHelper {
         recipeDto.setDifficulty(recipe.getDifficulty());
         recipeDto.setPlates(recipe.getPlates());
         recipeDto.setPreparationTime(recipe.getPreparationTime());
+        recipeDto.setComments(commentRepository.countByRecipe(recipe));
         return recipeDto;
     }
 

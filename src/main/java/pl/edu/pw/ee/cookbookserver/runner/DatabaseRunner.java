@@ -51,12 +51,11 @@ public class DatabaseRunner implements CommandLineRunner {
         Recipe recipe1 = createRecipe(user5, "Przepis 1", cuisine1);
         Recipe recipe2 = createRecipe(user5, "Przepis 2", cuisine2);
 
-        Comment comment1 = createComment(user1, recipe1, "Komentarz 1");
-        Comment comment2 = createComment(user2, recipe1, "Komentarz 2");
-        Comment comment3 = createComment(user3, recipe1, "Komentarz 3");
-        Comment comment4 = createComment(user4, recipe2, "Komentarz 4");
-        Comment comment5 = createComment(user5, recipe2, "Komentarz 5");
-
+        Comment comment1 = createComment(user1, "Komentarz 1", recipe1, null);
+        Comment comment2 = createComment(user2, "Komentarz 2", recipe1, comment1);
+        Comment comment3 = createComment(user3, "Komentarz 3", recipe1, comment1);
+        Comment comment4 = createComment(user4, "Komentarz 4", recipe2, null);
+        Comment comment5 = createComment(user5, "Komentarz 5", recipe2, comment4);
     }
 
     private Role createRole(String authority) {
@@ -85,11 +84,12 @@ public class DatabaseRunner implements CommandLineRunner {
         return cuisine;
     }
 
-    private Comment createComment(User author, Recipe recipe, String content) {
+    private Comment createComment(User author, String content, Recipe recipe, Comment parent) {
         Comment comment = new Comment();
         comment.setAuthor(author);
         comment.setRecipe(recipe);
         comment.setContent(content);
+        comment.setParent(parent);
         commentRepository.save(comment);
         return comment;
     }
