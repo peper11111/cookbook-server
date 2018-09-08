@@ -48,14 +48,15 @@ public class DatabaseRunner implements CommandLineRunner {
         Cuisine cuisine7 = createCuisine("CUISINE_POLISH");
         Cuisine cuisine8 = createCuisine("CUISINE_SPANISH");
 
-        Comment comment1 = createComment(user1, "Komentarz 1");
-        Comment comment2 = createComment(user2, "Komentarz 2");
-        Comment comment3 = createComment(user3, "Komentarz 3");
-        Comment comment4 = createComment(user4, "Komentarz 4");
-        Comment comment5 = createComment(user5, "Komentarz 5");
+        Recipe recipe1 = createRecipe(user5, "Przepis 1", cuisine1);
+        Recipe recipe2 = createRecipe(user5, "Przepis 2", cuisine2);
 
-        Recipe recipe1 = createRecipe(user5, "Przepis 1", cuisine1, Arrays.asList(comment1, comment2, comment3));
-        Recipe recipe2 = createRecipe(user5, "Przepis 2", cuisine2, Arrays.asList(comment4, comment5));
+        Comment comment1 = createComment(user1, recipe1, "Komentarz 1");
+        Comment comment2 = createComment(user2, recipe1, "Komentarz 2");
+        Comment comment3 = createComment(user3, recipe1, "Komentarz 3");
+        Comment comment4 = createComment(user4, recipe2, "Komentarz 4");
+        Comment comment5 = createComment(user5, recipe2, "Komentarz 5");
+
     }
 
     private Role createRole(String authority) {
@@ -84,15 +85,16 @@ public class DatabaseRunner implements CommandLineRunner {
         return cuisine;
     }
 
-    private Comment createComment(User author, String content) {
+    private Comment createComment(User author, Recipe recipe, String content) {
         Comment comment = new Comment();
         comment.setAuthor(author);
+        comment.setRecipe(recipe);
         comment.setContent(content);
         commentRepository.save(comment);
         return comment;
     }
 
-    private Recipe createRecipe(User author, String title, Cuisine cuisine, Collection<Comment> comments) {
+    private Recipe createRecipe(User author, String title, Cuisine cuisine) {
         Recipe recipe = new Recipe();
         recipe.setAuthor(author);
         recipe.setTitle(title);
@@ -100,7 +102,6 @@ public class DatabaseRunner implements CommandLineRunner {
         recipe.setDifficulty(3);
         recipe.setPlates(4);
         recipe.setPreparationTime(90);
-        recipe.setComments(comments);
         recipeRepository.save(recipe);
         return recipe;
     }

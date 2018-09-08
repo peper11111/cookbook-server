@@ -26,7 +26,7 @@ public class Recipe {
     private Integer difficulty;
     private Integer plates;
     private Integer preparationTime;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
     private Collection<Comment> comments;
 
     public Recipe() {

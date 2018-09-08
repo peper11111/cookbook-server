@@ -18,7 +18,11 @@ public class Comment {
     private User author;
     private String content;
     private LocalDateTime creationTime;
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Recipe recipe;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Comment parent;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     private Collection<Comment> comments;
 
     public Comment() {
