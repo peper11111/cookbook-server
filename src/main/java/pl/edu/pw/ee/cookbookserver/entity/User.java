@@ -25,6 +25,7 @@ public class User implements UserDetails {
     private boolean credentialsNonExpired;
     private boolean enabled;
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(inverseJoinColumns = @JoinColumn(name = "authority_id"))
     private Collection<Role> authorities;
     private String name;
     private String biography;
@@ -33,6 +34,7 @@ public class User implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY)
     private Upload banner;
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(inverseJoinColumns = @JoinColumn(name = "follower_id"))
     private Collection<User> followers;
 
     public User() {
