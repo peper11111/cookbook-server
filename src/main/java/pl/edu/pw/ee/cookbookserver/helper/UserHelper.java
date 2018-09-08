@@ -50,9 +50,9 @@ public class UserHelper {
         if (user.getBanner() != null) {
             userDto.setBannerId(user.getBanner().getId());
         }
-        userDto.setFollowing(user.getFollowers().contains(getCurrentUser()));
-        userDto.setFollowers((long) user.getFollowers().size());
-        userDto.setFollowed(userRepository.countByFollowersContaining(user));
+        userDto.setFollowing(userRepository.countFollowing(user.getId(), getCurrentUser().getId()) != 0);
+        userDto.setFollowers(userRepository.countFollowers(user.getId()));
+        userDto.setFollowed(userRepository.countFollowed(user.getId()));
         userDto.setRecipes(recipeRepository.countByAuthor(user));
         return userDto;
     }
