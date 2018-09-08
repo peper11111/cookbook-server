@@ -62,9 +62,9 @@ public class RecipeServiceImpl implements RecipeService {
         }
         recipe.setTitle(payloadHelper.getValidTitle(payload));
 
-        String leadKey = PayloadKey.LEAD.value();
+        String leadKey = PayloadKey.DESCRIPTION.value();
         if (payload.has(leadKey)) {
-            recipe.setLead(payload.optString(leadKey));
+            recipe.setDescription(payload.optString(leadKey));
         }
 
         recipe.setCuisine(payloadHelper.getValidCuisine(payload));

@@ -8,7 +8,6 @@ import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 

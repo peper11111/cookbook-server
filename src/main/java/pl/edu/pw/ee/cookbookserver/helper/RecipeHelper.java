@@ -56,7 +56,7 @@ public class RecipeHelper {
         recipeDto.setCommentsCount(commentRepository.countByRecipe(recipe));
         recipeDto.setLikesCount((long) recipe.getLikes().size());
         recipeDto.setIsLiked(recipe.getLikes().contains(userHelper.getCurrentUser()));
-        recipeDto.setLead(recipe.getLead());
+        recipeDto.setDescription(recipe.getDescription());
         recipeDto.setCuisineId(recipe.getCuisine().getId());
         recipeDto.setDifficulty(recipe.getDifficulty());
         recipeDto.setPlates(recipe.getPlates());

@@ -12,7 +12,7 @@ public enum PayloadKey {
     BANNER_ID("bannerId"),
     RECIPE_ID("recipeId"),
     TITLE("title"),
-    LEAD("lead"),
+    DESCRIPTION("description"),
     CUISINE_ID("cuisineId"),
     DIFFICULTY("difficulty"),
     PLATES("plates"),

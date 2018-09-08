@@ -9,7 +9,7 @@ import java.util.Collection;
 @EqualsAndHashCode(callSuper = true)
 public class RecipeDto extends BasicRecipeDto {
 
-    private String lead;
+    private String description;
     private Long cuisineId;
     private Integer difficulty;
     private Integer plates;

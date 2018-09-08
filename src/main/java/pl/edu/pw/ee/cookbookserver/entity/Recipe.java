@@ -20,7 +20,7 @@ public class Recipe {
     @OneToOne(fetch = FetchType.LAZY)
     private Upload banner;
     private String title;
-    private String lead;
+    private String description;
     @ManyToOne(fetch = FetchType.LAZY)
     private Cuisine cuisine;
     private Integer difficulty;
