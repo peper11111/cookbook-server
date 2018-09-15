@@ -1,7 +1,7 @@
 package pl.edu.pw.ee.cookbookserver.controller;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pw.ee.cookbookserver.service.AuthService;

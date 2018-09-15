@@ -1,8 +1,8 @@
 package pl.edu.pw.ee.cookbookserver.helper;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.entity.*;
 import pl.edu.pw.ee.cookbookserver.repository.*;
