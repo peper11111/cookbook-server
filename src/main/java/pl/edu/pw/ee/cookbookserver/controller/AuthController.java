@@ -22,9 +22,14 @@ public class AuthController {
         return authService.register(new JSONObject(body), origin);
     }
 
-    @PostMapping("/verify")
-    public ResponseEntity verify(@RequestBody String body) throws Exception {
-        return authService.verify(new JSONObject(body));
+    @PostMapping("/register/resend")
+    public ResponseEntity registerResend(@RequestBody String body, @RequestHeader("Origin") String origin) throws Exception {
+        return authService.registerResend(new JSONObject(body), origin);
+    }
+
+    @PostMapping("/register/confirm")
+    public ResponseEntity registerConfirm(@RequestBody String body) throws Exception {
+        return authService.registerConfirm(new JSONObject(body));
     }
 
     @PostMapping("/reset")
@@ -32,8 +37,13 @@ public class AuthController {
         return authService.reset(new JSONObject(body), origin);
     }
 
-    @PostMapping("/confirm")
-    public ResponseEntity confirm(@RequestBody String body) throws Exception {
-        return authService.confirm(new JSONObject(body));
+    @PostMapping("/reset/resend")
+    public ResponseEntity resetResend(@RequestBody String body, @RequestHeader("Origin") String origin) throws Exception {
+        return authService.resetResend(new JSONObject(body), origin);
+    }
+
+    @PostMapping("/reset/confirm")
+    public ResponseEntity resetConfirm(@RequestBody String body) throws Exception {
+        return authService.resetConfirm(new JSONObject(body));
     }
 }

@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 public interface AuthService {
 
     ResponseEntity register(JSONObject payload, String origin) throws Exception;
-    ResponseEntity verify(JSONObject payload) throws Exception;
+    ResponseEntity registerResend(JSONObject payload, String origin) throws Exception;
+    ResponseEntity registerConfirm(JSONObject payload) throws Exception;
     ResponseEntity reset(JSONObject payload, String origin) throws Exception;
-    ResponseEntity confirm(JSONObject payload) throws Exception;
+    ResponseEntity resetResend(JSONObject payload, String origin) throws Exception;
+    ResponseEntity resetConfirm(JSONObject payload) throws Exception;
 }

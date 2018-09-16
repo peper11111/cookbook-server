@@ -5,7 +5,7 @@
     <h1>Hi <span th:text="${username}"></span></h1>
     <p>Welcome to Cookbook! We are glad to have you on board.</p>
     <p>Click on the link below to activate your account:</p>
-    <a th:href="${accountActivationLink}">Activate account</a>
+    <a th:href="${accountActivationLink}" th:text="${accountActivationLink}"></a>
     <p>Cookbook Team</p>
 </body>
 </html>

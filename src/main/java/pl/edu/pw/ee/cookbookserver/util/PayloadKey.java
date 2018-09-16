@@ -2,9 +2,10 @@ package pl.edu.pw.ee.cookbookserver.util;
 
 public enum PayloadKey {
 
+    LOGIN("login"),
     USERNAME("username"),
     PASSWORD("password"),
-    UUID("token"),
+    UUID("uuid"),
     EMAIL("email"),
     NAME("name"),
     BIOGRAPHY("biography"),

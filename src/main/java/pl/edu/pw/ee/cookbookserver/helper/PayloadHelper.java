@@ -10,7 +10,6 @@ import pl.edu.pw.ee.cookbookserver.util.Error;
 import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,18 +20,16 @@ public class PayloadHelper {
     private CommentRepository commentRepository;
     private CuisineRepository cuisineRepository;
     private RecipeRepository recipeRepository;
-    private TokenRepository tokenRepository;
     private UploadRepository uploadRepository;
     private UserRepository userRepository;
 
     @Autowired
     public PayloadHelper(CommentRepository commentRepository, CuisineRepository cuisineRepository,
-                         RecipeRepository recipeRepository, TokenRepository tokenRepository,
-                         UploadRepository uploadRepository, UserRepository userRepository) {
+                         RecipeRepository recipeRepository, UploadRepository uploadRepository,
+                         UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.cuisineRepository = cuisineRepository;
         this.recipeRepository = recipeRepository;
-        this.tokenRepository = tokenRepository;
         this.uploadRepository = uploadRepository;
         this.userRepository = userRepository;
     }
@@ -69,16 +66,12 @@ public class PayloadHelper {
         return payload.optJSONArray(getValidKey(payload, payloadKey, error));
     }
 
-    public Token getValidToken(JSONObject payload) throws ProcessingException {
-        String uuid = getValidString(payload, PayloadKey.UUID, Error.MISSING_UUID);
-        Token token = tokenRepository.findByUuid(uuid).orElse(null);
-        if (token == null) {
-            throw new ProcessingException(Error.TOKEN_NOT_FOUND);
-        }
-        if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
-            throw new ProcessingException(Error.TOKEN_EXPIRED);
-        }
-        return token;
+    public String getValidUuid(JSONObject payload) throws ProcessingException {
+        return getValidString(payload, PayloadKey.UUID, Error.MISSING_UUID);
+    }
+
+    public String getValidLogin(JSONObject payload) throws ProcessingException {
+        return getValidString(payload, PayloadKey.LOGIN, Error.MISSING_LOGIN);
     }
 
     public String getValidEmail(JSONObject payload) throws ProcessingException {

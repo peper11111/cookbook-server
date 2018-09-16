@@ -9,13 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.entity.Token;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
+import pl.edu.pw.ee.cookbookserver.helper.TokenHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.AuthService;
 import pl.edu.pw.ee.cookbookserver.service.MailService;
-import pl.edu.pw.ee.cookbookserver.util.Error;
-import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
 
 @Service
 @Transactional
@@ -23,15 +22,17 @@ public class AuthServiceImpl implements AuthService {
 
     private MailService mailService;
     private PayloadHelper payloadHelper;
+    private TokenHelper tokenHelper;
     private TokenRepository tokenRepository;
     private UserHelper userHelper;
     private UserRepository userRepository;
 
     @Autowired
-    public AuthServiceImpl(MailService mailService, PayloadHelper payloadHelper, TokenRepository tokenRepository,
-                           UserHelper userHelper, UserRepository userRepository) {
+    public AuthServiceImpl(MailService mailService, PayloadHelper payloadHelper, TokenHelper tokenHelper,
+                           TokenRepository tokenRepository, UserHelper userHelper, UserRepository userRepository) {
         this.mailService = mailService;
         this.payloadHelper = payloadHelper;
+        this.tokenHelper = tokenHelper;
         this.tokenRepository = tokenRepository;
         this.userHelper = userHelper;
         this.userRepository = userRepository;
@@ -54,8 +55,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity verify(JSONObject payload) throws Exception {
-        Token token = payloadHelper.getValidToken(payload);
+    public ResponseEntity registerResend(JSONObject payload, String origin) throws Exception {
+        String login = payloadHelper.getValidLogin(payload);
+        User user = userHelper.getUser(login);
+        Token token = tokenHelper.getToken(user);
+
+        mailService.sendAccountActivationMessage(origin, token);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
+    public ResponseEntity registerConfirm(JSONObject payload) throws Exception {
+        String uuid = payloadHelper.getValidUuid(payload);
+        Token token = tokenHelper.getToken(uuid);
 
         User user = token.getUser();
         user.setEnabled(true);
@@ -68,8 +81,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity reset(JSONObject payload, String origin) throws Exception {
-        String username = payloadHelper.getValidString(payload, PayloadKey.USERNAME, Error.MISSING_USERNAME);
-        User user = userHelper.getUser(username);
+        String login = payloadHelper.getValidLogin(payload);
+        User user = userHelper.getUser(login);
 
         Token token = new Token(user);
         tokenRepository.save(token);
@@ -80,8 +93,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity confirm(JSONObject payload) throws Exception {
-        Token token = payloadHelper.getValidToken(payload);
+    public ResponseEntity resetResend(JSONObject payload, String origin) throws Exception {
+        String login = payloadHelper.getValidLogin(payload);
+        User user = userHelper.getUser(login);
+        Token token = tokenHelper.getToken(user);
+
+        mailService.sendPasswordResetMessage(origin, token);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
+    public ResponseEntity resetConfirm(JSONObject payload) throws Exception {
+        String uuid = payloadHelper.getValidUuid(payload);
+        Token token = tokenHelper.getToken(uuid);
 
         User user = token.getUser();
         user.setPassword(payloadHelper.getValidPassword(payload));

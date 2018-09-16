@@ -13,7 +13,7 @@ public enum Error {
     UPLOAD_NOT_FOUND(202, HttpStatus.NOT_FOUND, "Upload not found"),
     RECIPE_NOT_FOUND(203, HttpStatus.NOT_FOUND, "Recipe not found"),
     AVATAR_NOT_FOUND(204, HttpStatus.NOT_FOUND, "Avatar with the given id not found"),
-    BANNER_NOT_FOUND(205, HttpStatus.NOT_FOUND, "Banner with the giver id not found"),
+    BANNER_NOT_FOUND(205, HttpStatus.NOT_FOUND, "Banner with the given id not found"),
     CUISINE_NOT_FOUND(206, HttpStatus.NOT_FOUND, "Cuisine with the given id not found"),
     COMMENT_NOT_FOUND(207, HttpStatus.NOT_FOUND, "Comment with the given id not found"),
 
@@ -33,6 +33,7 @@ public enum Error {
     MISSING_PARENT_ID(313, HttpStatus.BAD_REQUEST, "Missing parent comment id in payload"),
     MISSING_INGREDIENTS(313, HttpStatus.BAD_REQUEST, "Missing ingredients array in payload"),
     MISSING_STEPS(314, HttpStatus.BAD_REQUEST, "Missing steps array in payload"),
+    MISSING_LOGIN(315, HttpStatus.BAD_REQUEST, "Missing login in payload"),
 
     EMPTY_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
     USERNAME_OCCUPIED(401, HttpStatus.CONFLICT, "User with the given username already exists"),
