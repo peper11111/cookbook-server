@@ -38,6 +38,7 @@ public class DatabaseRunner implements CommandLineRunner {
         User user3 = createUser("koko", "koko@example.com", null, Arrays.asList(user1, user2));
         User user4 = createUser("perlage", "perlage@example.com", null, null);
         User user5 = createUser("peper11111", "peper11111@example.com", Arrays.asList(role1), Arrays.asList(user3, user4));
+        User user6 = createUser("mike11111", "mike11111@example.com", null, null);
 
         Cuisine cuisine1 = createCuisine("CUISINE_AMERICAN");
         Cuisine cuisine2 = createCuisine("CUISINE_ASIAN");
