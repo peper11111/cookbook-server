@@ -30,6 +30,7 @@ public class UserHelper {
         BasicUserDto basicUserDto = new BasicUserDto();
         basicUserDto.setId(user.getId());
         basicUserDto.setUsername(user.getUsername());
+        basicUserDto.setEmail(user.getEmail());
         if (user.getAvatar() != null) {
             basicUserDto.setAvatarId(user.getAvatar().getId());
         }
@@ -43,6 +44,7 @@ public class UserHelper {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
         userDto.setName(user.getName());
         userDto.setBiography(user.getBiography());
         if (user.getAvatar() != null) {
