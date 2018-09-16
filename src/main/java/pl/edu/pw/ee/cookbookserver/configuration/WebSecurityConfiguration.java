@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.edu.pw.ee.cookbookserver.dto.ErrorDto;
 import pl.edu.pw.ee.cookbookserver.util.Error;
+import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
 
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -42,8 +43,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
             .formLogin()
                 .loginProcessingUrl("/auth/login")
-                .usernameParameter("login")
-                .passwordParameter("password")
+                .usernameParameter(PayloadKey.LOGIN.value())
+                .passwordParameter(PayloadKey.PASSWORD.value())
                 .successHandler((request, response, authentication) -> {
                     response.setStatus(HttpStatus.NO_CONTENT.value());
                 })
