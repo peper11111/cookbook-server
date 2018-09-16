@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
+import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.util.Error;
@@ -45,6 +46,7 @@ public class RecipeHelper {
         if (recipe == null) {
             return null;
         }
+        User currentUser = userHelper.getCurrentUser();
         RecipeDto recipeDto = new RecipeDto();
         recipeDto.setId(recipe.getId());
         recipeDto.setCreationTime(recipe.getCreationTime());
@@ -55,7 +57,8 @@ public class RecipeHelper {
         recipeDto.setTitle(recipe.getTitle());
         recipeDto.setCommentsCount(commentRepository.countByRecipe(recipe));
         recipeDto.setLikesCount((long) recipe.getLikes().size());
-        recipeDto.setIsLiked(recipe.getLikes().contains(userHelper.getCurrentUser()));
+        recipeDto.setIsLiked(recipe.getLikes().contains(currentUser));
+        recipeDto.setIsFavourite(currentUser.getFavourites().contains(recipe));
         recipeDto.setDescription(recipe.getDescription());
         recipeDto.setCuisineId(recipe.getCuisine().getId());
         recipeDto.setDifficulty(recipe.getDifficulty());

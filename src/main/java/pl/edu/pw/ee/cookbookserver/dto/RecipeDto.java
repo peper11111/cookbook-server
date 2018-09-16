@@ -15,6 +15,7 @@ public class RecipeDto extends BasicRecipeDto {
     private Integer plates;
     private Integer preparationTime;
     private Boolean isLiked;
+    private Boolean isFavourite;
     private Collection<String> ingredients;
     private Collection<String> steps;
 }
