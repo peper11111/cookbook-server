@@ -77,8 +77,8 @@ public class UserHelper {
         return user;
     }
 
-    public User getUser(String username) throws ProcessingException {
-        User user = userRepository.findByUsernameOrEmail(username, username).orElse(null);
+    public User getUser(String login) throws ProcessingException {
+        User user = userRepository.findByLogin(login).orElse(null);
         if (user == null) {
             throw new ProcessingException(Error.USER_NOT_FOUND);
         }
