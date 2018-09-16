@@ -36,11 +36,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
             .exceptionHandling()
-                .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value()))
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.sendError(HttpStatus.UNAUTHORIZED.value());
+                })
                 .and()
             .formLogin()
                 .loginProcessingUrl("/auth/login")
-                .successHandler((request, response, authentication) -> response.setStatus(HttpStatus.NO_CONTENT.value()))
+                .usernameParameter("login")
+                .passwordParameter("password")
+                .successHandler((request, response, authentication) -> {
+                    response.setStatus(HttpStatus.NO_CONTENT.value());
+                })
                 .failureHandler((request, response, exception) -> {
                     ErrorDto errorDto = new ErrorDto(Error.LOGIN_FAILURE.code(), exception.getMessage());
                     response.setStatus(Error.LOGIN_FAILURE.status().value());
@@ -50,7 +56,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
             .logout()
                 .logoutUrl("/auth/logout")
-                .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpStatus.NO_CONTENT.value()))
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    response.setStatus(HttpStatus.NO_CONTENT.value());
+                })
                 .and()
             .cors().and()
             .csrf().disable();

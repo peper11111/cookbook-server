@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 
-import java.util.Optional;
-
 @Service
 @Transactional
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -23,12 +21,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> optionalUser = userRepository.findByLogin(username);
-        if (!optionalUser.isPresent()) {
-            throw new UsernameNotFoundException(username);
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        User user = userRepository.findByLogin(login).orElse(null);
+        if (user == null) {
+            throw new UsernameNotFoundException(login);
         }
-        User user = optionalUser.get();
         user.getAuthorities().size();
         return user;
     }
