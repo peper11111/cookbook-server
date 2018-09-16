@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.edu.pw.ee.cookbookserver.dto.CommentDto;
 import pl.edu.pw.ee.cookbookserver.entity.Comment;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.CommentHelper;
@@ -49,6 +50,13 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(comment.getId());
+    }
+
+    @Override
+    public ResponseEntity read(Long id) throws Exception {
+        Comment comment = commentHelper.getComment(id);
+        CommentDto commentDto = commentHelper.mapCommentToCommentDto(comment);
+        return ResponseEntity.status(HttpStatus.OK).body(commentDto);
     }
 
     @Override
