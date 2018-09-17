@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class UserDto extends BasicUserDto {
 
+    private String email;
     private String name;
     private String biography;
     private Long bannerId;

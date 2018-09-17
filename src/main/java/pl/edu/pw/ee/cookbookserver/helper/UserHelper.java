@@ -30,7 +30,6 @@ public class UserHelper {
         BasicUserDto basicUserDto = new BasicUserDto();
         basicUserDto.setId(user.getId());
         basicUserDto.setUsername(user.getUsername());
-        basicUserDto.setEmail(user.getEmail());
         if (user.getAvatar() != null) {
             basicUserDto.setAvatarId(user.getAvatar().getId());
         }
