@@ -27,9 +27,9 @@ public class AuthController {
         return authService.registerResend(new JSONObject(body), origin);
     }
 
-    @PostMapping("/register/confirm")
-    public ResponseEntity registerConfirm(@RequestBody String body) throws Exception {
-        return authService.registerConfirm(new JSONObject(body));
+    @PostMapping("/register/verify")
+    public ResponseEntity registerVerify(@RequestBody String body) throws Exception {
+        return authService.registerVerify(new JSONObject(body));
     }
 
     @PostMapping("/reset")

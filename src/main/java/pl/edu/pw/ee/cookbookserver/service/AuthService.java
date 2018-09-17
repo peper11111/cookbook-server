@@ -7,7 +7,7 @@ public interface AuthService {
 
     ResponseEntity register(JSONObject payload, String origin) throws Exception;
     ResponseEntity registerResend(JSONObject payload, String origin) throws Exception;
-    ResponseEntity registerConfirm(JSONObject payload) throws Exception;
+    ResponseEntity registerVerify(JSONObject payload) throws Exception;
     ResponseEntity reset(JSONObject payload, String origin) throws Exception;
     ResponseEntity resetResend(JSONObject payload, String origin) throws Exception;
     ResponseEntity resetConfirm(JSONObject payload) throws Exception;

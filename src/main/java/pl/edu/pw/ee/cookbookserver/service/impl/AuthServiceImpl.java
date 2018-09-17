@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity registerConfirm(JSONObject payload) throws Exception {
+    public ResponseEntity registerVerify(JSONObject payload) throws Exception {
         String uuid = payloadHelper.getValidUuid(payload);
         Token token = tokenHelper.getToken(uuid);
 
