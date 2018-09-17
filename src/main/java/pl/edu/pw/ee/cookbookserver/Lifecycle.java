@@ -48,7 +48,7 @@ public class Lifecycle {
             case "create-drop":
                 dropUploadsDirectory();
                 createUploadsDirectory();
-                initDatabase(); // TODO Temporary database init
+                initDatabase(); // TODO Remove temporary database init
                 break;
         }
     }
