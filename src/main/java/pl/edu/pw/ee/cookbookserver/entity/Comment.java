@@ -22,7 +22,7 @@ public class Comment {
     private Recipe recipe;
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment parent;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
     private Collection<Comment> comments;
 
     public Comment() {

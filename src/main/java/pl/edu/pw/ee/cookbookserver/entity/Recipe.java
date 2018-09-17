@@ -34,7 +34,7 @@ public class Recipe {
     @CollectionTable(name = "cb_recipe_steps")
     @Column(name = "step")
     private Collection<String> steps;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL)
     private Collection<Comment> comments;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(inverseJoinColumns = @JoinColumn(name = "user_id"))
