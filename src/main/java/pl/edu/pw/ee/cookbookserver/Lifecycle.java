@@ -1,36 +1,92 @@
-package pl.edu.pw.ee.cookbookserver.runner;
+package pl.edu.pw.ee.cookbookserver;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileSystemUtils;
 import pl.edu.pw.ee.cookbookserver.entity.*;
 import pl.edu.pw.ee.cookbookserver.repository.*;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 
+@Slf4j
 @Component
-public class DatabaseRunner implements CommandLineRunner {
+public class Lifecycle {
 
     private CommentRepository commentRepository;
     private CuisineRepository cuisineRepository;
+    private Properties properties;
     private RecipeRepository recipeRepository;
     private RoleRepository roleRepository;
     private UserRepository userRepository;
 
     @Autowired
-    public DatabaseRunner(CommentRepository commentRepository, CuisineRepository cuisineRepository,
-                          RecipeRepository recipeRepository, RoleRepository roleRepository,
-                          UserRepository userRepository) {
+    public Lifecycle(CommentRepository commentRepository, CuisineRepository cuisineRepository, Properties properties,
+                     RecipeRepository recipeRepository, RoleRepository roleRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.cuisineRepository = cuisineRepository;
+        this.properties = properties;
         this.recipeRepository = recipeRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
     }
 
-    @Override
-    public void run(String... args) throws Exception {
+    @PostConstruct
+    public void postConstruct() {
+        switch (properties.getDdlAuto()) {
+            case "validate":
+                validateUploadsDirectory();
+                break;
+            case "update":
+                createUploadsDirectory();
+                break;
+            case "create":
+            case "create-drop":
+                dropUploadsDirectory();
+                createUploadsDirectory();
+                initDatabase(); // Temporary database init
+                break;
+        }
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        switch (properties.getDdlAuto()) {
+            case "create-drop":
+                dropUploadsDirectory();
+                break;
+        }
+    }
+
+    private void validateUploadsDirectory() {
+        File uploadsDirectory = new File(properties.getUploadsPath());
+        if (!uploadsDirectory.exists()) {
+            log.error("Uploads directory does not exists");
+        }
+    }
+
+    private void createUploadsDirectory() {
+        File uploadsDirectory = new File(properties.getUploadsPath());
+        if (!uploadsDirectory.exists()) {
+            log.info("Creating uploads directory");
+            uploadsDirectory.mkdirs();
+        }
+    }
+
+    private void dropUploadsDirectory() {
+        File uploadsDirectory = new File(properties.getUploadsPath());
+        if (uploadsDirectory.exists()) {
+            log.info("Dropping uploads directory");
+            FileSystemUtils.deleteRecursively(uploadsDirectory);
+        }
+    }
+
+    private void initDatabase() {
+        log.info("Initializing database");
         Role role1 = createRole("ROLE_ADMIN");
 
         User user1 = createUser("fitnut", "fitnut@example.com", null, null);

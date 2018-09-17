@@ -5,8 +5,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
 @ConfigurationProperties(prefix = "cookbook")
-public class CookbookProperties {
+public class Properties {
 
     private String ddlAuto;
-    private String uploadFolder;
+    private String uploadsPath;
 }

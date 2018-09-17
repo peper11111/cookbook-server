@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import pl.edu.pw.ee.cookbookserver.CookbookProperties;
+import pl.edu.pw.ee.cookbookserver.Properties;
 import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.UploadHelper;
@@ -30,15 +30,15 @@ import java.util.UUID;
 @Transactional(rollbackFor = Exception.class)
 public class UploadServiceImpl implements UploadService {
 
-    private String uploadFolder;
+    private Properties properties;
     private UploadHelper uploadHelper;
     private UploadRepository uploadRepository;
     private UserHelper userHelper;
 
     @Autowired
-    public UploadServiceImpl(CookbookProperties cookbookProperties, UploadHelper uploadHelper,
+    public UploadServiceImpl(Properties properties, UploadHelper uploadHelper,
                              UploadRepository uploadRepository, UserHelper userHelper) {
-        this.uploadFolder = cookbookProperties.getUploadFolder();
+        this.properties = properties;
         this.uploadHelper = uploadHelper;
         this.uploadRepository = uploadRepository;
         this.userHelper = userHelper;
@@ -73,14 +73,14 @@ public class UploadServiceImpl implements UploadService {
         }
 
         uploadRepository.delete(upload);
-        new File(uploadFolder, upload.getFilename()).delete();
+        new File(properties.getUploadsPath(), upload.getFilename()).delete();
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     private byte[] readImage(String filename) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        BufferedImage bufferedImage = ImageIO.read(new File(uploadFolder, filename));
+        BufferedImage bufferedImage = ImageIO.read(new File(properties.getUploadsPath(), filename));
         ImageIO.write(bufferedImage, "jpg", out);
         return out.toByteArray();
     }
@@ -89,7 +89,7 @@ public class UploadServiceImpl implements UploadService {
         String filename = UUID.randomUUID().toString() + ".jpg";
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         BufferedImage bufferedImage = this.removeAlphaChannel(ImageIO.read(in));
-        ImageIO.write(bufferedImage, "jpg", new File(uploadFolder, filename));
+        ImageIO.write(bufferedImage, "jpg", new File(properties.getUploadsPath(), filename));
         return filename;
     }
 
