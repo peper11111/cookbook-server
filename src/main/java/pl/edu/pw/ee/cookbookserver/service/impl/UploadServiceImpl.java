@@ -36,8 +36,8 @@ public class UploadServiceImpl implements UploadService {
     private UserHelper userHelper;
 
     @Autowired
-    public UploadServiceImpl(Properties properties, UploadHelper uploadHelper,
-                             UploadRepository uploadRepository, UserHelper userHelper) {
+    public UploadServiceImpl(Properties properties, UploadHelper uploadHelper, UploadRepository uploadRepository,
+                             UserHelper userHelper) {
         this.properties = properties;
         this.uploadHelper = uploadHelper;
         this.uploadRepository = uploadRepository;
