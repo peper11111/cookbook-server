@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.dto.CommentDto;
 import pl.edu.pw.ee.cookbookserver.entity.Comment;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
-import pl.edu.pw.ee.cookbookserver.util.Error;
-import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.misc.Error;
+import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
 
 import java.util.ArrayList;
 import java.util.Collection;

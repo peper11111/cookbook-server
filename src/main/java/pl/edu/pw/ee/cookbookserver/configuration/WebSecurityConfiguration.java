@@ -11,8 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.edu.pw.ee.cookbookserver.dto.ErrorDto;
-import pl.edu.pw.ee.cookbookserver.util.Error;
-import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
+import pl.edu.pw.ee.cookbookserver.misc.Error;
+import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {

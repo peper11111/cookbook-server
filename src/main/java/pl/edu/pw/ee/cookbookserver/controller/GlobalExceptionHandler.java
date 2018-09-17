@@ -4,8 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.edu.pw.ee.cookbookserver.dto.ErrorDto;
-import pl.edu.pw.ee.cookbookserver.util.Error;
-import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.misc.Error;
+import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

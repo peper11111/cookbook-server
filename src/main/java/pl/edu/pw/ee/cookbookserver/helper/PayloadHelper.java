@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.entity.*;
 import pl.edu.pw.ee.cookbookserver.repository.*;
-import pl.edu.pw.ee.cookbookserver.util.Error;
-import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
-import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.misc.Error;
+import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
+import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
 
 import java.util.ArrayList;
 import java.util.Collection;

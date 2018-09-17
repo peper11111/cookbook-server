@@ -14,9 +14,9 @@ import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.service.CommentService;
-import pl.edu.pw.ee.cookbookserver.util.Error;
-import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
-import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.misc.Error;
+import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
+import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
