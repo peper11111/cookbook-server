@@ -12,7 +12,7 @@ import java.util.Collection;
 public class Recipe {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime creationTime;
     @ManyToOne(fetch = FetchType.LAZY)

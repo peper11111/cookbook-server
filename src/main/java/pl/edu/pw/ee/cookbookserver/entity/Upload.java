@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Upload {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String filename;
