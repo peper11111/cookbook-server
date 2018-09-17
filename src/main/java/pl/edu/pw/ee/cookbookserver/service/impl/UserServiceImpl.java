@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
 
     private PayloadHelper payloadHelper;

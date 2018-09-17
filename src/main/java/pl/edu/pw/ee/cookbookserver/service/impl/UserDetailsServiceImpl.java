@@ -10,7 +10,7 @@ import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private UserRepository userRepository;

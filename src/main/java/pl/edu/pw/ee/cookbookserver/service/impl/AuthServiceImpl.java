@@ -17,7 +17,7 @@ import pl.edu.pw.ee.cookbookserver.service.AuthService;
 import pl.edu.pw.ee.cookbookserver.service.MailService;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class AuthServiceImpl implements AuthService {
 
     private MailService mailService;

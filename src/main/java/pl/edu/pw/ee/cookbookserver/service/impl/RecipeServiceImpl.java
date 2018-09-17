@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class RecipeServiceImpl implements RecipeService {
 
     private CommentHelper commentHelper;

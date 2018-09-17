@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UploadServiceImpl implements UploadService {
 
     private String uploadFolder;

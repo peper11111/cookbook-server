@@ -19,7 +19,7 @@ import pl.edu.pw.ee.cookbookserver.util.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.util.ProcessingException;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class CommentServiceImpl implements CommentService {
 
     private CommentHelper commentHelper;

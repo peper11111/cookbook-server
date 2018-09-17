@@ -9,7 +9,7 @@ import pl.edu.pw.ee.cookbookserver.repository.CuisineRepository;
 import pl.edu.pw.ee.cookbookserver.service.CuisineService;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class CuisineServiceImpl implements CuisineService {
 
     private CuisineRepository cuisineRepository;
