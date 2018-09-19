@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Service
@@ -47,6 +48,11 @@ public class UploadServiceImpl implements UploadService {
     @Override
     public ResponseEntity create(MultipartFile file) throws Exception {
         User currentUser = userHelper.getCurrentUser();
+
+        String[] validFileTypes = {MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE};
+        if (!Arrays.asList(validFileTypes).contains(file.getContentType())) {
+            throw new ProcessingException(Error.INVALID_FILE_TYPE);
+        }
 
         Upload upload = new Upload();
         upload.setFilename(this.writeImage(file.getBytes()));

@@ -47,7 +47,8 @@ public enum Error {
     INVALID_PREPARATION_TIME(409, HttpStatus.BAD_REQUEST, "Preparation time must be positive value"),
     EMPTY_CONTENT(410, HttpStatus.BAD_REQUEST, "Comment content can't be empty"),
     EMPTY_INGREDIENTS(411, HttpStatus.BAD_REQUEST, "Ingredients array can't be empty"),
-    EMPTY_STEPS(412, HttpStatus.BAD_REQUEST, "Steps array can't be empty");
+    EMPTY_STEPS(412, HttpStatus.BAD_REQUEST, "Steps array can't be empty"),
+    INVALID_FILE_TYPE(413, HttpStatus.BAD_REQUEST, "File type must be one of the following ('gif', 'jpeg', 'png')");
 
     private final int code;
     private final HttpStatus status;
