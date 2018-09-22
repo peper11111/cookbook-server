@@ -110,6 +110,10 @@ public class Lifecycle {
 
         Recipe recipe1 = createRecipe(user5, "Przepis 1", cuisine1, Arrays.asList(user1, user2, user3));
         Recipe recipe2 = createRecipe(user5, "Przepis 2", cuisine2, Arrays.asList(user1, user3, user4));
+        Recipe recipe3 = createRecipe(user1, "Przepis 3", cuisine1, null);
+        Recipe recipe4 = createRecipe(user2, "Przepis 4", cuisine2, null);
+        Recipe recipe5 = createRecipe(user2, "Przepis 5", cuisine2, null);
+        Recipe recipe6 = createRecipe(user4, "Przepis 6", cuisine5, null);
 
         Comment comment1 = createComment(user1, "Komentarz 1", recipe1, null);
         Comment comment2 = createComment(user2, "Komentarz 2", recipe1, comment1);
