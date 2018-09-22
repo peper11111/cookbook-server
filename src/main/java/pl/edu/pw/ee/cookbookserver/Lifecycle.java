@@ -10,6 +10,7 @@ import pl.edu.pw.ee.cookbookserver.repository.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -36,7 +37,7 @@ public class Lifecycle {
     }
 
     @PostConstruct
-    public void postConstruct() {
+    public void postConstruct() throws Exception {
         switch (properties.getDdlAuto()) {
             case "validate":
                 validateUploadsDirectory();
@@ -69,11 +70,13 @@ public class Lifecycle {
         }
     }
 
-    private void createUploadsDirectory() {
+    private void createUploadsDirectory() throws IOException {
         File uploadsDirectory = new File(properties.getUploadsPath());
         if (!uploadsDirectory.exists()) {
             log.info("Creating uploads directory");
-            uploadsDirectory.mkdirs();
+            if (!uploadsDirectory.mkdirs()) {
+                throw new IOException("Failed to create uploads directory");
+            }
         }
     }
 
