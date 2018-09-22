@@ -48,7 +48,8 @@ public enum Error {
     EMPTY_CONTENT(410, HttpStatus.BAD_REQUEST, "Comment content can't be empty"),
     EMPTY_INGREDIENTS(411, HttpStatus.BAD_REQUEST, "Ingredients array can't be empty"),
     EMPTY_STEPS(412, HttpStatus.BAD_REQUEST, "Steps array can't be empty"),
-    INVALID_FILE_TYPE(413, HttpStatus.BAD_REQUEST, "File type must be one of the following ('gif', 'jpeg', 'png')");
+    INVALID_FILE_TYPE(413, HttpStatus.BAD_REQUEST, "File type must be one of the following ('gif', 'jpeg', 'png')"),
+    INVALID_PARENT_ID(414, HttpStatus.BAD_REQUEST, "Parent comment does not belong to this recipe");
 
     private final int code;
     private final HttpStatus status;

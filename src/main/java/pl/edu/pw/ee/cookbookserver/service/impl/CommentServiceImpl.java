@@ -45,7 +45,11 @@ public class CommentServiceImpl implements CommentService {
         comment.setRecipe(payloadHelper.getValidRecipe(payload));
         comment.setContent(payloadHelper.getValidContent(payload));
         if (payload.has(PayloadKey.PARENT_ID.value())) {
-            comment.setParent(payloadHelper.getValidParent(payload));
+            Comment parent = payloadHelper.getValidParent(payload);
+            if (!parent.getRecipe().getId().equals(comment.getRecipe().getId())) {
+                throw new ProcessingException(Error.INVALID_PARENT_ID);
+            }
+            comment.setParent(parent);
         }
         commentRepository.save(comment);
 
