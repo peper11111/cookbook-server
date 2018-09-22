@@ -117,14 +117,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity readRecipes(Long id) throws Exception {
         User user = userHelper.getUser(id);
-
-        Collection<BasicRecipeDto> basicRecipeDtoList = new ArrayList<>();
-        for (Recipe recipe : user.getRecipes()) {
-            BasicRecipeDto basicRecipeDto = recipeHelper.mapRecipeToBasicRecipeDto(recipe);
-            basicRecipeDtoList.add(basicRecipeDto);
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtoList);
+        Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(user.getRecipes());
+        return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtos);
     }
 
     @Override
@@ -137,7 +131,6 @@ public class UserServiceImpl implements UserService {
         }
 
         Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(user.getFavourites());
-
         return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtos);
     }
 }
