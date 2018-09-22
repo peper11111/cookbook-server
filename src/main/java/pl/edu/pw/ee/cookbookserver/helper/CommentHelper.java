@@ -23,6 +23,18 @@ public class CommentHelper {
         this.userHelper = userHelper;
     }
 
+    public Collection<CommentDto> mapCommentToCommentDto(Iterable<Comment> comments) {
+        if (comments == null) {
+            return null;
+        }
+        Collection<CommentDto> commentDtos = new ArrayList<>();
+        for (Comment comment: comments) {
+            CommentDto commentDto = mapCommentToCommentDto(comment);
+            commentDtos.add(commentDto);
+        }
+        return commentDtos;
+    }
+
     public CommentDto mapCommentToCommentDto(Comment comment) {
         if (comment == null) {
             return null;

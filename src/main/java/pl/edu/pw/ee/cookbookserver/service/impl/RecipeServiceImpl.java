@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.CommentDto;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Comment;
@@ -144,14 +145,8 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public ResponseEntity readComments(Long id) throws Exception {
         Recipe recipe = recipeHelper.getRecipe(id);
-
-        Collection<CommentDto> commentDtoList = new ArrayList<>();
         Iterable<Comment> comments = commentRepository.findByRecipeAndParentIsNull(recipe);
-        for (Comment comment: comments) {
-            CommentDto commentDto = commentHelper.mapCommentToCommentDto(comment);
-            commentDtoList.add(commentDto);
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(commentDtoList);
+        Collection<CommentDto> commentDtos = commentHelper.mapCommentToCommentDto(comments);
+        return ResponseEntity.status(HttpStatus.OK).body(commentDtos);
     }
 }
