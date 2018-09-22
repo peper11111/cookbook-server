@@ -6,10 +6,13 @@ import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
-import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
-import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
+import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Component
 public class RecipeHelper {
@@ -23,6 +26,18 @@ public class RecipeHelper {
         this.commentRepository = commentRepository;
         this.recipeRepository = recipeRepository;
         this.userHelper = userHelper;
+    }
+
+    public Collection<BasicRecipeDto> mapRecipeToBasicRecipeDto(Iterable<Recipe> recipes) {
+        if (recipes == null) {
+            return null;
+        }
+        Collection<BasicRecipeDto> basicRecipeDtos = new ArrayList<>();
+        for (Recipe recipe: recipes) {
+            BasicRecipeDto basicRecipeDto = mapRecipeToBasicRecipeDto(recipe);
+            basicRecipeDtos.add(basicRecipeDto);
+        }
+        return basicRecipeDtos;
     }
 
     public BasicRecipeDto mapRecipeToBasicRecipeDto(Recipe recipe) {

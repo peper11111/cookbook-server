@@ -136,12 +136,8 @@ public class UserServiceImpl implements UserService {
             throw new ProcessingException(Error.ACCESS_DENIED);
         }
 
-        Collection<BasicRecipeDto> basicRecipeDtoList = new ArrayList<>();
-        for (Recipe recipe : user.getFavourites()) {
-            BasicRecipeDto basicRecipeDto = recipeHelper.mapRecipeToBasicRecipeDto(recipe);
-            basicRecipeDtoList.add(basicRecipeDto);
-        }
+        Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(user.getFavourites());
 
-        return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtoList);
+        return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtos);
     }
 }
