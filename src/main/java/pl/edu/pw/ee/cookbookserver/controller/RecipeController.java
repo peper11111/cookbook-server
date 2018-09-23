@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/recipes")
 public class RecipeController {
@@ -15,6 +17,11 @@ public class RecipeController {
     @Autowired
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
+    }
+
+    @GetMapping
+    public ResponseEntity readAll(@RequestParam Map<String, String> params) throws Exception {
+        return recipeService.readAll(new JSONObject(params));
     }
 
     @PostMapping

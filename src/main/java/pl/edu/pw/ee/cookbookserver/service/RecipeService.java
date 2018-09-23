@@ -3,8 +3,11 @@ package pl.edu.pw.ee.cookbookserver.service;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 public interface RecipeService {
 
+    ResponseEntity readAll(JSONObject payload) throws Exception;
     ResponseEntity create(JSONObject payload) throws Exception;
     ResponseEntity read(Long id) throws Exception;
     ResponseEntity delete(Long id) throws Exception;

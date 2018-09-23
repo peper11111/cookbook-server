@@ -34,6 +34,10 @@ public enum Error {
     MISSING_INGREDIENTS(313, HttpStatus.BAD_REQUEST, "Missing 'ingredients' field in payload"),
     MISSING_STEPS(314, HttpStatus.BAD_REQUEST, "Missing 'steps' field in payload"),
     MISSING_LOGIN(315, HttpStatus.BAD_REQUEST, "Missing 'login' field in payload"),
+    MISSING_MIN_DIFFICULTY(316, HttpStatus.BAD_REQUEST, "Missing 'minDifficulty' in payload"),
+    MISSING_MAX_DIFFICULTY(317, HttpStatus.BAD_REQUEST, "Missing 'maxDifficulty' in payload"),
+    MISSING_MIN_PLATES(316, HttpStatus.BAD_REQUEST, "Missing 'minPlates' in payload"),
+    MISSING_MAX_PLATES(317, HttpStatus.BAD_REQUEST, "Missing 'maxPlates' in payload"),
 
     EMPTY_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
     USERNAME_OCCUPIED(401, HttpStatus.CONFLICT, "User with the given username already exists"),
@@ -49,7 +53,11 @@ public enum Error {
     EMPTY_INGREDIENTS(411, HttpStatus.BAD_REQUEST, "Ingredients array can't be empty"),
     EMPTY_STEPS(412, HttpStatus.BAD_REQUEST, "Steps array can't be empty"),
     INVALID_FILE_TYPE(413, HttpStatus.BAD_REQUEST, "File type must be one of the following ('gif', 'jpeg', 'png')"),
-    INVALID_PARENT_ID(414, HttpStatus.BAD_REQUEST, "Parent comment does not belong to this recipe");
+    INVALID_PARENT_ID(414, HttpStatus.BAD_REQUEST, "Parent comment does not belong to this recipe"),
+    INVALID_MIN_DIFFICULTY(415, HttpStatus.BAD_REQUEST, "Minimum difficulty must be in range (1-5)"),
+    INVALID_MAX_DIFFICULTY(416, HttpStatus.BAD_REQUEST, "Maximum difficulty must be in range (1-5)"),
+    INVALID_MIN_PLATES(417, HttpStatus.BAD_REQUEST, "Minimum plates must be positive value"),
+    INVALID_MAX_PLATES(418, HttpStatus.BAD_REQUEST, "Maximum plates must be positive value");
 
     private final int code;
     private final HttpStatus status;

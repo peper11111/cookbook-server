@@ -10,22 +10,25 @@ import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.CommentDto;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
 import pl.edu.pw.ee.cookbookserver.entity.Comment;
+import pl.edu.pw.ee.cookbookserver.entity.Cuisine;
 import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.CommentHelper;
 import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
+import pl.edu.pw.ee.cookbookserver.misc.Error;
+import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
+import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
-import pl.edu.pw.ee.cookbookserver.misc.Error;
-import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
-import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -50,6 +53,40 @@ public class RecipeServiceImpl implements RecipeService {
         this.recipeRepository = recipeRepository;
         this.userHelper = userHelper;
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public ResponseEntity readAll(JSONObject payload) throws Exception {
+        Stream<Recipe> stream = StreamSupport.stream(recipeRepository.findAll().spliterator(), false);
+
+        if (payload.has(PayloadKey.CUISINE_ID.value())) {
+            Cuisine cuisine = payloadHelper.getValidCuisine(payload);
+            stream = stream.filter(recipe -> recipe.getCuisine().getId().equals(cuisine.getId()));
+        }
+
+        if (payload.has(PayloadKey.MIN_DIFFICULTY.value())) {
+            int minDifficulty = payloadHelper.getValidMinDifficulty(payload);
+            stream = stream.filter(recipe -> recipe.getDifficulty() >= minDifficulty);
+        }
+
+        if (payload.has(PayloadKey.MAX_DIFFICULTY.value())) {
+            int maxDifficulty = payloadHelper.getValidMaxDifficulty(payload);
+            stream = stream.filter(recipe -> recipe.getDifficulty() <= maxDifficulty);
+        }
+
+        if (payload.has(PayloadKey.MIN_PLATES.value())) {
+            int minPlates = payloadHelper.getValidMinPlates(payload);
+            stream = stream.filter(recipe -> recipe.getPlates() >= minPlates);
+        }
+
+        if (payload.has(PayloadKey.MAX_PLATES.value())) {
+            int maxPlates = payloadHelper.getValidMaxPlates(payload);
+            stream = stream.filter(recipe -> recipe.getPlates() <= maxPlates);
+        }
+
+        Iterable<Recipe> recipes = stream.collect(Collectors.toList());
+        Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);
+        return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtos);
     }
 
     @Override

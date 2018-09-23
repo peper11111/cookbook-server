@@ -147,12 +147,44 @@ public class PayloadHelper {
         return difficulty;
     }
 
+    public int getValidMinDifficulty(JSONObject payload) throws ProcessingException {
+        int minDifficulty = getValidInt(payload, PayloadKey.MIN_DIFFICULTY, Error.MISSING_MIN_DIFFICULTY);
+        if (minDifficulty < 1 || minDifficulty > 5) {
+            throw new ProcessingException(Error.INVALID_MIN_DIFFICULTY);
+        }
+        return minDifficulty;
+    }
+
+    public int getValidMaxDifficulty(JSONObject payload) throws ProcessingException {
+        int maxDifficulty = getValidInt(payload, PayloadKey.MAX_DIFFICULTY, Error.MISSING_MAX_DIFFICULTY);
+        if (maxDifficulty < 1 || maxDifficulty > 5) {
+            throw new ProcessingException(Error.INVALID_MAX_DIFFICULTY);
+        }
+        return maxDifficulty;
+    }
+
     public int getValidPlates(JSONObject payload) throws ProcessingException {
         int plates = getValidInt(payload, PayloadKey.PLATES, Error.MISSING_PLATES);
         if (plates < 1) {
             throw new ProcessingException(Error.INVALID_PLATES);
         }
         return plates;
+    }
+
+    public int getValidMinPlates(JSONObject payload) throws ProcessingException {
+        int minPlates = getValidInt(payload, PayloadKey.MIN_PLATES, Error.MISSING_MIN_PLATES);
+        if (minPlates < 1) {
+            throw new ProcessingException(Error.INVALID_MIN_PLATES);
+        }
+        return minPlates;
+    }
+
+    public int getValidMaxPlates(JSONObject payload) throws ProcessingException {
+        int maxPlates = getValidInt(payload, PayloadKey.MAX_PLATES, Error.MISSING_MAX_PLATES);
+        if (maxPlates < 1) {
+            throw new ProcessingException(Error.INVALID_MAX_PLATES);
+        }
+        return maxPlates;
     }
 
     public int getValidPreparationTime(JSONObject payload) throws ProcessingException {
