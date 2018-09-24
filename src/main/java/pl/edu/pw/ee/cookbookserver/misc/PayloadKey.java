@@ -22,6 +22,8 @@ public enum PayloadKey {
     MIN_PLATES("minPlates"),
     MAX_PLATES("maxPlates"),
     PREPARATION_TIME("preparationTime"),
+    MIN_PREPARATION_TIME("minPreparationTime"),
+    MAX_PREPARATION_TIME("maxPreparationTime"),
     CONTENT("content"),
     PARENT_ID("parentId"),
     INGREDIENTS("ingredients"),

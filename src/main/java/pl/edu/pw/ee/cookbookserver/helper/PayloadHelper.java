@@ -198,6 +198,22 @@ public class PayloadHelper {
         return preparationTime;
     }
 
+    public int getValidMinPreparationTime(JSONObject payload) throws ProcessingException {
+        int minPreparationTime = getValidInt(payload, PayloadKey.MIN_PREPARATION_TIME, Error.MISSING_MIN_PREPARATION_TIME);
+        if (minPreparationTime < 1) {
+            throw new ProcessingException(Error.INVALID_MIN_PREPARATION_TIME);
+        }
+        return minPreparationTime;
+    }
+
+    public int getValidMaxPreparationTime(JSONObject payload) throws ProcessingException {
+        int maxPreparationTime = getValidInt(payload, PayloadKey.MAX_PREPARATION_TIME, Error.MISSING_MAX_PREPARATION_TIME);
+        if (maxPreparationTime < 1) {
+            throw new ProcessingException(Error.INVALID_MAX_PREPARATION_TIME);
+        }
+        return maxPreparationTime;
+    }
+
     public Recipe getValidRecipe(JSONObject payload) throws ProcessingException {
         long recipeId = getValidLong(payload, PayloadKey.RECIPE_ID, Error.MISSING_RECIPE_ID);
         Recipe recipe = recipeRepository.findById(recipeId).orElse(null);

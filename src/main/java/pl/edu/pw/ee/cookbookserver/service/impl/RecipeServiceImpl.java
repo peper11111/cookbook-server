@@ -87,6 +87,16 @@ public class RecipeServiceImpl implements RecipeService {
             stream = stream.filter(recipe -> recipe.getPlates() <= maxPlates);
         }
 
+        if (payload.has(PayloadKey.MIN_PREPARATION_TIME.value())) {
+            int minPreparationTime = payloadHelper.getValidMinPreparationTime(payload);
+            stream = stream.filter(recipe -> recipe.getPreparationTime() >= minPreparationTime);
+        }
+
+        if (payload.has(PayloadKey.MAX_PREPARATION_TIME.value())) {
+            int maxPreparationTime = payloadHelper.getValidMaxPreparationTime(payload);
+            stream = stream.filter(recipe -> recipe.getPreparationTime() <= maxPreparationTime);
+        }
+
         long page = payload.has(PayloadKey.PAGE.value()) ? payloadHelper.getValidPage(payload) : 1;
         stream = stream.skip(properties.getPageSize() * (page - 1)).limit(properties.getPageSize());
 
