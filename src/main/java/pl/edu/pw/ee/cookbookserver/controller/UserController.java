@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -38,12 +40,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}/recipes")
-    public ResponseEntity readRecipes(@PathVariable Long id) throws Exception {
-        return userService.readRecipes(id);
+    public ResponseEntity readRecipes(@PathVariable Long id, @RequestParam Map<String, String> params) throws Exception {
+        return userService.readRecipes(id, new JSONObject(params));
     }
 
     @GetMapping("/{id}/favourites")
-    public ResponseEntity readFavourites(@PathVariable Long id) throws Exception {
-        return userService.readFavourites(id);
+    public ResponseEntity readFavourites(@PathVariable Long id, @RequestParam Map<String, String> params) throws Exception {
+        return userService.readFavourites(id, new JSONObject(params));
     }
 }

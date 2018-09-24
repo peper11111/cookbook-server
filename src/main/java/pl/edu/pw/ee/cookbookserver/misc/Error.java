@@ -38,6 +38,7 @@ public enum Error {
     MISSING_MAX_DIFFICULTY(317, HttpStatus.BAD_REQUEST, "Missing 'maxDifficulty' in payload"),
     MISSING_MIN_PLATES(316, HttpStatus.BAD_REQUEST, "Missing 'minPlates' in payload"),
     MISSING_MAX_PLATES(317, HttpStatus.BAD_REQUEST, "Missing 'maxPlates' in payload"),
+    MISSING_PAGE(318, HttpStatus.BAD_REQUEST, "Missing 'page' in payload"),
 
     EMPTY_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
     USERNAME_OCCUPIED(401, HttpStatus.CONFLICT, "User with the given username already exists"),
@@ -57,7 +58,8 @@ public enum Error {
     INVALID_MIN_DIFFICULTY(415, HttpStatus.BAD_REQUEST, "Minimum difficulty must be in range (1-5)"),
     INVALID_MAX_DIFFICULTY(416, HttpStatus.BAD_REQUEST, "Maximum difficulty must be in range (1-5)"),
     INVALID_MIN_PLATES(417, HttpStatus.BAD_REQUEST, "Minimum plates must be positive value"),
-    INVALID_MAX_PLATES(418, HttpStatus.BAD_REQUEST, "Maximum plates must be positive value");
+    INVALID_MAX_PLATES(418, HttpStatus.BAD_REQUEST, "Maximum plates must be positive value"),
+    INVALID_PAGE(419, HttpStatus.BAD_REQUEST, "Page parameter must be positive value");
 
     private final int code;
     private final HttpStatus status;

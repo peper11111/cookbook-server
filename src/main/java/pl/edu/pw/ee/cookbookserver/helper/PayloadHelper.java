@@ -34,7 +34,7 @@ public class PayloadHelper {
         this.userRepository = userRepository;
     }
 
-    public List JSONArrayToList(JSONArray jsonArray) {
+    public List mapJSONArrayToList(JSONArray jsonArray) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             list.add(jsonArray.opt(i));
@@ -226,7 +226,7 @@ public class PayloadHelper {
         if (ingredients == null || ingredients.length() == 0) {
             throw new ProcessingException(Error.EMPTY_INGREDIENTS);
         }
-        return JSONArrayToList(ingredients);
+        return mapJSONArrayToList(ingredients);
     }
 
     public Collection<String> getValidSteps(JSONObject payload) throws ProcessingException {
@@ -234,6 +234,14 @@ public class PayloadHelper {
         if (steps == null || steps.length() == 0) {
             throw new ProcessingException(Error.EMPTY_STEPS);
         }
-        return JSONArrayToList(steps);
+        return mapJSONArrayToList(steps);
+    }
+
+    public long getValidPage(JSONObject payload) throws ProcessingException {
+        long page = getValidLong(payload, PayloadKey.PAGE, Error.MISSING_PAGE);
+        if (page < 1) {
+            throw new ProcessingException(Error.INVALID_PAGE);
+        }
+        return page;
     }
 }

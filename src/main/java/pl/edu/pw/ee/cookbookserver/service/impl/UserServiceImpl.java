@@ -6,9 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
+import pl.edu.pw.ee.cookbookserver.Properties;
 import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
+import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
@@ -20,20 +23,24 @@ import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
 
     private PayloadHelper payloadHelper;
+    private Properties properties;
     private RecipeHelper recipeHelper;
     private UserHelper userHelper;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(PayloadHelper payloadHelper, RecipeHelper recipeHelper, UserHelper userHelper,
-                           UserRepository userRepository) {
+    public UserServiceImpl(PayloadHelper payloadHelper, Properties properties, RecipeHelper recipeHelper,
+                           UserHelper userHelper, UserRepository userRepository) {
         this.payloadHelper = payloadHelper;
+        this.properties = properties;
         this.recipeHelper = recipeHelper;
         this.userHelper = userHelper;
         this.userRepository = userRepository;
@@ -113,22 +120,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity readRecipes(Long id) throws Exception {
+    public ResponseEntity readRecipes(Long id, JSONObject payload) throws Exception {
         User user = userHelper.getUser(id);
-        Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(user.getRecipes());
+        Stream<Recipe> stream = user.getRecipes().stream();
+
+        long page = payload.has(PayloadKey.PAGE.value()) ? payloadHelper.getValidPage(payload) : 1;
+        stream = stream.skip(properties.getPageSize() * (page - 1)).limit(properties.getPageSize());
+
+        Iterable<Recipe> recipes = stream.collect(Collectors.toList());
+        Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);
         return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtos);
     }
 
     @Override
-    public ResponseEntity readFavourites(Long id) throws Exception {
-        User currentUser = userHelper.getCurrentUser();
+    public ResponseEntity readFavourites(Long id, JSONObject payload) throws Exception {
         User user = userHelper.getUser(id);
+        Stream<Recipe> stream = user.getFavourites().stream();
 
-        if (!currentUser.getId().equals(user.getId())) {
-            throw new ProcessingException(Error.ACCESS_DENIED);
-        }
+        long page = payload.has(PayloadKey.PAGE.value()) ? payloadHelper.getValidPage(payload) : 1;
+        stream = stream.skip(properties.getPageSize() * (page - 1)).limit(properties.getPageSize());
 
-        Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(user.getFavourites());
+        Iterable<Recipe> recipes = stream.collect(Collectors.toList());
+        Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);
         return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtos);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.edu.pw.ee.cookbookserver.Properties;
 import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.CommentDto;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
@@ -37,6 +38,7 @@ public class RecipeServiceImpl implements RecipeService {
     private CommentHelper commentHelper;
     private CommentRepository commentRepository;
     private PayloadHelper payloadHelper;
+    private Properties properties;
     private RecipeHelper recipeHelper;
     private RecipeRepository recipeRepository;
     private UserHelper userHelper;
@@ -44,11 +46,12 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Autowired
     public RecipeServiceImpl(CommentHelper commentHelper, CommentRepository commentRepository,
-                             PayloadHelper payloadHelper, RecipeHelper recipeHelper, RecipeRepository recipeRepository,
-                             UserHelper userHelper, UserRepository userRepository) {
+                             PayloadHelper payloadHelper, Properties properties, RecipeHelper recipeHelper,
+                             RecipeRepository recipeRepository, UserHelper userHelper, UserRepository userRepository) {
         this.commentHelper = commentHelper;
         this.commentRepository = commentRepository;
         this.payloadHelper = payloadHelper;
+        this.properties = properties;
         this.recipeHelper = recipeHelper;
         this.recipeRepository = recipeRepository;
         this.userHelper = userHelper;
@@ -83,6 +86,9 @@ public class RecipeServiceImpl implements RecipeService {
             int maxPlates = payloadHelper.getValidMaxPlates(payload);
             stream = stream.filter(recipe -> recipe.getPlates() <= maxPlates);
         }
+
+        long page = payload.has(PayloadKey.PAGE.value()) ? payloadHelper.getValidPage(payload) : 1;
+        stream = stream.skip(properties.getPageSize() * (page - 1)).limit(properties.getPageSize());
 
         Iterable<Recipe> recipes = stream.collect(Collectors.toList());
         Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);

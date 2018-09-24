@@ -25,7 +25,8 @@ public enum PayloadKey {
     CONTENT("content"),
     PARENT_ID("parentId"),
     INGREDIENTS("ingredients"),
-    STEPS("steps");
+    STEPS("steps"),
+    PAGE("page");
 
     private final String value;
 
