@@ -50,7 +50,7 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}/comments")
-    public ResponseEntity readComments(@PathVariable Long id) throws Exception {
-        return recipeService.readComments(id);
+    public ResponseEntity readComments(@PathVariable Long id, @RequestParam Map<String, String> params) throws Exception {
+        return recipeService.readComments(id, new JSONObject(params));
     }
 }

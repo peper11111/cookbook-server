@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.edu.pw.ee.cookbookserver.Properties;
 import pl.edu.pw.ee.cookbookserver.dto.CommentDto;
 import pl.edu.pw.ee.cookbookserver.entity.Comment;
 import pl.edu.pw.ee.cookbookserver.entity.User;
@@ -18,6 +19,10 @@ import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class CommentServiceImpl implements CommentService {
@@ -25,14 +30,16 @@ public class CommentServiceImpl implements CommentService {
     private CommentHelper commentHelper;
     private CommentRepository commentRepository;
     private PayloadHelper payloadHelper;
+    private Properties properties;
     private UserHelper userHelper;
 
     @Autowired
     public CommentServiceImpl(CommentHelper commentHelper, CommentRepository commentRepository,
-                              PayloadHelper payloadHelper, UserHelper userHelper) {
+                              PayloadHelper payloadHelper, Properties properties, UserHelper userHelper) {
         this.commentHelper = commentHelper;
         this.commentRepository = commentRepository;
         this.payloadHelper = payloadHelper;
+        this.properties = properties;
         this.userHelper = userHelper;
     }
 
@@ -75,5 +82,18 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
+    public ResponseEntity readComments(Long id, JSONObject payload) throws Exception {
+        Comment comment = commentHelper.getComment(id);
+        Stream<Comment> stream = comment.getComments().stream();
+
+        long page = payload.has(PayloadKey.PAGE.value()) ? payloadHelper.getValidPage(payload) : 1;
+        stream = stream.skip(properties.getPageSize() * (page - 1)).limit(properties.getPageSize());
+
+        Iterable<Comment> comments = stream.collect(Collectors.toList());
+        Collection<CommentDto> commentDtos = commentHelper.mapCommentToCommentDto(comments);
+        return ResponseEntity.status(HttpStatus.OK).body(commentDtos);
     }
 }

@@ -186,9 +186,14 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public ResponseEntity readComments(Long id) throws Exception {
+    public ResponseEntity readComments(Long id, JSONObject payload) throws Exception {
         Recipe recipe = recipeHelper.getRecipe(id);
-        Iterable<Comment> comments = commentRepository.findByRecipeAndParentIsNull(recipe);
+        Stream<Comment> stream = StreamSupport.stream(commentRepository.findByRecipeAndParentIsNull(recipe).spliterator(), false);
+
+        long page = payload.has(PayloadKey.PAGE.value()) ? payloadHelper.getValidPage(payload) : 1;
+        stream = stream.skip(properties.getPageSize() * (page - 1)).limit(properties.getPageSize());
+
+        Iterable<Comment> comments = stream.collect(Collectors.toList());
         Collection<CommentDto> commentDtos = commentHelper.mapCommentToCommentDto(comments);
         return ResponseEntity.status(HttpStatus.OK).body(commentDtos);
     }

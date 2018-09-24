@@ -8,4 +8,5 @@ public interface CommentService {
     ResponseEntity create(JSONObject payload) throws Exception;
     ResponseEntity read(Long id) throws Exception;
     ResponseEntity delete(Long id) throws Exception;
+    ResponseEntity readComments(Long id, JSONObject payload) throws Exception;
 }
