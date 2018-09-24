@@ -4,11 +4,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.edu.pw.ee.cookbookserver.entity.*;
-import pl.edu.pw.ee.cookbookserver.repository.*;
+import pl.edu.pw.ee.cookbookserver.entity.Comment;
+import pl.edu.pw.ee.cookbookserver.entity.Cuisine;
+import pl.edu.pw.ee.cookbookserver.entity.Recipe;
+import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.repository.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
