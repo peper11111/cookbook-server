@@ -65,7 +65,7 @@ public enum Error {
     INVALID_PAGE(419, HttpStatus.BAD_REQUEST, "Page parameter must be positive value"),
     INVALID_MIN_PREPARATION_TIME(420, HttpStatus.BAD_REQUEST, "Minimum preparation time must by positive value"),
     INVALID_MAX_PREPARATION_TIME(421, HttpStatus.BAD_REQUEST, "Maximum preparation time must by positive value"),
-    INVALID_SORT(422, HttpStatus.BAD_REQUEST, "Sort parameter must be on of the following ('asc', 'desc')");
+    INVALID_SORT(422, HttpStatus.BAD_REQUEST, "Sort parameter must be one of the following ('asc', 'desc')");
 
     private final int code;
     private final HttpStatus status;
