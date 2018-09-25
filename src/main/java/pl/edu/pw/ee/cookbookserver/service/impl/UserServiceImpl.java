@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.edu.pw.ee.cookbookserver.Properties;
 import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
@@ -14,14 +13,17 @@ import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.RecipeHelper;
+import pl.edu.pw.ee.cookbookserver.helper.StreamHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.misc.SortType;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,17 +32,17 @@ import java.util.stream.Stream;
 public class UserServiceImpl implements UserService {
 
     private PayloadHelper payloadHelper;
-    private Properties properties;
     private RecipeHelper recipeHelper;
+    private StreamHelper streamHelper;
     private UserHelper userHelper;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(PayloadHelper payloadHelper, Properties properties, RecipeHelper recipeHelper,
+    public UserServiceImpl(PayloadHelper payloadHelper, RecipeHelper recipeHelper, StreamHelper streamHelper,
                            UserHelper userHelper, UserRepository userRepository) {
         this.payloadHelper = payloadHelper;
-        this.properties = properties;
         this.recipeHelper = recipeHelper;
+        this.streamHelper = streamHelper;
         this.userHelper = userHelper;
         this.userRepository = userRepository;
     }
@@ -123,8 +125,9 @@ public class UserServiceImpl implements UserService {
         User user = userHelper.getUser(id);
         Stream<Recipe> stream = user.getRecipes().stream();
 
-        long page = payload.has(PayloadKey.PAGE.value()) ? payloadHelper.getValidPage(payload) : 1;
-        stream = stream.skip(properties.getPageSize() * (page - 1)).limit(properties.getPageSize());
+        Comparator comparator = Comparator.comparing(Recipe::getCreationTime);
+        stream = streamHelper.applySorting(payload, stream, comparator, SortType.DESC);
+        stream = streamHelper.applyPagination(payload, stream, 1);
 
         Iterable<Recipe> recipes = stream.collect(Collectors.toList());
         Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);
@@ -136,8 +139,9 @@ public class UserServiceImpl implements UserService {
         User user = userHelper.getUser(id);
         Stream<Recipe> stream = user.getFavourites().stream();
 
-        long page = payload.has(PayloadKey.PAGE.value()) ? payloadHelper.getValidPage(payload) : 1;
-        stream = stream.skip(properties.getPageSize() * (page - 1)).limit(properties.getPageSize());
+        Comparator comparator = Comparator.comparing(Recipe::getCreationTime);
+        stream = streamHelper.applySorting(payload, stream, comparator, SortType.DESC);
+        stream = streamHelper.applyPagination(payload, stream, 1);
 
         Iterable<Recipe> recipes = stream.collect(Collectors.toList());
         Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);

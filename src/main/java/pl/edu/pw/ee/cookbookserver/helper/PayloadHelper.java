@@ -11,6 +11,7 @@ import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.misc.SortType;
 import pl.edu.pw.ee.cookbookserver.repository.*;
 
 import java.util.ArrayList;
@@ -262,5 +263,16 @@ public class PayloadHelper {
             throw new ProcessingException(Error.INVALID_PAGE);
         }
         return page;
+    }
+
+    public SortType getValidSortType(JSONObject payload) throws ProcessingException {
+        String sort = getValidString(payload, PayloadKey.SORT, Error.MISSING_SORT);
+        if (SortType.ASC.value().equals(sort)) {
+            return SortType.ASC;
+        } else if (SortType.DESC.value().equals(sort)) {
+            return SortType.DESC;
+        } else {
+            throw new ProcessingException(Error.INVALID_SORT);
+        }
     }
 }

@@ -6,20 +6,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.edu.pw.ee.cookbookserver.Properties;
 import pl.edu.pw.ee.cookbookserver.dto.CommentDto;
 import pl.edu.pw.ee.cookbookserver.entity.Comment;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.CommentHelper;
 import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
+import pl.edu.pw.ee.cookbookserver.helper.StreamHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.misc.SortType;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.service.CommentService;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,16 +32,16 @@ public class CommentServiceImpl implements CommentService {
     private CommentHelper commentHelper;
     private CommentRepository commentRepository;
     private PayloadHelper payloadHelper;
-    private Properties properties;
+    private StreamHelper streamHelper;
     private UserHelper userHelper;
 
     @Autowired
     public CommentServiceImpl(CommentHelper commentHelper, CommentRepository commentRepository,
-                              PayloadHelper payloadHelper, Properties properties, UserHelper userHelper) {
+                              PayloadHelper payloadHelper, StreamHelper streamHelper, UserHelper userHelper) {
         this.commentHelper = commentHelper;
         this.commentRepository = commentRepository;
         this.payloadHelper = payloadHelper;
-        this.properties = properties;
+        this.streamHelper = streamHelper;
         this.userHelper = userHelper;
     }
 
@@ -89,8 +91,9 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentHelper.getComment(id);
         Stream<Comment> stream = comment.getComments().stream();
 
-        long page = payload.has(PayloadKey.PAGE.value()) ? payloadHelper.getValidPage(payload) : 1;
-        stream = stream.skip(properties.getPageSize() * (page - 1)).limit(properties.getPageSize());
+        Comparator comparator = Comparator.comparing(Comment::getCreationTime);
+        stream = streamHelper.applySorting(payload, stream, comparator, SortType.ASC);
+        stream = streamHelper.applyPagination(payload, stream, 1);
 
         Iterable<Comment> comments = stream.collect(Collectors.toList());
         Collection<CommentDto> commentDtos = commentHelper.mapCommentToCommentDto(comments);

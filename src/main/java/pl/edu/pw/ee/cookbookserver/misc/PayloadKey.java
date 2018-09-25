@@ -28,7 +28,8 @@ public enum PayloadKey {
     PARENT_ID("parentId"),
     INGREDIENTS("ingredients"),
     STEPS("steps"),
-    PAGE("page");
+    PAGE("page"),
+    SORT("sort");
 
     private final String value;
 
@@ -37,6 +38,6 @@ public enum PayloadKey {
     }
 
     public String value() {
-        return this.value;
+        return value;
     }
 }
