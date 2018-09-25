@@ -16,7 +16,6 @@ import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
-import pl.edu.pw.ee.cookbookserver.misc.SortType;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.service.CommentService;
 
@@ -92,8 +91,8 @@ public class CommentServiceImpl implements CommentService {
         Stream<Comment> stream = comment.getComments().stream();
 
         Comparator comparator = Comparator.comparing(Comment::getCreationTime);
-        stream = streamHelper.applySorting(payload, stream, comparator, SortType.ASC);
-        stream = streamHelper.applyPagination(payload, stream, 1);
+        stream = streamHelper.applySorting(payload, stream, comparator);
+        stream = streamHelper.applyPagination(payload, stream);
 
         Iterable<Comment> comments = stream.collect(Collectors.toList());
         Collection<CommentDto> commentDtos = commentHelper.mapCommentToCommentDto(comments);

@@ -18,7 +18,6 @@ import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
-import pl.edu.pw.ee.cookbookserver.misc.SortType;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 
@@ -126,8 +125,8 @@ public class UserServiceImpl implements UserService {
         Stream<Recipe> stream = user.getRecipes().stream();
 
         Comparator comparator = Comparator.comparing(Recipe::getCreationTime);
-        stream = streamHelper.applySorting(payload, stream, comparator, SortType.DESC);
-        stream = streamHelper.applyPagination(payload, stream, 1);
+        stream = streamHelper.applySorting(payload, stream, comparator);
+        stream = streamHelper.applyPagination(payload, stream);
 
         Iterable<Recipe> recipes = stream.collect(Collectors.toList());
         Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);
@@ -140,8 +139,8 @@ public class UserServiceImpl implements UserService {
         Stream<Recipe> stream = user.getFavourites().stream();
 
         Comparator comparator = Comparator.comparing(Recipe::getCreationTime);
-        stream = streamHelper.applySorting(payload, stream, comparator, SortType.DESC);
-        stream = streamHelper.applyPagination(payload, stream, 1);
+        stream = streamHelper.applySorting(payload, stream, comparator);
+        stream = streamHelper.applyPagination(payload, stream);
 
         Iterable<Recipe> recipes = stream.collect(Collectors.toList());
         Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);

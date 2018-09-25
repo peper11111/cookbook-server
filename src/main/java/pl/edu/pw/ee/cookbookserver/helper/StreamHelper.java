@@ -23,8 +23,8 @@ public class StreamHelper {
         this.properties = properties;
     }
 
-    public Stream applySorting(JSONObject payload, Stream stream, Comparator comparator, SortType defaultSortType) throws ProcessingException {
-        SortType sortType = payload.has(PayloadKey.SORT.value()) ? payloadHelper.getValidSortType(payload) : defaultSortType;
+    public Stream applySorting(JSONObject payload, Stream stream, Comparator comparator) throws ProcessingException {
+        SortType sortType = payload.has(PayloadKey.SORT.value()) ? payloadHelper.getValidSortType(payload) : SortType.DESC;
         if (sortType == SortType.ASC) {
             return stream.sorted(comparator);
         } else {
@@ -32,8 +32,8 @@ public class StreamHelper {
         }
     }
 
-    public Stream applyPagination(JSONObject payload, Stream stream, long defaultPage) throws ProcessingException {
-        long page = payload.has(PayloadKey.PAGE.value()) ? payloadHelper.getValidPage(payload) : defaultPage;
+    public Stream applyPagination(JSONObject payload, Stream stream) throws ProcessingException {
+        long page = payload.has(PayloadKey.PAGE.value()) ? payloadHelper.getValidPage(payload) : 1;
         return stream.skip(properties.getPageSize() * (page - 1)).limit(properties.getPageSize());
     }
 }

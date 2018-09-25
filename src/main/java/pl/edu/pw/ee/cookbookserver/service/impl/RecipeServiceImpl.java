@@ -17,7 +17,6 @@ import pl.edu.pw.ee.cookbookserver.helper.*;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
-import pl.edu.pw.ee.cookbookserver.misc.SortType;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
@@ -96,8 +95,8 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         Comparator comparator = Comparator.comparing(Recipe::getCreationTime);
-        stream = streamHelper.applySorting(payload, stream, comparator, SortType.DESC);
-        stream = streamHelper.applyPagination(payload, stream, 1);
+        stream = streamHelper.applySorting(payload, stream, comparator);
+        stream = streamHelper.applyPagination(payload, stream);
 
         Iterable<Recipe> recipes = stream.collect(Collectors.toList());
         Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);
@@ -200,8 +199,8 @@ public class RecipeServiceImpl implements RecipeService {
         Stream<Comment> stream = StreamSupport.stream(commentRepository.findByRecipeAndParentIsNull(recipe).spliterator(), false);
 
         Comparator comparator = Comparator.comparing(Comment::getCreationTime);
-        stream = streamHelper.applySorting(payload, stream, comparator, SortType.ASC);
-        stream = streamHelper.applyPagination(payload, stream, 1);
+        stream = streamHelper.applySorting(payload, stream, comparator);
+        stream = streamHelper.applyPagination(payload, stream);
 
         Iterable<Comment> comments = stream.collect(Collectors.toList());
         Collection<CommentDto> commentDtos = commentHelper.mapCommentToCommentDto(comments);
