@@ -275,4 +275,12 @@ public class PayloadHelper {
             throw new ProcessingException(Error.INVALID_SORT);
         }
     }
+
+    public String getValidQuery(JSONObject payload) throws ProcessingException {
+        String query = getValidString(payload, PayloadKey.QUERY, Error.MISSING_QUERY);
+        if (query.length() < 3) {
+            throw new ProcessingException(Error.QUERY_TOO_SHORT);
+        }
+        return query;
+    }
 }

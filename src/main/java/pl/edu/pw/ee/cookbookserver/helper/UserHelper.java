@@ -4,12 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
+import pl.edu.pw.ee.cookbookserver.dto.SearchDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.misc.SearchDtoType;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Component
 public class UserHelper {
@@ -21,6 +26,33 @@ public class UserHelper {
     public UserHelper(RecipeRepository recipeRepository, UserRepository userRepository) {
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
+    }
+
+    public Collection<SearchDto> mapUserToSearchDto(Iterable<User> users) {
+        if (users == null) {
+            return null;
+        }
+        Collection<SearchDto> searchDtos = new ArrayList<>();
+        for (User user: users) {
+            SearchDto searchDto = mapUserToSearchDto(user);
+            searchDtos.add(searchDto);
+        }
+        return searchDtos;
+    }
+
+    public SearchDto mapUserToSearchDto(User user) {
+        if (user == null) {
+            return null;
+        }
+        SearchDto searchDto = new SearchDto();
+        searchDto.setType(SearchDtoType.USER.value());
+        searchDto.setId(user.getId());
+        if (user.getAvatar() != null) {
+            searchDto.setAvatarId(user.getAvatar().getId());
+        }
+        searchDto.setHeader(user.getUsername());
+        searchDto.setCaption(user.getName());
+        return searchDto;
     }
 
     public BasicUserDto mapUserToBasicUserDto(User user) {

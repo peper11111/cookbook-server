@@ -29,7 +29,8 @@ public enum PayloadKey {
     INGREDIENTS("ingredients"),
     STEPS("steps"),
     PAGE("page"),
-    SORT("sort");
+    SORT("sort"),
+    QUERY("query");
 
     private final String value;
 

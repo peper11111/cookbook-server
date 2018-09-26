@@ -42,6 +42,7 @@ public enum Error {
     MISSING_MIN_PREPARATION_TIME(319, HttpStatus.BAD_REQUEST, "Missing 'minPreparationTime' in payload"),
     MISSING_MAX_PREPARATION_TIME(320, HttpStatus.BAD_REQUEST, "Missing 'maxPreparationTime' in payload"),
     MISSING_SORT(321, HttpStatus.BAD_REQUEST, "Missing 'sort' in payload"),
+    MISSING_QUERY(322, HttpStatus.BAD_REQUEST, "Missing 'query' in payload"),
 
     EMPTY_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
     USERNAME_OCCUPIED(401, HttpStatus.CONFLICT, "User with the given username already exists"),
@@ -65,7 +66,8 @@ public enum Error {
     INVALID_PAGE(419, HttpStatus.BAD_REQUEST, "Page parameter must be positive value"),
     INVALID_MIN_PREPARATION_TIME(420, HttpStatus.BAD_REQUEST, "Minimum preparation time must by positive value"),
     INVALID_MAX_PREPARATION_TIME(421, HttpStatus.BAD_REQUEST, "Maximum preparation time must by positive value"),
-    INVALID_SORT(422, HttpStatus.BAD_REQUEST, "Sort parameter must be one of the following ('asc', 'desc')");
+    INVALID_SORT(422, HttpStatus.BAD_REQUEST, "Sort parameter must be one of the following ('asc', 'desc')"),
+    QUERY_TOO_SHORT(423, HttpStatus.BAD_REQUEST, "Query too short");
 
     private final int code;
     private final HttpStatus status;
