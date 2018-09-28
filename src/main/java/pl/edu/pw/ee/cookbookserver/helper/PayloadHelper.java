@@ -291,4 +291,12 @@ public class PayloadHelper {
         }
         return query;
     }
+
+    public String getValidName(JSONObject payload) throws ProcessingException {
+        return getValidString(payload, PayloadKey.NAME, Error.MISSING_NAME);
+    }
+
+    public String getValidBiography(JSONObject payload) throws ProcessingException {
+        return getValidString(payload, PayloadKey.BIOGRAPHY, Error.MISSING_NAME);
+    }
 }

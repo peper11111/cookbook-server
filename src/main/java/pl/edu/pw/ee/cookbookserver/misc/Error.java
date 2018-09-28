@@ -45,6 +45,8 @@ public enum Error {
     MISSING_SORT(321, HttpStatus.BAD_REQUEST, "Missing 'sort' in payload"),
     MISSING_QUERY(322, HttpStatus.BAD_REQUEST, "Missing 'query' in payload"),
     MISSING_CATEGORY_ID(323, HttpStatus.BAD_REQUEST, "Missing 'categoryId' in payload"),
+    MISSING_NAME(324, HttpStatus.BAD_REQUEST, "Missing 'name' in payload"),
+    MISSING_BIOGRAPHY(325, HttpStatus.BAD_REQUEST, "Missing 'biography' in payload"),
 
     EMPTY_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
     USERNAME_OCCUPIED(401, HttpStatus.CONFLICT, "User with the given username already exists"),

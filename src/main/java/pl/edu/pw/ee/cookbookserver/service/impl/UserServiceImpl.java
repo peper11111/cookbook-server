@@ -90,14 +90,12 @@ public class UserServiceImpl implements UserService {
             user.setPassword(payloadHelper.getValidPassword(payload));
         }
 
-        String nameKey = PayloadKey.NAME.value();
-        if (payload.has(nameKey)) {
-            user.setName(payload.optString(nameKey));
+        if (payload.has(PayloadKey.NAME.value())) {
+            user.setName(payloadHelper.getValidName(payload));
         }
 
-        String biographyKey = PayloadKey.BIOGRAPHY.value();
-        if (payload.has(biographyKey)) {
-            user.setBiography(payload.optString(biographyKey));
+        if (payload.has(PayloadKey.BIOGRAPHY.value())) {
+            user.setBiography(payloadHelper.getValidBiography(payload));
         }
 
         if (payload.has(PayloadKey.AVATAR_ID.value())) {
