@@ -36,12 +36,11 @@ public class RecipeServiceImpl implements RecipeService {
     private RecipeRepository recipeRepository;
     private StreamHelper streamHelper;
     private UserHelper userHelper;
-    private UserRepository userRepository;
 
     @Autowired
     public RecipeServiceImpl(CommentHelper commentHelper, CommentRepository commentRepository,
                              PayloadHelper payloadHelper, RecipeHelper recipeHelper, RecipeRepository recipeRepository,
-                             StreamHelper streamHelper, UserHelper userHelper, UserRepository userRepository) {
+                             StreamHelper streamHelper, UserHelper userHelper) {
         this.commentHelper = commentHelper;
         this.commentRepository = commentRepository;
         this.payloadHelper = payloadHelper;
@@ -49,7 +48,6 @@ public class RecipeServiceImpl implements RecipeService {
         this.recipeRepository = recipeRepository;
         this.streamHelper = streamHelper;
         this.userHelper = userHelper;
-        this.userRepository = userRepository;
     }
 
     @Override
