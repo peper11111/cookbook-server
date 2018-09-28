@@ -105,7 +105,6 @@ public class UserServiceImpl implements UserService {
         if (payload.has(PayloadKey.BANNER_ID.value())) {
             user.setBanner(payloadHelper.getValidBanner(payload));
         }
-        userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -125,7 +124,6 @@ public class UserServiceImpl implements UserService {
         } else {
             followers.add(currentUser);
         }
-        userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

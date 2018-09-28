@@ -233,8 +233,6 @@ public class RecipeServiceImpl implements RecipeService {
             likes.add(currentUser);
         }
 
-        recipeRepository.save(recipe);
-
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -253,8 +251,6 @@ public class RecipeServiceImpl implements RecipeService {
         } else {
             favourites.add(recipe);
         }
-
-        userRepository.save(currentUser);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

@@ -72,7 +72,6 @@ public class AuthServiceImpl implements AuthService {
 
         User user = token.getUser();
         user.setEnabled(true);
-        userRepository.save(user);
 
         tokenRepository.delete(token);
 
@@ -110,7 +109,6 @@ public class AuthServiceImpl implements AuthService {
 
         User user = token.getUser();
         user.setPassword(payloadHelper.getValidPassword(payload));
-        userRepository.save(user);
 
         tokenRepository.delete(token);
 

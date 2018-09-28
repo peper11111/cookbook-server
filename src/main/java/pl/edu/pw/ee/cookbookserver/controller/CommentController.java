@@ -24,7 +24,7 @@ public class CommentController {
         return commentService.create(new JSONObject(body));
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity read(@PathVariable Long id) throws Exception {
         return commentService.read(id);
     }
