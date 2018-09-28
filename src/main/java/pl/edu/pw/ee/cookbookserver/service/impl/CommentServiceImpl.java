@@ -19,6 +19,7 @@ import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.service.CommentService;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -69,6 +70,23 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentHelper.getComment(id);
         CommentDto commentDto = commentHelper.mapCommentToCommentDto(comment);
         return ResponseEntity.status(HttpStatus.OK).body(commentDto);
+    }
+
+    @Override
+    public ResponseEntity modify(Long id, JSONObject payload) throws Exception {
+        User currentUser = userHelper.getCurrentUser();
+        Comment comment = commentHelper.getComment(id);
+
+        if (!currentUser.getId().equals(comment.getAuthor().getId())) {
+            throw new ProcessingException(Error.ACCESS_DENIED);
+        }
+
+        if (payload.has(PayloadKey.CONTENT.value())) {
+            comment.setContent(payloadHelper.getValidContent(payload));
+            comment.setModificationTime(LocalDateTime.now());
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override

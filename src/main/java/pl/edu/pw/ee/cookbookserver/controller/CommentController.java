@@ -29,6 +29,11 @@ public class CommentController {
         return commentService.read(id);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity modify(@PathVariable Long id, @RequestBody String body) throws Exception {
+        return commentService.modify(id, new JSONObject(body));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) throws Exception {
         return commentService.delete(id);
