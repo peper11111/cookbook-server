@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.dto.BasicUserDto;
-import pl.edu.pw.ee.cookbookserver.dto.SearchDto;
 import pl.edu.pw.ee.cookbookserver.dto.UserDto;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
-import pl.edu.pw.ee.cookbookserver.misc.SearchDtoType;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 
@@ -28,31 +26,16 @@ public class UserHelper {
         this.userRepository = userRepository;
     }
 
-    public Collection<SearchDto> mapUserToSearchDto(Iterable<User> users) {
+    public Collection<BasicUserDto> mapUserToBasicUserDto(Iterable<User> users) {
         if (users == null) {
             return null;
         }
-        Collection<SearchDto> searchDtos = new ArrayList<>();
+        Collection<BasicUserDto> basicUserDtos = new ArrayList<>();
         for (User user: users) {
-            SearchDto searchDto = mapUserToSearchDto(user);
-            searchDtos.add(searchDto);
+            BasicUserDto basicUserDto = mapUserToBasicUserDto(user);
+            basicUserDtos.add(basicUserDto);
         }
-        return searchDtos;
-    }
-
-    public SearchDto mapUserToSearchDto(User user) {
-        if (user == null) {
-            return null;
-        }
-        SearchDto searchDto = new SearchDto();
-        searchDto.setType(SearchDtoType.USER.value());
-        searchDto.setId(user.getId());
-        if (user.getAvatar() != null) {
-            searchDto.setAvatarId(user.getAvatar().getId());
-        }
-        searchDto.setHeader(user.getUsername());
-        searchDto.setCaption(user.getName());
-        return searchDto;
+        return basicUserDtos;
     }
 
     public BasicUserDto mapUserToBasicUserDto(User user) {
@@ -62,6 +45,7 @@ public class UserHelper {
         BasicUserDto basicUserDto = new BasicUserDto();
         basicUserDto.setId(user.getId());
         basicUserDto.setUsername(user.getUsername());
+        basicUserDto.setName(user.getName());
         if (user.getAvatar() != null) {
             basicUserDto.setAvatarId(user.getAvatar().getId());
         }

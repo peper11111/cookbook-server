@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -51,6 +52,18 @@ public class UserServiceImpl implements UserService {
         User currentUser = userHelper.getCurrentUser();
         BasicUserDto basicUserDto = userHelper.mapUserToBasicUserDto(currentUser);
         return ResponseEntity.status(HttpStatus.OK).body(basicUserDto);
+    }
+
+    @Override
+    public ResponseEntity search(JSONObject payload) throws Exception {
+        String query = payloadHelper.getValidQuery(payload).toLowerCase();
+
+        Stream<User> stream = StreamSupport.stream(userRepository.findAll().spliterator(), false);
+        stream = stream.filter(user -> user.getUsername().toLowerCase().contains(query) || user.getName().toLowerCase().contains(query));
+
+        Iterable<User> users = stream.collect(Collectors.toList());
+        Collection<BasicUserDto> basicUserDtos = userHelper.mapUserToBasicUserDto(users);
+        return ResponseEntity.status(HttpStatus.OK).body(basicUserDtos);
     }
 
     @Override

@@ -24,6 +24,11 @@ public class UserController {
         return userService.current();
     }
 
+    @GetMapping("/search")
+    public ResponseEntity search(@RequestParam Map<String, String> params) throws Exception {
+        return userService.search(new JSONObject(params));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity read(@PathVariable Long id) throws Exception {
         return userService.read(id);
