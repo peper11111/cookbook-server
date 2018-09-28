@@ -18,6 +18,7 @@ import java.util.Collection;
 @Component
 public class Lifecycle {
 
+    private CategoryRepository categoryRepository;
     private CommentRepository commentRepository;
     private CuisineRepository cuisineRepository;
     private Properties properties;
@@ -26,8 +27,10 @@ public class Lifecycle {
     private UserRepository userRepository;
 
     @Autowired
-    public Lifecycle(CommentRepository commentRepository, CuisineRepository cuisineRepository, Properties properties,
-                     RecipeRepository recipeRepository, RoleRepository roleRepository, UserRepository userRepository) {
+    public Lifecycle(CategoryRepository categoryRepository, CommentRepository commentRepository,
+                     CuisineRepository cuisineRepository, Properties properties, RecipeRepository recipeRepository,
+                     RoleRepository roleRepository, UserRepository userRepository) {
+        this.categoryRepository = categoryRepository;
         this.commentRepository = commentRepository;
         this.cuisineRepository = cuisineRepository;
         this.properties = properties;
@@ -108,12 +111,17 @@ public class Lifecycle {
         Cuisine cuisine7 = createCuisine("CUISINE_POLISH");
         Cuisine cuisine8 = createCuisine("CUISINE_SPANISH");
 
-        Recipe recipe1 = createRecipe(user5, "Przepis 1", cuisine1, Arrays.asList(user1, user2, user3));
-        Recipe recipe2 = createRecipe(user5, "Przepis 2", cuisine2, Arrays.asList(user1, user3, user4));
-        Recipe recipe3 = createRecipe(user1, "Przepis 3", cuisine1, null);
-        Recipe recipe4 = createRecipe(user2, "Przepis 4", cuisine2, null);
-        Recipe recipe5 = createRecipe(user2, "Przepis 5", cuisine2, null);
-        Recipe recipe6 = createRecipe(user4, "Przepis 6", cuisine5, null);
+        Category category1 = createCategory("CATEGORY_SOUP");
+        Category category2 = createCategory("CATEGORY_DESSERT");
+        Category category3 = createCategory("CATEGORY_DRINK");
+        Category category4 = createCategory("CATEGORY_PIZZA");
+
+        Recipe recipe1 = createRecipe(user5, "Przepis 1", cuisine1, category1, Arrays.asList(user1, user2, user3));
+        Recipe recipe2 = createRecipe(user5, "Przepis 2", cuisine2, category2, Arrays.asList(user1, user3, user4));
+        Recipe recipe3 = createRecipe(user1, "Przepis 3", cuisine1, category3, null);
+        Recipe recipe4 = createRecipe(user2, "Przepis 4", cuisine2, category2, null);
+        Recipe recipe5 = createRecipe(user2, "Przepis 5", cuisine2, category2, null);
+        Recipe recipe6 = createRecipe(user4, "Przepis 6", cuisine5, category1, null);
 
         Comment comment1 = createComment(user1, "Komentarz 1", recipe1, null);
         Comment comment2 = createComment(user2, "Komentarz 2", recipe1, comment1);
@@ -148,6 +156,12 @@ public class Lifecycle {
         return cuisine;
     }
 
+    private Category createCategory(String name) {
+        Category category = new Category(name);
+        categoryRepository.save(category);
+        return category;
+    }
+
     private Comment createComment(User author, String content, Recipe recipe, Comment parent) {
         Comment comment = new Comment();
         comment.setAuthor(author);
@@ -158,11 +172,12 @@ public class Lifecycle {
         return comment;
     }
 
-    private Recipe createRecipe(User author, String title, Cuisine cuisine, Collection<User> likes) {
+    private Recipe createRecipe(User author, String title, Cuisine cuisine, Category category, Collection<User> likes) {
         Recipe recipe = new Recipe();
         recipe.setAuthor(author);
         recipe.setTitle(title);
         recipe.setCuisine(cuisine);
+        recipe.setCategory(category);
         recipe.setLikes(likes);
         recipe.setDifficulty(3);
         recipe.setPlates(4);
