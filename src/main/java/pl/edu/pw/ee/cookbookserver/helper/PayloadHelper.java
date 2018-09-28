@@ -133,6 +133,10 @@ public class PayloadHelper {
         return title;
     }
 
+    public String getValidDescription(JSONObject payload) throws ProcessingException {
+        return getValidString(payload, PayloadKey.DESCRIPTION, Error.MISSING_DESCRIPTION);
+    }
+
     public Cuisine getValidCuisine(JSONObject payload) throws ProcessingException {
         long cuisineId = getValidLong(payload, PayloadKey.CUISINE_ID, Error.MISSING_CUISINE_ID);
         Cuisine cuisine = cuisineRepository.findById(cuisineId).orElse(null);
@@ -297,6 +301,6 @@ public class PayloadHelper {
     }
 
     public String getValidBiography(JSONObject payload) throws ProcessingException {
-        return getValidString(payload, PayloadKey.BIOGRAPHY, Error.MISSING_NAME);
+        return getValidString(payload, PayloadKey.BIOGRAPHY, Error.MISSING_BIOGRAPHY);
     }
 }

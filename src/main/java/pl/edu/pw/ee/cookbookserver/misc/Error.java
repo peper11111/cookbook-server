@@ -47,6 +47,7 @@ public enum Error {
     MISSING_CATEGORY_ID(323, HttpStatus.BAD_REQUEST, "Missing 'categoryId' in payload"),
     MISSING_NAME(324, HttpStatus.BAD_REQUEST, "Missing 'name' in payload"),
     MISSING_BIOGRAPHY(325, HttpStatus.BAD_REQUEST, "Missing 'biography' in payload"),
+    MISSING_DESCRIPTION(326, HttpStatus.BAD_REQUEST, "Missing 'description' in payload"),
 
     EMPTY_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
     USERNAME_OCCUPIED(401, HttpStatus.CONFLICT, "User with the given username already exists"),

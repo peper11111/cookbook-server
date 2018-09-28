@@ -9,6 +9,7 @@ public interface RecipeService {
     ResponseEntity create(JSONObject payload) throws Exception;
     ResponseEntity search(JSONObject payload) throws Exception;
     ResponseEntity read(Long id) throws Exception;
+    ResponseEntity modify(Long id, JSONObject payload) throws Exception;
     ResponseEntity delete(Long id) throws Exception;
     ResponseEntity like(Long id) throws Exception;
     ResponseEntity favourite(Long id) throws Exception;

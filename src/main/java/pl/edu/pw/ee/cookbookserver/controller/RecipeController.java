@@ -39,6 +39,11 @@ public class RecipeController {
         return recipeService.read(id);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity modify(@PathVariable Long id, @RequestBody String body) throws Exception {
+        return recipeService.modify(id, new JSONObject(body));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) throws Exception {
         return recipeService.delete(id);

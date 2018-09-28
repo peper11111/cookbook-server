@@ -116,9 +116,8 @@ public class RecipeServiceImpl implements RecipeService {
         }
         recipe.setTitle(payloadHelper.getValidTitle(payload));
 
-        String leadKey = PayloadKey.DESCRIPTION.value();
-        if (payload.has(leadKey)) {
-            recipe.setDescription(payload.optString(leadKey));
+        if (payload.has(PayloadKey.DESCRIPTION.value())) {
+            recipe.setDescription(payloadHelper.getValidDescription(payload));
         }
 
         recipe.setCuisine(payloadHelper.getValidCuisine(payload));
@@ -150,6 +149,58 @@ public class RecipeServiceImpl implements RecipeService {
         Recipe recipe = recipeHelper.getRecipe(id);
         RecipeDto recipeDto = recipeHelper.mapRecipeToRecipeDto(recipe);
         return ResponseEntity.status(HttpStatus.OK).body(recipeDto);
+    }
+
+    @Override
+    public ResponseEntity modify(Long id, JSONObject payload) throws Exception {
+        User currentUser = userHelper.getCurrentUser();
+        Recipe recipe = recipeHelper.getRecipe(id);
+
+        if (!currentUser.getId().equals(recipe.getAuthor().getId())) {
+            throw new ProcessingException(Error.ACCESS_DENIED);
+        }
+
+        if (payload.has(PayloadKey.BANNER_ID.value())) {
+            recipe.setBanner(payloadHelper.getValidBanner(payload));
+        }
+
+        if (payload.has(PayloadKey.TITLE.value())) {
+            recipe.setTitle(payloadHelper.getValidTitle(payload));
+        }
+
+        if (payload.has(PayloadKey.DESCRIPTION.value())) {
+            recipe.setDescription(payloadHelper.getValidDescription(payload));
+        }
+
+        if (payload.has(PayloadKey.CUISINE_ID.value())) {
+            recipe.setCuisine(payloadHelper.getValidCuisine(payload));
+        }
+
+        if (payload.has(PayloadKey.CATEGORY_ID.value())) {
+            recipe.setCategory(payloadHelper.getValidCategory(payload));
+        }
+
+        if (payload.has(PayloadKey.DIFFICULTY.value())) {
+            recipe.setDifficulty(payloadHelper.getValidDifficulty(payload));
+        }
+
+        if (payload.has(PayloadKey.PLATES.value())) {
+            recipe.setPlates(payloadHelper.getValidPlates(payload));
+        }
+
+        if (payload.has(PayloadKey.PREPARATION_TIME.value())) {
+            recipe.setPreparationTime(payloadHelper.getValidPreparationTime(payload));
+        }
+
+        if (payload.has(PayloadKey.INGREDIENTS.value())) {
+            recipe.setIngredients(payloadHelper.getValidIngredients(payload));
+        }
+
+        if (payload.has(PayloadKey.STEPS.value())) {
+            recipe.setSteps(payloadHelper.getValidSteps(payload));
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override
