@@ -53,6 +53,7 @@ public class RecipeHelper {
         basicRecipeDto.setTitle(recipe.getTitle());
         basicRecipeDto.setCommentsCount(commentRepository.countByRecipe(recipe));
         basicRecipeDto.setLikesCount((long) recipe.getLikes().size());
+        basicRecipeDto.setCategoryId(recipe.getCategory().getId());
         return basicRecipeDto;
     }
 
@@ -71,6 +72,7 @@ public class RecipeHelper {
         recipeDto.setTitle(recipe.getTitle());
         recipeDto.setCommentsCount(commentRepository.countByRecipe(recipe));
         recipeDto.setLikesCount((long) recipe.getLikes().size());
+        recipeDto.setCategoryId(recipe.getCategory().getId());
         recipeDto.setIsLiked(recipe.getLikes().contains(currentUser));
         recipeDto.setIsFavourite(currentUser.getFavourites().contains(recipe));
         recipeDto.setDescription(recipe.getDescription());

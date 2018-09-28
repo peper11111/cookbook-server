@@ -14,6 +14,7 @@ public class BasicRecipeDto {
     private Long creationTime;
     private Long commentsCount;
     private Long likesCount;
+    private Long categoryId;
 
     public void setCreationTime(LocalDateTime creationTime) {
         this.creationTime = creationTime.toInstant(ZoneOffset.UTC).toEpochMilli();

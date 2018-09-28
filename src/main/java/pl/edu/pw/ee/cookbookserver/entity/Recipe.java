@@ -23,6 +23,8 @@ public class Recipe {
     private String description;
     @ManyToOne(fetch = FetchType.LAZY)
     private Cuisine cuisine;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
     private Integer difficulty;
     private Integer plates;
     private Integer preparationTime;
