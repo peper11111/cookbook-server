@@ -47,7 +47,6 @@ public class RecipeHelper {
         BasicRecipeDto basicRecipeDto = new BasicRecipeDto();
         basicRecipeDto.setId(recipe.getId());
         basicRecipeDto.setCreationTime(recipe.getCreationTime());
-        basicRecipeDto.setAuthor(userHelper.mapUserToBasicUserDto(recipe.getAuthor()));
         if (recipe.getBanner() != null) {
             basicRecipeDto.setBannerId(recipe.getBanner().getId());
         }
