@@ -131,6 +131,18 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    public ResponseEntity search(JSONObject payload) throws Exception {
+        String query = payloadHelper.getValidQuery(payload).toLowerCase();
+
+        Stream<Recipe> stream = StreamSupport.stream(recipeRepository.findAll().spliterator(), false);
+        stream = stream.filter(recipe -> recipe.getTitle().toLowerCase().contains(query));
+
+        Iterable<Recipe> recipes = stream.collect(Collectors.toList());
+        Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);
+        return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtos);
+    }
+
+    @Override
     public ResponseEntity read(Long id) throws Exception {
         Recipe recipe = recipeHelper.getRecipe(id);
         RecipeDto recipeDto = recipeHelper.mapRecipeToRecipeDto(recipe);

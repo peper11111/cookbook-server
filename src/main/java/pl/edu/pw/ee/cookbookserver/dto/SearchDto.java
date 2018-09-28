@@ -7,7 +7,6 @@ public class SearchDto {
 
     private String type;
     private Long id;
-    private Long avatarId;
     private String header;
     private String caption;
 }

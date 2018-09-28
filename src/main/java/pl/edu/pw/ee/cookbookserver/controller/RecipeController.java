@@ -29,6 +29,11 @@ public class RecipeController {
         return recipeService.create(new JSONObject(body));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity search(@RequestParam Map<String, String> params) throws Exception {
+        return recipeService.search(new JSONObject(params));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity read(@PathVariable Long id) throws Exception {
         return recipeService.read(id);
