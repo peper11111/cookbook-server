@@ -16,6 +16,7 @@ public enum Error {
     BANNER_NOT_FOUND(205, HttpStatus.NOT_FOUND, "Banner with the given id not found"),
     CUISINE_NOT_FOUND(206, HttpStatus.NOT_FOUND, "Cuisine with the given id not found"),
     COMMENT_NOT_FOUND(207, HttpStatus.NOT_FOUND, "Comment with the given id not found"),
+    CATEGORY_NOT_FOUND(208, HttpStatus.NOT_FOUND, "Category with the giver id not found"),
 
     MISSING_USERNAME(300, HttpStatus.BAD_REQUEST, "Missing 'username' field in payload"),
     MISSING_PASSWORD(301, HttpStatus.BAD_REQUEST, "Missing 'password' field in payload"),
@@ -43,6 +44,7 @@ public enum Error {
     MISSING_MAX_PREPARATION_TIME(320, HttpStatus.BAD_REQUEST, "Missing 'maxPreparationTime' in payload"),
     MISSING_SORT(321, HttpStatus.BAD_REQUEST, "Missing 'sort' in payload"),
     MISSING_QUERY(322, HttpStatus.BAD_REQUEST, "Missing 'query' in payload"),
+    MISSING_CATEGORY_ID(323, HttpStatus.BAD_REQUEST, "Missing 'categoryId' in payload"),
 
     EMPTY_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
     USERNAME_OCCUPIED(401, HttpStatus.CONFLICT, "User with the given username already exists"),

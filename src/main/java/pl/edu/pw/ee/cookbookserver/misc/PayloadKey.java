@@ -15,6 +15,7 @@ public enum PayloadKey {
     TITLE("title"),
     DESCRIPTION("description"),
     CUISINE_ID("cuisineId"),
+    CATEGORY_ID("categoryId"),
     DIFFICULTY("difficulty"),
     MIN_DIFFICULTY("minDifficulty"),
     MAX_DIFFICULTY("maxDifficulty"),

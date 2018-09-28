@@ -4,10 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.edu.pw.ee.cookbookserver.entity.Comment;
-import pl.edu.pw.ee.cookbookserver.entity.Cuisine;
-import pl.edu.pw.ee.cookbookserver.entity.Recipe;
-import pl.edu.pw.ee.cookbookserver.entity.Upload;
+import pl.edu.pw.ee.cookbookserver.entity.*;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
@@ -21,6 +18,7 @@ import java.util.List;
 @Component
 public class PayloadHelper {
 
+    private CategoryRepository categoryRepository;
     private CommentRepository commentRepository;
     private CuisineRepository cuisineRepository;
     private RecipeRepository recipeRepository;
@@ -28,9 +26,10 @@ public class PayloadHelper {
     private UserRepository userRepository;
 
     @Autowired
-    public PayloadHelper(CommentRepository commentRepository, CuisineRepository cuisineRepository,
-                         RecipeRepository recipeRepository, UploadRepository uploadRepository,
-                         UserRepository userRepository) {
+    public PayloadHelper(CategoryRepository categoryRepository, CommentRepository commentRepository,
+                         CuisineRepository cuisineRepository, RecipeRepository recipeRepository,
+                         UploadRepository uploadRepository, UserRepository userRepository) {
+        this.categoryRepository = categoryRepository;
         this.commentRepository = commentRepository;
         this.cuisineRepository = cuisineRepository;
         this.recipeRepository = recipeRepository;
@@ -141,6 +140,15 @@ public class PayloadHelper {
             throw new ProcessingException(Error.CUISINE_NOT_FOUND);
         }
         return cuisine;
+    }
+
+    public Category getValidCategory(JSONObject payload) throws ProcessingException {
+        long categoryId = getValidLong(payload, PayloadKey.CATEGORY_ID, Error.MISSING_CATEGORY_ID);
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category == null) {
+            throw new ProcessingException(Error.CATEGORY_NOT_FOUND);
+        }
+        return category;
     }
 
     public int getValidDifficulty(JSONObject payload) throws ProcessingException {

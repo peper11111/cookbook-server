@@ -9,10 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pw.ee.cookbookserver.dto.BasicRecipeDto;
 import pl.edu.pw.ee.cookbookserver.dto.CommentDto;
 import pl.edu.pw.ee.cookbookserver.dto.RecipeDto;
-import pl.edu.pw.ee.cookbookserver.entity.Comment;
-import pl.edu.pw.ee.cookbookserver.entity.Cuisine;
-import pl.edu.pw.ee.cookbookserver.entity.Recipe;
-import pl.edu.pw.ee.cookbookserver.entity.User;
+import pl.edu.pw.ee.cookbookserver.entity.*;
 import pl.edu.pw.ee.cookbookserver.helper.*;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
@@ -60,8 +57,13 @@ public class RecipeServiceImpl implements RecipeService {
         Stream<Recipe> stream = StreamSupport.stream(recipeRepository.findAll().spliterator(), false);
 
         if (payload.has(PayloadKey.CUISINE_ID.value())) {
-            Cuisine cuisine = payloadHelper.getValidCuisine(payload);
-            stream = stream.filter(recipe -> recipe.getCuisine().getId().equals(cuisine.getId()));
+            long cuisineId = payloadHelper.getValidCuisine(payload).getId();
+            stream = stream.filter(recipe -> recipe.getCuisine().getId().equals(cuisineId));
+        }
+
+        if (payload.has(PayloadKey.CATEGORY_ID.value())) {
+            long categoryId = payloadHelper.getValidCategory(payload).getId();
+            stream = stream.filter(recipe -> recipe.getCategory().getId().equals(categoryId));
         }
 
         if (payload.has(PayloadKey.MIN_DIFFICULTY.value())) {
@@ -120,6 +122,7 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         recipe.setCuisine(payloadHelper.getValidCuisine(payload));
+        recipe.setCategory(payloadHelper.getValidCategory(payload));
         recipe.setDifficulty(payloadHelper.getValidDifficulty(payload));
         recipe.setPlates(payloadHelper.getValidPlates(payload));
         recipe.setPreparationTime(payloadHelper.getValidPreparationTime(payload));
