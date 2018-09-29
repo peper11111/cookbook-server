@@ -19,7 +19,6 @@ import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.service.CommentService;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -83,7 +82,6 @@ public class CommentServiceImpl implements CommentService {
 
         if (payload.has(PayloadKey.CONTENT.value())) {
             comment.setContent(payloadHelper.getValidContent(payload));
-            comment.setModificationTime(LocalDateTime.now());
         }
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

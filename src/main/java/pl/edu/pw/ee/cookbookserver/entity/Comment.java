@@ -18,7 +18,6 @@ public class Comment {
     private User author;
     private String content;
     private LocalDateTime creationTime;
-    private LocalDateTime modificationTime;
     @ManyToOne(fetch = FetchType.LAZY)
     private Recipe recipe;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,6 +28,5 @@ public class Comment {
     public Comment() {
         LocalDateTime now = LocalDateTime.now();
         this.creationTime = now;
-        this.modificationTime = now;
     }
 }

@@ -44,7 +44,6 @@ public class CommentHelper {
         commentDto.setAuthor(userHelper.mapUserToBasicUserDto(comment.getAuthor()));
         commentDto.setContent(comment.getContent());
         commentDto.setCreationTime(comment.getCreationTime());
-        commentDto.setModificationTime(comment.getModificationTime());
         commentDto.setCommentsCount((long) comment.getComments().size());
         return commentDto;
     }
