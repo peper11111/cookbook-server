@@ -52,7 +52,7 @@ public class Lifecycle {
             case "create-drop":
                 dropUploadsDirectory();
                 createUploadsDirectory();
-                initDatabase(); // TODO Remove temporary database init
+//                initDatabase();
                 break;
         }
     }
