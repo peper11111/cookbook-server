@@ -1,0 +1,1104 @@
+{
+	"info": {
+		"_postman_id": "932c789c-3dad-424f-b5c6-c828bd491950",
+		"name": "Cookbook Server API v1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "/auth/login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "login",
+									"value": "email_lub_nazwa_uzytkownika",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "haslo",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/auth/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Metoda do logowania"
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/auth/logout",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Metoda do wylogowania"
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Origin",
+								"value": "{{host}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"email\",\n\t\"username\": \"nazwa_uzytkownika\",\n\t\"password\": \"haslo\"\n}\n"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/auth/register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Metoda do rejestracji nowego użytkownika"
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/register/resend",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Origin",
+								"value": "{{host}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"login\": \"email_lub_nazwa_uzytkownika\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/auth/register/resend",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register",
+								"resend"
+							]
+						},
+						"description": "Metoda do ponownego wysłania maila z linkiem aktywacyjnym"
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/register/verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"uuid\":\"52d74409-cdb7-44ac-9778-e38e475da5f6\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/auth/register/verify",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register",
+								"verify"
+							]
+						},
+						"description": "Metoda do weryfikacji poprawności rejestracji użytkownika"
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/reset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{host}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"login\": \"email_lub_nazwa_uzytkownika\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/auth/reset",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"reset"
+							]
+						},
+						"description": "Metoda do zresetowania hasła"
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/reset/resend",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{host}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"login\": \"email_lub_nazwa_uzytkownika\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/auth/reset/resend",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"reset",
+								"resend"
+							]
+						},
+						"description": "Metoda do ponownego wysłania maila z linkiem do zresetowania hasła"
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/reset/confirm",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"uuid\": \"52d74409-cdb7-44ac-9778-e38e475da5f6\",\n\t\"password\": \"haslo\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/auth/reset/confirm",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"reset",
+								"confirm"
+							]
+						},
+						"description": "Metoda do ustawienia nowego hasła"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2105045f-b1b3-4de5-9120-913dff8b13b4",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b2e77f4b-a681-486d-9f35-6a8b76de1d43",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "comments",
+			"item": [
+				{
+					"name": "/comments",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"recipeId\": \"id_przepisu\",\n\t\"parentId\": \"id_komentarza\",\n\t\"content\": \"tekst\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/comments",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments"
+							]
+						},
+						"description": "Dodawanie komentarzy"
+					},
+					"response": []
+				},
+				{
+					"name": "/comments/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/v1/comments/21",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								"21"
+							]
+						},
+						"description": "Metoda do pobrania szczegółow komentarza o podanym id"
+					},
+					"response": []
+				},
+				{
+					"name": "/comments/{id}",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"content\": \"tekst\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/comments/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								"1"
+							]
+						},
+						"description": "Metoda do aktualizacji treści komentarza"
+					},
+					"response": []
+				},
+				{
+					"name": "/comments/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/comments/23",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								"23"
+							]
+						},
+						"description": "Metoda do usunięcia komentarza o podanym id wraz z komentarzami podrzędnymi"
+					},
+					"response": []
+				},
+				{
+					"name": "/comments/{id}/comments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/v1/comments/4/comments?",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								"4",
+								"comments"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Metoda do pobierania odpowiedzi do danego komentarza"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5fc1242f-5ac5-436a-a13c-0b2e2df18fac",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "127c361e-c30b-4d4a-8d5c-3ba1ecab42f2",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "cuisines",
+			"item": [
+				{
+					"name": "/cuisines",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/cuisines",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cuisines"
+							]
+						},
+						"description": "Metoda do pobrania listy dostępnych typów kuchni w aplikacji"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "categories",
+			"item": [
+				{
+					"name": "/categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/v1/categories",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"categories"
+							]
+						},
+						"description": "Metoda do pobrania listy kategorii dostępnych w aplikacji"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "recipes",
+			"item": [
+				{
+					"name": "/recipes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/v1/recipes?",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recipes"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "6",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "asc",
+									"disabled": true
+								},
+								{
+									"key": "cuisineId",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "categoryId",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "minDifficulty",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "maxDifficulty",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "minPlates",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "maxPlates",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "minPreparationTime",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "maxPreparationTime",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Metoda do pobrania przefiltrowanej listy przepisów"
+					},
+					"response": []
+				},
+				{
+					"name": "/recipes",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"tytul\",\n\t\"cuisineId\": \"id_kuchni\",\n\t\"difficulty\": \"trudnosc\",\n\t\"plates\": \"ilosc_porcji\",\n\t\"preparationTime\": \"czas_przygotowania\",\n\t\"ingredients\": [\n\t\t\"skladnik_1\",\n\t\t\"skladnik_2\",\n\t\t\"skladnik_3\"\n\t],\n\t\"steps\": [\n\t\t\"krok_1\",\n\t\t\"krok_2\",\n\t\t\"krok_3\"\n\t]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/recipes",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recipes"
+							]
+						},
+						"description": "Metoda do dodawania nowego przepisu"
+					},
+					"response": []
+				},
+				{
+					"name": "/recipes/search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/v1/recipes/search?",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recipes",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "tekst",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Metoda do wyszukiwania przepisów w aplikacji"
+					},
+					"response": []
+				},
+				{
+					"name": "/recipes/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/recipes/17",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recipes",
+								"17"
+							]
+						},
+						"description": "Metoda do pobrania okładnego opis przepisu"
+					},
+					"response": []
+				},
+				{
+					"name": "/recipes/{id}",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"tytul\",\n\t\"cuisineId\": \"id_kuchni\",\n\t\"difficulty\": \"trudnosc\",\n\t\"plates\": \"ilosc_porcji\",\n\t\"preparationTime\": \"czas_przygotowania\",\n\t\"ingredients\": [\n\t\t\"skladnik_1\",\n\t\t\"skladnik_2\",\n\t\t\"skladnik_3\"\n\t],\n\t\"steps\": [\n\t\t\"krok_1\",\n\t\t\"krok_2\",\n\t\t\"krok_3\"\n\t]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/recipes/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recipes",
+								"1"
+							]
+						},
+						"description": "Metoda do aktualizacji danych przepisu"
+					},
+					"response": []
+				},
+				{
+					"name": "/recipes/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/recipes/27",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recipes",
+								"27"
+							]
+						},
+						"description": "Metoda do usuwania przepisu o podanym id"
+					},
+					"response": []
+				},
+				{
+					"name": "/recipes/{id}/like",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/recipes/17/like",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recipes",
+								"17",
+								"like"
+							]
+						},
+						"description": "Metoda dodająca like'a do przepisu o podanym id"
+					},
+					"response": []
+				},
+				{
+					"name": "/recipes/{id}/favourite",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/recipes/17/favourite",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recipes",
+								"17",
+								"favourite"
+							]
+						},
+						"description": "Metoda dodająca przepis do ulubionych"
+					},
+					"response": []
+				},
+				{
+					"name": "/recipes/{id}/comments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/recipes/17/comments?",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recipes",
+								"17",
+								"comments"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Metoda pobierająca komentarze do przepisu o podanym id"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "uploads",
+			"item": [
+				{
+					"name": "/uploads",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"value": "",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/uploads",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"uploads"
+							]
+						},
+						"description": "Metoda do dodania nowego obrazka"
+					},
+					"response": []
+				},
+				{
+					"name": "/uploads/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/uploads/24",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"uploads",
+								"24"
+							]
+						},
+						"description": "Metoda do wyświetlenia obrazka o podanym id"
+					},
+					"response": []
+				},
+				{
+					"name": "/uploads/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/v1/uploads/24",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"uploads",
+								"24"
+							]
+						},
+						"description": "Metoda do usuwania obrazka o podanym id"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "/users/current",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/users/current",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"current"
+							]
+						},
+						"description": "Metoda pobierająca informacje o aktualnie zalogowym użytkowniku"
+					},
+					"response": []
+				},
+				{
+					"name": "/users/search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/v1/users/search?",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "tekst",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Metoda do wyszukiwania użytkowników w aplikacji"
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/users/7",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"7"
+							]
+						},
+						"description": "Pobranie danych użytkownika o podanym id"
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{id}",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"nazwa\",\n\t\"avatarId\": \"id_avatar\",\n\t\"biography\": \"biografia\",\n\t\"bannerId\": \"id_banner\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/users/7",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"7"
+							]
+						},
+						"description": "Metoda do aktualizacji profilu użytkownika o podanym id"
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{id}/follow",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/users/7/follow",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"7",
+								"follow"
+							]
+						},
+						"description": "Metoda dodająca obserwowanie użytkownika w systemie"
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{id}/recipes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/users/3/recipes?",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"3",
+								"recipes"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Metoda pobierająca przepisy stworzone przez danego użytkownika"
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{id}/favourites",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/users/1/favourites?",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"1",
+								"favourites"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Metoda pobierająca przepisy dodane do ulubionych przez danego użytkownika"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
