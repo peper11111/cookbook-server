@@ -43,7 +43,7 @@ public class MailServiceImpl implements MailService {
     public void sendAccountActivationMessage(String origin, Token token) {
         Context context = new Context();
         context.setVariable("username", token.getUser().getUsername());
-        context.setVariable("accountActivationLink", origin + "/register?step=verify&uuid=" + token.getUuid());
+        context.setVariable("accountActivationLink", origin + "/register/verify&uuid=" + token.getUuid());
         String text = templateEngine.process("AccountActivation", context);
         sendMessage(token.getUser().getEmail(), "Account activation", text);
     }
@@ -52,7 +52,7 @@ public class MailServiceImpl implements MailService {
     public void sendPasswordResetMessage(String origin, Token token) {
         Context context = new Context();
         context.setVariable("username", token.getUser().getUsername());
-        context.setVariable("passwordResetLink", origin + "/reset?step=confirm&uuid=" + token.getUuid());
+        context.setVariable("passwordResetLink", origin + "/reset/confirm&uuid=" + token.getUuid());
         String text = templateEngine.process("PasswordReset", context);
         sendMessage(token.getUser().getEmail(), "Password reset", text);
     }
