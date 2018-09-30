@@ -137,6 +137,8 @@ public class RecipeServiceImpl implements RecipeService {
         Stream<Recipe> stream = StreamSupport.stream(recipeRepository.findAll().spliterator(), false);
         stream = stream.filter(recipe -> recipe.getTitle().toLowerCase().contains(query));
 
+        stream = streamHelper.applyPagination(payload, stream);
+
         Iterable<Recipe> recipes = stream.collect(Collectors.toList());
         Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);
         return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtos);

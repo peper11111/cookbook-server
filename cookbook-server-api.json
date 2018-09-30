@@ -638,6 +638,11 @@
 									"key": "query",
 									"value": "tekst",
 									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
 								}
 							]
 						},
@@ -943,6 +948,11 @@
 								{
 									"key": "query",
 									"value": "tekst",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
 									"disabled": true
 								}
 							]

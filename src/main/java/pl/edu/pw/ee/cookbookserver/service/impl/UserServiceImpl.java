@@ -61,6 +61,8 @@ public class UserServiceImpl implements UserService {
         Stream<User> stream = StreamSupport.stream(userRepository.findAll().spliterator(), false);
         stream = stream.filter(user -> user.getUsername().toLowerCase().contains(query) || user.getName().toLowerCase().contains(query));
 
+        stream = streamHelper.applyPagination(payload, stream);
+
         Iterable<User> users = stream.collect(Collectors.toList());
         Collection<BasicUserDto> basicUserDtos = userHelper.mapUserToBasicUserDto(users);
         return ResponseEntity.status(HttpStatus.OK).body(basicUserDtos);
