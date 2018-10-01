@@ -9,8 +9,10 @@ import java.time.ZoneOffset;
 public class BasicRecipeDto {
 
     private Long id;
+    private BasicUserDto author;
     private Long bannerId;
     private String title;
+    private String description;
     private Long creationTime;
     private Long commentsCount;
     private Long likesCount;

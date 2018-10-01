@@ -46,11 +46,13 @@ public class RecipeHelper {
         }
         BasicRecipeDto basicRecipeDto = new BasicRecipeDto();
         basicRecipeDto.setId(recipe.getId());
+        basicRecipeDto.setAuthor(userHelper.mapUserToBasicUserDto(recipe.getAuthor()));
         basicRecipeDto.setCreationTime(recipe.getCreationTime());
         if (recipe.getBanner() != null) {
             basicRecipeDto.setBannerId(recipe.getBanner().getId());
         }
         basicRecipeDto.setTitle(recipe.getTitle());
+        basicRecipeDto.setDescription(recipe.getDescription());
         basicRecipeDto.setCommentsCount(commentRepository.countByRecipe(recipe));
         basicRecipeDto.setLikesCount((long) recipe.getLikes().size());
         basicRecipeDto.setCategoryId(recipe.getCategory().getId());
@@ -70,12 +72,12 @@ public class RecipeHelper {
             recipeDto.setBannerId(recipe.getBanner().getId());
         }
         recipeDto.setTitle(recipe.getTitle());
+        recipeDto.setDescription(recipe.getDescription());
         recipeDto.setCommentsCount(commentRepository.countByRecipe(recipe));
         recipeDto.setLikesCount((long) recipe.getLikes().size());
         recipeDto.setCategoryId(recipe.getCategory().getId());
         recipeDto.setIsLiked(recipe.getLikes().contains(currentUser));
         recipeDto.setIsFavourite(currentUser.getFavourites().contains(recipe));
-        recipeDto.setDescription(recipe.getDescription());
         recipeDto.setCuisineId(recipe.getCuisine().getId());
         recipeDto.setDifficulty(recipe.getDifficulty());
         recipeDto.setPlates(recipe.getPlates());
