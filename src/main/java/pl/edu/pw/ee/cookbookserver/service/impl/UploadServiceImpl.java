@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import pl.edu.pw.ee.cookbookserver.Properties;
 import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.UploadHelper;
@@ -17,13 +16,7 @@ import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
 import pl.edu.pw.ee.cookbookserver.service.UploadService;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -31,15 +24,12 @@ import java.util.UUID;
 @Transactional(rollbackFor = Exception.class)
 public class UploadServiceImpl implements UploadService {
 
-    private Properties properties;
     private UploadHelper uploadHelper;
     private UploadRepository uploadRepository;
     private UserHelper userHelper;
 
     @Autowired
-    public UploadServiceImpl(Properties properties, UploadHelper uploadHelper, UploadRepository uploadRepository,
-                             UserHelper userHelper) {
-        this.properties = properties;
+    public UploadServiceImpl(UploadHelper uploadHelper, UploadRepository uploadRepository, UserHelper userHelper) {
         this.uploadHelper = uploadHelper;
         this.uploadRepository = uploadRepository;
         this.userHelper = userHelper;
@@ -54,10 +44,15 @@ public class UploadServiceImpl implements UploadService {
             throw new ProcessingException(Error.INVALID_FILE_TYPE);
         }
 
+        String filename = UUID.randomUUID().toString() + ".jpg";
+
         Upload upload = new Upload();
-        upload.setFilename(this.writeImage(file.getBytes()));
+        upload.setFilename(filename);
         upload.setOwner(currentUser);
         uploadRepository.save(upload);
+
+        uploadHelper.writeImage(filename, false, file.getBytes());
+        uploadHelper.writeImage(filename, true, file.getBytes());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(upload.getId());
     }
@@ -65,7 +60,7 @@ public class UploadServiceImpl implements UploadService {
     @Override
     public ResponseEntity read(Long id) throws Exception {
         Upload upload = uploadHelper.getUpload(id);
-        byte[] image = this.readImage(upload.getFilename());
+        byte[] image = uploadHelper.readImage(upload.getFilename(), false);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(image);
     }
 
@@ -78,33 +73,17 @@ public class UploadServiceImpl implements UploadService {
             throw new ProcessingException(Error.ACCESS_DENIED);
         }
 
+        new File(uploadHelper.getPath(true), upload.getFilename()).delete();
+        new File(uploadHelper.getPath(false), upload.getFilename()).delete();
         uploadRepository.delete(upload);
-        new File(properties.getUploadsPath(), upload.getFilename()).delete();
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    private byte[] readImage(String filename) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        BufferedImage bufferedImage = ImageIO.read(new File(properties.getUploadsPath(), filename));
-        ImageIO.write(bufferedImage, "jpg", out);
-        return out.toByteArray();
-    }
-
-    private String writeImage(byte[] bytes) throws IOException {
-        String filename = UUID.randomUUID().toString() + ".jpg";
-        ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-        BufferedImage bufferedImage = this.removeAlphaChannel(ImageIO.read(in));
-        ImageIO.write(bufferedImage, "jpg", new File(properties.getUploadsPath(), filename));
-        return filename;
-    }
-
-    private BufferedImage removeAlphaChannel(BufferedImage originalImage) {
-        BufferedImage bufferedImage = originalImage;
-        if (originalImage.getColorModel().hasAlpha()) {
-            bufferedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-            bufferedImage.createGraphics().drawImage(originalImage, 0, 0, Color.WHITE, null);
-        }
-        return bufferedImage;
+    @Override
+    public ResponseEntity readThumbnail(Long id) throws Exception {
+        Upload upload = uploadHelper.getUpload(id);
+        byte[] image = uploadHelper.readImage(upload.getFilename(), true);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(image);
     }
 }

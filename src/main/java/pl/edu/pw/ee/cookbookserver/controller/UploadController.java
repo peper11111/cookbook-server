@@ -31,4 +31,9 @@ public class UploadController {
     public ResponseEntity delete(@PathVariable Long id) throws Exception {
         return uploadService.delete(id);
     }
+
+    @GetMapping("/{id}/thumbnail")
+    public ResponseEntity readThumbnail(@PathVariable Long id) throws Exception {
+        return uploadService.readThumbnail(id);
+    }
 }

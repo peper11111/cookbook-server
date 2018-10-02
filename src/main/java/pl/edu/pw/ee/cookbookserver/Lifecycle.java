@@ -46,12 +46,14 @@ public class Lifecycle {
                 validateUploadsDirectory();
                 break;
             case "update":
-                createUploadsDirectory();
+                createImagesDirectory();
+                createThumbnailsDirectory();
                 break;
             case "create":
             case "create-drop":
                 dropUploadsDirectory();
-                createUploadsDirectory();
+                createImagesDirectory();
+                createThumbnailsDirectory();
 //                initDatabase();
                 break;
         }
@@ -73,12 +75,22 @@ public class Lifecycle {
         }
     }
 
-    private void createUploadsDirectory() throws IOException {
-        File uploadsDirectory = new File(properties.getUploadsPath());
-        if (!uploadsDirectory.exists()) {
-            log.info("Creating uploads directory");
-            if (!uploadsDirectory.mkdirs()) {
-                throw new IOException("Failed to create uploads directory");
+    private void createImagesDirectory() throws IOException {
+        File imagesDirectory = new File(properties.getUploadsPath() + "/images");
+        if (!imagesDirectory.exists()) {
+            log.info("Creating images directory");
+            if (!imagesDirectory.mkdirs()) {
+                throw new IOException("Failed to create images directory");
+            }
+        }
+    }
+
+    private void createThumbnailsDirectory() throws IOException {
+        File thumbnailsDirectory = new File(properties.getUploadsPath() + "/thumbnails");
+        if (!thumbnailsDirectory.exists()) {
+            log.info("Creating thumbnails directory");
+            if (!thumbnailsDirectory.mkdirs()) {
+                throw new IOException("Failed to create thumbnails directory");
             }
         }
     }

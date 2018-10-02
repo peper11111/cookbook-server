@@ -8,4 +8,5 @@ public interface UploadService {
     ResponseEntity create(MultipartFile file) throws Exception;
     ResponseEntity read(Long id) throws Exception;
     ResponseEntity delete(Long id) throws Exception;
+    ResponseEntity readThumbnail(Long id) throws Exception;
 }
