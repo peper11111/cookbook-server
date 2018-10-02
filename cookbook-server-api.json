@@ -860,7 +860,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{host}}/api/v1/uploads/24",
+							"raw": "{{host}}/api/v1/uploads/4",
 							"host": [
 								"{{host}}"
 							],
@@ -868,7 +868,7 @@
 								"api",
 								"v1",
 								"uploads",
-								"24"
+								"4"
 							]
 						},
 						"description": "Metoda do wyświetlenia obrazka o podanym id"
@@ -894,6 +894,29 @@
 							]
 						},
 						"description": "Metoda do usuwania obrazka o podanym id"
+					},
+					"response": []
+				},
+				{
+					"name": "/uploads/{id}/thumbnail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/v1/uploads/4/thumbnail",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"uploads",
+								"4",
+								"thumbnail"
+							]
+						},
+						"description": "Metoda do pobranie miniaturki obrazka o podanym id"
 					},
 					"response": []
 				}
