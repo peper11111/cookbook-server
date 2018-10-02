@@ -9,5 +9,6 @@ public class Properties {
 
     private String ddlAuto;
     private String uploadsPath;
-    private Long pageSize;
+    private int pageSize;
+    private int thumbnailSize;
 }

@@ -49,7 +49,7 @@ public class UploadHelper {
         bufferedImage = this.removeAlphaChannel(bufferedImage);
         if (thumbnail) {
             bufferedImage = this.cropImage(bufferedImage);
-            bufferedImage = this.resizeImage(bufferedImage, 300);
+            bufferedImage = this.resizeImage(bufferedImage, properties.getThumbnailSize());
         }
         ImageIO.write(bufferedImage, "jpg", new File(getPath(thumbnail), filename));
     }
