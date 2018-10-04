@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -49,8 +50,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     response.setStatus(HttpStatus.NO_CONTENT.value());
                 })
                 .failureHandler((request, response, exception) -> {
-                    ErrorDto errorDto = new ErrorDto(Error.LOGIN_FAILURE.code(), exception.getMessage());
-                    response.setStatus(Error.LOGIN_FAILURE.status().value());
+                    Error error = exception instanceof BadCredentialsException
+                            ? Error.BAD_CREDENTIALS
+                            : Error.USER_INACTIVE;
+                    ErrorDto errorDto = new ErrorDto(error.code(), exception.getMessage());
+                    response.setStatus(error.status().value());
                     response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                     response.getWriter().write(errorDto.toString());
                 })
