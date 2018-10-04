@@ -11,6 +11,9 @@ import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.helper.PayloadHelper;
 import pl.edu.pw.ee.cookbookserver.helper.TokenHelper;
 import pl.edu.pw.ee.cookbookserver.helper.UserHelper;
+import pl.edu.pw.ee.cookbookserver.misc.Error;
+import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.misc.TokenType;
 import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.AuthService;
@@ -46,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(payloadHelper.getValidPassword(payload));
         userRepository.save(user);
 
-        Token token = new Token(user);
+        Token token = new Token(user, TokenType.REGISTER);
         tokenRepository.save(token);
 
         mailService.sendAccountActivationMessage(origin, token);
@@ -58,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity registerResend(JSONObject payload, String origin) throws Exception {
         String login = payloadHelper.getValidLogin(payload);
         User user = userHelper.getUser(login);
-        Token token = tokenHelper.getToken(user);
+        Token token = tokenHelper.getToken(user, TokenType.REGISTER);
 
         mailService.sendAccountActivationMessage(origin, token);
 
@@ -68,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity registerVerify(JSONObject payload) throws Exception {
         String uuid = payloadHelper.getValidUuid(payload);
-        Token token = tokenHelper.getToken(uuid);
+        Token token = tokenHelper.getToken(uuid, TokenType.REGISTER);
 
         User user = token.getUser();
         user.setEnabled(true);
@@ -83,7 +86,11 @@ public class AuthServiceImpl implements AuthService {
         String login = payloadHelper.getValidLogin(payload);
         User user = userHelper.getUser(login);
 
-        Token token = new Token(user);
+        if (!userHelper.isUserActive(user)) {
+            throw new ProcessingException(Error.USER_INACTIVE);
+        }
+
+        Token token = new Token(user, TokenType.RESET);
         tokenRepository.save(token);
 
         mailService.sendPasswordResetMessage(origin, token);
@@ -95,8 +102,8 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity resetResend(JSONObject payload, String origin) throws Exception {
         String login = payloadHelper.getValidLogin(payload);
         User user = userHelper.getUser(login);
-        Token token = tokenHelper.getToken(user);
 
+        Token token = tokenHelper.getToken(user, TokenType.RESET);
         mailService.sendPasswordResetMessage(origin, token);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -105,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity resetConfirm(JSONObject payload) throws Exception {
         String uuid = payloadHelper.getValidUuid(payload);
-        Token token = tokenHelper.getToken(uuid);
+        Token token = tokenHelper.getToken(uuid, TokenType.RESET);
 
         User user = token.getUser();
         user.setPassword(payloadHelper.getValidPassword(payload));

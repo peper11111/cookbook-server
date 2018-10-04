@@ -99,4 +99,8 @@ public class UserHelper {
         }
         return user;
     }
+
+    public boolean isUserActive(User user) {
+        return user.isEnabled() && user.isAccountNonExpired() && user.isAccountNonLocked() && user.isCredentialsNonExpired();
+    }
 }

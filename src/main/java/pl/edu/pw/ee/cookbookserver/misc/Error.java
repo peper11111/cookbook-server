@@ -7,6 +7,7 @@ public enum Error {
     SERVER_ERROR(100, HttpStatus.INTERNAL_SERVER_ERROR, "Server error"),
     ACCESS_DENIED(101, HttpStatus.FORBIDDEN, "Access denied"),
     LOGIN_FAILURE(102, HttpStatus.FORBIDDEN, "Login failure"),
+    USER_INACTIVE(103, HttpStatus.FORBIDDEN, "User was not activated"),
 
     USER_NOT_FOUND(200, HttpStatus.NOT_FOUND, "User not found"),
     TOKEN_NOT_FOUND(201, HttpStatus.NOT_FOUND, "Token not found"),

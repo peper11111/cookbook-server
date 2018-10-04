@@ -6,6 +6,7 @@ import pl.edu.pw.ee.cookbookserver.entity.Token;
 import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.misc.TokenType;
 import pl.edu.pw.ee.cookbookserver.repository.TokenRepository;
 
 import java.time.LocalDateTime;
@@ -20,19 +21,19 @@ public class TokenHelper {
         this.tokenRepository = tokenRepository;
     }
 
-    public Token getToken(User user) throws ProcessingException {
-        Token token = tokenRepository.findByUser(user).orElse(null);
-        if (token == null) {
-            throw new ProcessingException(Error.TOKEN_NOT_FOUND);
+    public Token getToken(User user, TokenType type) throws ProcessingException {
+        Iterable<Token> tokens = tokenRepository.findByUserAndType(user, type);
+        for (Token token: tokens) {
+            if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
+                continue;
+            }
+            return token;
         }
-        if (token.getExpirationTime().compareTo(LocalDateTime.now()) < 0) {
-            throw new ProcessingException(Error.TOKEN_EXPIRED);
-        }
-        return token;
+        throw new ProcessingException(Error.TOKEN_NOT_FOUND);
     }
 
-    public Token getToken(String uuid) throws ProcessingException {
-        Token token = tokenRepository.findByUuid(uuid).orElse(null);
+    public Token getToken(String uuid, TokenType type) throws ProcessingException {
+        Token token = tokenRepository.findByUuidAndType(uuid, type).orElse(null);
         if (token == null) {
             throw new ProcessingException(Error.TOKEN_NOT_FOUND);
         }
