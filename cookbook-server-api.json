@@ -1066,6 +1066,29 @@
 					"response": []
 				},
 				{
+					"name": "/users/{id}/images",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/v1/users/3/images",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"3",
+								"images"
+							]
+						},
+						"description": "Metoda służąca do pobrania listy przesłanych obrazów przez użytkownika."
+					},
+					"response": []
+				},
+				{
 					"name": "/users/{id}/recipes",
 					"request": {
 						"method": "GET",
