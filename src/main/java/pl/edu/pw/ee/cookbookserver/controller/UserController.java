@@ -44,6 +44,11 @@ public class UserController {
         return userService.follow(id);
     }
 
+    @GetMapping("/{id}/images")
+    public ResponseEntity readImages(@PathVariable Long id, @RequestParam Map<String, String> params) throws Exception {
+        return userService.readImages(id, new JSONObject(params));
+    }
+
     @GetMapping("/{id}/recipes")
     public ResponseEntity readRecipes(@PathVariable Long id, @RequestParam Map<String, String> params) throws Exception {
         return userService.readRecipes(id, new JSONObject(params));

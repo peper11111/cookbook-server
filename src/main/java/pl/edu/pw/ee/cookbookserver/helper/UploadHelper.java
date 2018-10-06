@@ -3,6 +3,7 @@ package pl.edu.pw.ee.cookbookserver.helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.Properties;
+import pl.edu.pw.ee.cookbookserver.dto.UploadDto;
 import pl.edu.pw.ee.cookbookserver.entity.Upload;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
@@ -15,6 +16,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Component
 public class UploadHelper {
@@ -26,6 +32,36 @@ public class UploadHelper {
     public UploadHelper(Properties properties, UploadRepository uploadRepository) {
         this.properties = properties;
         this.uploadRepository = uploadRepository;
+    }
+
+    public Collection<UploadDto> mapUploadToUploadDto(Iterable<Upload> uploads) {
+        if (uploads == null) {
+            return null;
+        }
+        Collection<UploadDto> uploadDtos = new ArrayList<>();
+        for (Upload upload: uploads) {
+            UploadDto uploadDto = mapUploadToUploadDto(upload);
+            uploadDtos.add(uploadDto);
+        }
+        return uploadDtos;
+    }
+
+    public UploadDto mapUploadToUploadDto(Upload upload) {
+        if (upload == null) {
+            return null;
+        }
+        UploadDto uploadDto = new UploadDto();
+        uploadDto.setId(upload.getId());
+        return uploadDto;
+    }
+
+    public void markUsedUploads(Collection<UploadDto> uploadDtos, Long ownerId) {
+        Stream<Upload> stream = StreamSupport.stream(uploadRepository.findUnusedUploads(ownerId).spliterator(), false);
+        Collection<Long> ids = stream.map(Upload::getId).collect(Collectors.toList());
+
+        for (UploadDto uploadDto: uploadDtos) {
+            uploadDto.setIsUsed(!ids.contains(uploadDto.getId()));
+        }
     }
 
     public Upload getUpload(Long id) throws ProcessingException {
