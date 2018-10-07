@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Optional<User> findByUsername(String username);
+    Iterable<User> findByAvatarId(Long id);
+    Iterable<User> findByBannerId(Long id);
     long countByFollowersContaining(User user);
 
     @Query(value = "SELECT * FROM cb_user WHERE username = :login OR email = :login", nativeQuery = true)

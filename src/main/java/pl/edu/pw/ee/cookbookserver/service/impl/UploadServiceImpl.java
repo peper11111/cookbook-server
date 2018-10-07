@@ -73,9 +73,10 @@ public class UploadServiceImpl implements UploadService {
             throw new ProcessingException(Error.ACCESS_DENIED);
         }
 
+        uploadHelper.removeReferences(id);
+        uploadRepository.delete(upload);
         new File(uploadHelper.getPath(true), upload.getFilename()).delete();
         new File(uploadHelper.getPath(false), upload.getFilename()).delete();
-        uploadRepository.delete(upload);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

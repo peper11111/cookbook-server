@@ -8,5 +8,6 @@ import pl.edu.pw.ee.cookbookserver.entity.User;
 @Repository
 public interface RecipeRepository extends CrudRepository<Recipe, Long> {
 
+    Iterable<Recipe> findByBannerId(Long id);
     long countByAuthor(User author);
 }

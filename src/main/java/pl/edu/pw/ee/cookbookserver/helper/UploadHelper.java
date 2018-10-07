@@ -4,10 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.edu.pw.ee.cookbookserver.Properties;
 import pl.edu.pw.ee.cookbookserver.dto.UploadDto;
+import pl.edu.pw.ee.cookbookserver.entity.Recipe;
 import pl.edu.pw.ee.cookbookserver.entity.Upload;
+import pl.edu.pw.ee.cookbookserver.entity.User;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UploadRepository;
+import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -26,12 +30,17 @@ import java.util.stream.StreamSupport;
 public class UploadHelper {
 
     private Properties properties;
+    private RecipeRepository recipeRepository;
     private UploadRepository uploadRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public UploadHelper(Properties properties, UploadRepository uploadRepository) {
+    public UploadHelper(Properties properties, RecipeRepository recipeRepository, UploadRepository uploadRepository,
+                        UserRepository userRepository) {
         this.properties = properties;
+        this.recipeRepository = recipeRepository;
         this.uploadRepository = uploadRepository;
+        this.userRepository = userRepository;
     }
 
     public Collection<UploadDto> mapUploadToUploadDto(Iterable<Upload> uploads) {
@@ -70,6 +79,18 @@ public class UploadHelper {
             throw new ProcessingException(Error.UPLOAD_NOT_FOUND);
         }
         return upload;
+    }
+
+    public void removeReferences(Long id) {
+        for (User user: userRepository.findByAvatarId(id)) {
+            user.setAvatar(null);
+        }
+        for (User user: userRepository.findByBannerId(id)) {
+            user.setBanner(null);
+        }
+        for (Recipe recipe: recipeRepository.findByBannerId(id)) {
+            recipe.setBanner(null);
+        }
     }
 
     public byte[] readImage(String filename, boolean thumbnail) throws IOException {
