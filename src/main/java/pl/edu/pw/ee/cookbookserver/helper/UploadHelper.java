@@ -22,9 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Component
 public class UploadHelper {
@@ -61,16 +58,8 @@ public class UploadHelper {
         }
         UploadDto uploadDto = new UploadDto();
         uploadDto.setId(upload.getId());
+        uploadDto.setCreationTime(upload.getCreationTime());
         return uploadDto;
-    }
-
-    public void markUsedUploads(Collection<UploadDto> uploadDtos, Long ownerId) {
-        Stream<Upload> stream = StreamSupport.stream(uploadRepository.findUnusedUploads(ownerId).spliterator(), false);
-        Collection<Long> ids = stream.map(Upload::getId).collect(Collectors.toList());
-
-        for (UploadDto uploadDto: uploadDtos) {
-            uploadDto.setIsUsed(!ids.contains(uploadDto.getId()));
-        }
     }
 
     public Upload getUpload(Long id) throws ProcessingException {

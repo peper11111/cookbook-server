@@ -142,7 +142,6 @@ public class UserServiceImpl implements UserService {
 
         Iterable<Upload> uploads = stream.collect(Collectors.toList());
         Collection<UploadDto> uploadDtos = uploadHelper.mapUploadToUploadDto(uploads);
-        uploadHelper.markUsedUploads(uploadDtos, id);
         return ResponseEntity.status(HttpStatus.OK).body(uploadDtos);
     }
 
