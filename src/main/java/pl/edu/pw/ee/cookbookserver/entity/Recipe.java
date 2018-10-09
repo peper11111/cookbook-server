@@ -40,6 +40,9 @@ public class Recipe {
     private Collection<Comment> comments;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Collection<User> favourites;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Collection<User> likes;
 
     public Recipe() {

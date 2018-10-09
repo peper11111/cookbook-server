@@ -10,6 +10,7 @@ import java.util.Collection;
 public class RecipeDto extends BasicRecipeDto {
 
     private Long cuisineId;
+    private Long categoryId;
     private Integer difficulty;
     private Integer plates;
     private Integer preparationTime;

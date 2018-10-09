@@ -16,7 +16,6 @@ import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
 import pl.edu.pw.ee.cookbookserver.repository.CommentRepository;
 import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
-import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.RecipeService;
 
 import java.util.Collection;
@@ -245,11 +244,11 @@ public class RecipeServiceImpl implements RecipeService {
             throw new ProcessingException(Error.ACCESS_DENIED);
         }
 
-        Collection<Recipe> favourites = currentUser.getFavourites();
-        if (favourites.contains(recipe)) {
-            favourites.remove(recipe);
+        Collection<User> favourites = recipe.getFavourites();
+        if (favourites.contains(currentUser)) {
+            favourites.remove(currentUser);
         } else {
-            favourites.add(recipe);
+            favourites.add(currentUser);
         }
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

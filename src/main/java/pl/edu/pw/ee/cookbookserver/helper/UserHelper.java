@@ -43,12 +43,7 @@ public class UserHelper {
             return null;
         }
         BasicUserDto basicUserDto = new BasicUserDto();
-        basicUserDto.setId(user.getId());
-        basicUserDto.setUsername(user.getUsername());
-        basicUserDto.setName(user.getName());
-        if (user.getAvatar() != null) {
-            basicUserDto.setAvatarId(user.getAvatar().getId());
-        }
+        fillBasicUserDto(basicUserDto, user);
         return basicUserDto;
     }
 
@@ -57,22 +52,31 @@ public class UserHelper {
             return null;
         }
         UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setUsername(user.getUsername());
-        userDto.setEmail(user.getEmail());
-        userDto.setName(user.getName());
-        userDto.setBiography(user.getBiography());
+        fillUserDto(userDto, user);
+        return userDto;
+    }
+
+    private void fillBasicUserDto(BasicUserDto basicUserDto, User user) {
+        basicUserDto.setId(user.getId());
+        basicUserDto.setUsername(user.getUsername());
+        basicUserDto.setName(user.getName());
         if (user.getAvatar() != null) {
-            userDto.setAvatarId(user.getAvatar().getId());
+            basicUserDto.setAvatarId(user.getAvatar().getId());
         }
+    }
+
+    private void fillUserDto(UserDto userDto, User user) throws ProcessingException {
+        User currentUser = getCurrentUser();
+        fillBasicUserDto(userDto, user);
+        userDto.setEmail(user.getEmail());
+        userDto.setBiography(user.getBiography());
         if (user.getBanner() != null) {
             userDto.setBannerId(user.getBanner().getId());
         }
-        userDto.setIsFollowed(user.getFollowers().contains(getCurrentUser()));
+        userDto.setIsFollowed(user.getFollowers().contains(currentUser));
         userDto.setFollowersCount((long) user.getFollowers().size());
         userDto.setFollowedCount(userRepository.countByFollowersContaining(user));
         userDto.setRecipesCount(recipeRepository.countByAuthor(user));
-        return userDto;
     }
 
     public User getCurrentUser() throws ProcessingException {

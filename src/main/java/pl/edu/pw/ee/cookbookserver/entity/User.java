@@ -40,9 +40,10 @@ public class User implements UserDetails {
     private Collection<Upload> images;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
     private Collection<Recipe> recipes;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(inverseJoinColumns = @JoinColumn(name = "favourite_id"))
-    private Collection<Recipe> favourites;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "favourites")
+    private Collection<Recipe> favouriteRecipes;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "likes")
+    private Collection<Recipe> likedRecipes;
 
     public User() {
         this.accountNonExpired = true;

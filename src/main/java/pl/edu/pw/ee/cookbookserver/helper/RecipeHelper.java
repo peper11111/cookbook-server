@@ -45,6 +45,20 @@ public class RecipeHelper {
             return null;
         }
         BasicRecipeDto basicRecipeDto = new BasicRecipeDto();
+        fillBasicRecipeDto(basicRecipeDto, recipe);
+        return basicRecipeDto;
+    }
+
+    public RecipeDto mapRecipeToRecipeDto(Recipe recipe) throws ProcessingException {
+        if (recipe == null) {
+            return null;
+        }
+        RecipeDto recipeDto = new RecipeDto();
+        fillRecipeDto(recipeDto, recipe);
+        return recipeDto;
+    }
+
+    private void fillBasicRecipeDto(BasicRecipeDto basicRecipeDto, Recipe recipe) {
         basicRecipeDto.setId(recipe.getId());
         basicRecipeDto.setAuthor(userHelper.mapUserToBasicUserDto(recipe.getAuthor()));
         basicRecipeDto.setCreationTime(recipe.getCreationTime());
@@ -55,36 +69,21 @@ public class RecipeHelper {
         basicRecipeDto.setDescription(recipe.getDescription());
         basicRecipeDto.setCommentsCount(commentRepository.countByRecipe(recipe));
         basicRecipeDto.setLikesCount((long) recipe.getLikes().size());
-        basicRecipeDto.setCategoryId(recipe.getCategory().getId());
-        return basicRecipeDto;
+        basicRecipeDto.setFavouritesCount((long) recipe.getFavourites().size());
     }
 
-    public RecipeDto mapRecipeToRecipeDto(Recipe recipe) throws ProcessingException {
-        if (recipe == null) {
-            return null;
-        }
+    private void fillRecipeDto(RecipeDto recipeDto, Recipe recipe) throws ProcessingException {
         User currentUser = userHelper.getCurrentUser();
-        RecipeDto recipeDto = new RecipeDto();
-        recipeDto.setId(recipe.getId());
-        recipeDto.setCreationTime(recipe.getCreationTime());
-        recipeDto.setAuthor(userHelper.mapUserToBasicUserDto(recipe.getAuthor()));
-        if (recipe.getBanner() != null) {
-            recipeDto.setBannerId(recipe.getBanner().getId());
-        }
-        recipeDto.setTitle(recipe.getTitle());
-        recipeDto.setDescription(recipe.getDescription());
-        recipeDto.setCommentsCount(commentRepository.countByRecipe(recipe));
-        recipeDto.setLikesCount((long) recipe.getLikes().size());
-        recipeDto.setCategoryId(recipe.getCategory().getId());
+        fillBasicRecipeDto(recipeDto, recipe);
         recipeDto.setIsLiked(recipe.getLikes().contains(currentUser));
-        recipeDto.setIsFavourite(currentUser.getFavourites().contains(recipe));
+        recipeDto.setIsFavourite(recipe.getFavourites().contains(currentUser));
         recipeDto.setCuisineId(recipe.getCuisine().getId());
+        recipeDto.setCategoryId(recipe.getCategory().getId());
         recipeDto.setDifficulty(recipe.getDifficulty());
         recipeDto.setPlates(recipe.getPlates());
         recipeDto.setPreparationTime(recipe.getPreparationTime());
         recipeDto.setIngredients(recipe.getIngredients());
         recipeDto.setSteps(recipe.getSteps());
-        return recipeDto;
     }
 
     public Recipe getRecipe(Long id) throws ProcessingException {

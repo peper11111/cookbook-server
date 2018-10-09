@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity readFavourites(Long id, JSONObject payload) throws Exception {
         User user = userHelper.getUser(id);
-        Stream<Recipe> stream = user.getFavourites().stream();
+        Stream<Recipe> stream = user.getFavouriteRecipes().stream();
 
         Comparator comparator = Comparator.comparing(Recipe::getCreationTime);
         stream = streamHelper.applySorting(payload, stream, comparator);

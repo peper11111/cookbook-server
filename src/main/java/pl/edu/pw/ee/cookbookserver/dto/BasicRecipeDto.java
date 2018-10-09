@@ -10,13 +10,13 @@ public class BasicRecipeDto {
 
     private Long id;
     private BasicUserDto author;
+    private Long creationTime;
     private Long bannerId;
     private String title;
     private String description;
-    private Long creationTime;
     private Long commentsCount;
     private Long likesCount;
-    private Long categoryId;
+    private Long favouritesCount;
 
     public void setCreationTime(LocalDateTime creationTime) {
         this.creationTime = creationTime.toInstant(ZoneOffset.UTC).toEpochMilli();
