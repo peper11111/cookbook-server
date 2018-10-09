@@ -36,6 +36,8 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(inverseJoinColumns = @JoinColumn(name = "follower_id"))
     private Collection<User> followers;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "followers")
+    private Collection<User> followed;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
     private Collection<Upload> images;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")

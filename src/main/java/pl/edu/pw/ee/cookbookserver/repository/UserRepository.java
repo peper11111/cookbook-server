@@ -14,7 +14,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findByUsername(String username);
     Iterable<User> findByAvatarId(Long id);
     Iterable<User> findByBannerId(Long id);
-    long countByFollowersContaining(User user);
 
     @Query(value = "SELECT * FROM cb_user WHERE username = :login OR email = :login", nativeQuery = true)
     Optional<User> findByLogin(@Param("login") String login);

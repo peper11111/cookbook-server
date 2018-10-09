@@ -75,7 +75,7 @@ public class UserHelper {
         }
         userDto.setIsFollowed(user.getFollowers().contains(currentUser));
         userDto.setFollowersCount((long) user.getFollowers().size());
-        userDto.setFollowedCount(userRepository.countByFollowersContaining(user));
+        userDto.setFollowedCount((long) user.getFollowed().size());
         userDto.setRecipesCount(recipeRepository.countByAuthor(user));
     }
 
