@@ -39,10 +39,10 @@ public class Recipe {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL)
     private Collection<Comment> comments;
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(joinColumns = @JoinColumn(name = "recipe_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Collection<User> favourites;
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(joinColumns = @JoinColumn(name = "recipe_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Collection<User> likes;
 
     public Recipe() {
