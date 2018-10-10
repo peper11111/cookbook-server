@@ -221,6 +221,10 @@ public class RecipeServiceImpl implements RecipeService {
         User currentUser = userHelper.getCurrentUser();
         Recipe recipe = recipeHelper.getRecipe(id);
 
+        if (currentUser.getId().equals(recipe.getAuthor().getId())) {
+            throw new ProcessingException(Error.ACCESS_DENIED);
+        }
+
         Collection<User> likes = recipe.getLikes();
         if (likes.contains(currentUser)) {
             likes.remove(currentUser);
@@ -235,6 +239,10 @@ public class RecipeServiceImpl implements RecipeService {
     public ResponseEntity favourite(Long id) throws Exception {
         User currentUser = userHelper.getCurrentUser();
         Recipe recipe = recipeHelper.getRecipe(id);
+
+        if (currentUser.getId().equals(recipe.getAuthor().getId())) {
+            throw new ProcessingException(Error.ACCESS_DENIED);
+        }
 
         Collection<User> favourites = recipe.getFavourites();
         if (favourites.contains(currentUser)) {
