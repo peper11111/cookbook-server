@@ -8,4 +8,4 @@ COPY $COOKBOOK_JAR /app/cookbook-server.jar
 
 EXPOSE 8080
 
-CMD /opt/jdk/bin/java -jar -Dspring.profiles.active=dell-dm051 /app/cookbook-server.jar
+CMD /opt/jdk/bin/java -jar -Dspring.profiles.active=docker /app/cookbook-server.jar
