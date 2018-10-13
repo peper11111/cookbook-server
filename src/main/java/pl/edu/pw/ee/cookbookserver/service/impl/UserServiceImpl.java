@@ -60,8 +60,8 @@ public class UserServiceImpl implements UserService {
         String query = payloadHelper.getValidQuery(payload).toLowerCase();
 
         Stream<User> stream = StreamSupport.stream(userRepository.findAll().spliterator(), false);
-        stream = stream.filter(user -> user.getUsername().toLowerCase().contains(query) || user.getName().toLowerCase().contains(query));
-
+        stream = stream.filter(user -> user.getUsername().toLowerCase().contains(query)
+                || (user.getName() != null && user.getName().toLowerCase().contains(query)));
         stream = streamHelper.applyPagination(payload, stream);
 
         Iterable<User> users = stream.collect(Collectors.toList());
