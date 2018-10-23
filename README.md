@@ -15,7 +15,7 @@ docker build -f docker/cookbook-server/Dockerfile -t cookbook-server .
 # create docker containers
 docker create --name cookbook-postgres -p 5432:5432 -it cookbook-postgres
 docker create --name cookbook-postfix -p 25:25 -it cookbook-postfix
-docker create --name cookbook-server -p 9000:8080 -it cookbook-server
+docker create --name cookbook-server -v /srv/uploads/srv/uploads -p 9000:8080 -it cookbook-server
 
 # start docker containers
 docker start cookbook-postgres
