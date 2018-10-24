@@ -53,46 +53,7 @@ public class RecipeServiceImpl implements RecipeService {
     public ResponseEntity readAll(JSONObject payload) throws Exception {
         Stream<Recipe> stream = StreamSupport.stream(recipeRepository.findAll().spliterator(), false);
 
-        if (payload.has(PayloadKey.CUISINE_ID.value())) {
-            long cuisineId = payloadHelper.getValidCuisine(payload).getId();
-            stream = stream.filter(recipe -> recipe.getCuisine().getId().equals(cuisineId));
-        }
-
-        if (payload.has(PayloadKey.CATEGORY_ID.value())) {
-            long categoryId = payloadHelper.getValidCategory(payload).getId();
-            stream = stream.filter(recipe -> recipe.getCategory().getId().equals(categoryId));
-        }
-
-        if (payload.has(PayloadKey.MIN_DIFFICULTY.value())) {
-            int minDifficulty = payloadHelper.getValidMinDifficulty(payload);
-            stream = stream.filter(recipe -> recipe.getDifficulty() >= minDifficulty);
-        }
-
-        if (payload.has(PayloadKey.MAX_DIFFICULTY.value())) {
-            int maxDifficulty = payloadHelper.getValidMaxDifficulty(payload);
-            stream = stream.filter(recipe -> recipe.getDifficulty() <= maxDifficulty);
-        }
-
-        if (payload.has(PayloadKey.MIN_PLATES.value())) {
-            int minPlates = payloadHelper.getValidMinPlates(payload);
-            stream = stream.filter(recipe -> recipe.getPlates() >= minPlates);
-        }
-
-        if (payload.has(PayloadKey.MAX_PLATES.value())) {
-            int maxPlates = payloadHelper.getValidMaxPlates(payload);
-            stream = stream.filter(recipe -> recipe.getPlates() <= maxPlates);
-        }
-
-        if (payload.has(PayloadKey.MIN_PREPARATION_TIME.value())) {
-            int minPreparationTime = payloadHelper.getValidMinPreparationTime(payload);
-            stream = stream.filter(recipe -> recipe.getPreparationTime() >= minPreparationTime);
-        }
-
-        if (payload.has(PayloadKey.MAX_PREPARATION_TIME.value())) {
-            int maxPreparationTime = payloadHelper.getValidMaxPreparationTime(payload);
-            stream = stream.filter(recipe -> recipe.getPreparationTime() <= maxPreparationTime);
-        }
-
+        stream = streamHelper.applyRecipeFiltering(payload, stream);
         Comparator comparator = Comparator.comparing(Recipe::getCreationTime);
         stream = streamHelper.applySorting(payload, stream, comparator);
         stream = streamHelper.applyPagination(payload, stream);
@@ -136,6 +97,8 @@ public class RecipeServiceImpl implements RecipeService {
         Stream<Recipe> stream = StreamSupport.stream(recipeRepository.findAll().spliterator(), false);
         stream = stream.filter(recipe -> recipe.getTitle().toLowerCase().contains(query));
 
+        Comparator comparator = Comparator.comparing(Recipe::getCreationTime);
+        stream = streamHelper.applySorting(payload, stream, comparator);
         stream = streamHelper.applyPagination(payload, stream);
 
         Iterable<Recipe> recipes = stream.collect(Collectors.toList());
