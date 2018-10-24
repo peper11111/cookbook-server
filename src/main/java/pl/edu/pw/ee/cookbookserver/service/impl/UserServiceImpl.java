@@ -17,9 +17,11 @@ import pl.edu.pw.ee.cookbookserver.helper.*;
 import pl.edu.pw.ee.cookbookserver.misc.Error;
 import pl.edu.pw.ee.cookbookserver.misc.PayloadKey;
 import pl.edu.pw.ee.cookbookserver.misc.ProcessingException;
+import pl.edu.pw.ee.cookbookserver.repository.RecipeRepository;
 import pl.edu.pw.ee.cookbookserver.repository.UserRepository;
 import pl.edu.pw.ee.cookbookserver.service.UserService;
 
+import javax.persistence.OneToMany;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -32,16 +34,19 @@ public class UserServiceImpl implements UserService {
 
     private PayloadHelper payloadHelper;
     private RecipeHelper recipeHelper;
+    private RecipeRepository recipeRepository;
     private StreamHelper streamHelper;
     private UploadHelper uploadHelper;
     private UserHelper userHelper;
     private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(PayloadHelper payloadHelper, RecipeHelper recipeHelper, StreamHelper streamHelper,
-                           UploadHelper uploadHelper, UserHelper userHelper, UserRepository userRepository) {
+    public UserServiceImpl(PayloadHelper payloadHelper, RecipeHelper recipeHelper, RecipeRepository recipeRepository,
+                           StreamHelper streamHelper, UploadHelper uploadHelper, UserHelper userHelper,
+                           UserRepository userRepository) {
         this.payloadHelper = payloadHelper;
         this.recipeHelper = recipeHelper;
+        this.recipeRepository = recipeRepository;
         this.streamHelper = streamHelper;
         this.uploadHelper = uploadHelper;
         this.userHelper = userHelper;
@@ -146,6 +151,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseEntity readRecommended(Long id, JSONObject payload) throws Exception {
+        User user = userHelper.getUser(id);
+        Stream<Recipe> stream = StreamSupport.stream(recipeRepository.findByAuthorIn(user.getFollowed()).spliterator(), false);
+
+        stream = streamHelper.applyRecipeFiltering(payload, stream);
+        Comparator comparator = Comparator.comparing(Recipe::getCreationTime);
+        stream = streamHelper.applySorting(payload, stream, comparator);
+        stream = streamHelper.applyPagination(payload, stream);
+
+        Iterable<Recipe> recipes = stream.collect(Collectors.toList());
+        Collection<BasicRecipeDto> basicRecipeDtos = recipeHelper.mapRecipeToBasicRecipeDto(recipes);
+        return ResponseEntity.status(HttpStatus.OK).body(basicRecipeDtos);
+    }
+
+    @Override
     public ResponseEntity readRecipes(Long id, JSONObject payload) throws Exception {
         User user = userHelper.getUser(id);
         Stream<Recipe> stream = user.getRecipes().stream();
@@ -164,6 +184,7 @@ public class UserServiceImpl implements UserService {
         User user = userHelper.getUser(id);
         Stream<Recipe> stream = user.getFavouriteRecipes().stream();
 
+        stream = streamHelper.applyRecipeFiltering(payload, stream);
         Comparator comparator = Comparator.comparing(Recipe::getCreationTime);
         stream = streamHelper.applySorting(payload, stream, comparator);
         stream = streamHelper.applyPagination(payload, stream);
