@@ -32,7 +32,6 @@ public enum Error {
     MISSING_PREPARATION_TIME(310, HttpStatus.BAD_REQUEST, "Missing 'preparationTime' field in payload"),
     MISSING_RECIPE_ID(311, HttpStatus.BAD_REQUEST, "Missing 'recipeId' field in payload"),
     MISSING_CONTENT(312, HttpStatus.BAD_REQUEST, "Missing 'content' field in payload"),
-    MISSING_PARENT_ID(313, HttpStatus.BAD_REQUEST, "Missing 'parentId' field id in payload"),
     MISSING_INGREDIENTS(313, HttpStatus.BAD_REQUEST, "Missing 'ingredients' field in payload"),
     MISSING_STEPS(314, HttpStatus.BAD_REQUEST, "Missing 'steps' field in payload"),
     MISSING_LOGIN(315, HttpStatus.BAD_REQUEST, "Missing 'login' field in payload"),
@@ -49,6 +48,7 @@ public enum Error {
     MISSING_NAME(324, HttpStatus.BAD_REQUEST, "Missing 'name' in payload"),
     MISSING_BIOGRAPHY(325, HttpStatus.BAD_REQUEST, "Missing 'biography' in payload"),
     MISSING_DESCRIPTION(326, HttpStatus.BAD_REQUEST, "Missing 'description' in payload"),
+    MISSING_PARENT_ID(327, HttpStatus.BAD_REQUEST, "Missing 'parentId' field id in payload"),
 
     EMPTY_USERNAME(400, HttpStatus.BAD_REQUEST, "Username can't be empty"),
     USERNAME_OCCUPIED(401, HttpStatus.CONFLICT, "User with the given username already exists"),
