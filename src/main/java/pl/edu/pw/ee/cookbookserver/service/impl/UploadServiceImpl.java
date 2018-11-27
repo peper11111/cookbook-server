@@ -1,6 +1,7 @@
 package pl.edu.pw.ee.cookbookserver.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import pl.edu.pw.ee.cookbookserver.service.UploadService;
 import java.io.File;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -61,7 +63,10 @@ public class UploadServiceImpl implements UploadService {
     public ResponseEntity read(Long id) throws Exception {
         Upload upload = uploadHelper.getUpload(id);
         byte[] image = uploadHelper.readImage(upload.getFilename(), false);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(image);
+        return ResponseEntity.status(HttpStatus.OK)
+            .cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+            .contentType(MediaType.IMAGE_JPEG)
+            .body(image);
     }
 
     @Override
@@ -85,6 +90,9 @@ public class UploadServiceImpl implements UploadService {
     public ResponseEntity readThumbnail(Long id) throws Exception {
         Upload upload = uploadHelper.getUpload(id);
         byte[] image = uploadHelper.readImage(upload.getFilename(), true);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(image);
+        return ResponseEntity.status(HttpStatus.OK)
+            .cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+            .contentType(MediaType.IMAGE_JPEG)
+            .body(image);
     }
 }
